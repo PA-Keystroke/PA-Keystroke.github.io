@@ -637,15 +637,34 @@ function setupWikiNavigation() {
     .filter(Boolean);
 
   if (navToggle && nav) {
-    navToggle.addEventListener("click", () => {
-      const isOpen = nav.classList.toggle("is-open");
+    const setWikiNavOpen = (isOpen) => {
+      nav.classList.toggle("is-open", isOpen);
       navToggle.setAttribute("aria-expanded", String(isOpen));
+    };
+
+    navToggle.addEventListener("click", () => {
+      setWikiNavOpen(!nav.classList.contains("is-open"));
     });
 
     nav.addEventListener("click", (event) => {
-      if (event.target.closest("a") && window.innerWidth <= 900) {
-        nav.classList.remove("is-open");
-        navToggle.setAttribute("aria-expanded", "false");
+      if (event.target.closest("a")) {
+        setWikiNavOpen(false);
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!nav.classList.contains("is-open")) {
+        return;
+      }
+
+      if (!sidebar?.contains(event.target)) {
+        setWikiNavOpen(false);
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 960) {
+        setWikiNavOpen(false);
       }
     });
   }
