@@ -606,6 +606,12 @@ function setupReveal() {
     return;
   }
 
+  document.querySelectorAll("[data-reveal-group]").forEach((group) => {
+    Array.from(group.querySelectorAll(".reveal")).forEach((target, index) => {
+      target.style.setProperty("--reveal-delay", `${Math.min(index, 5) * 70}ms`);
+    });
+  });
+
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
     targets.forEach((target) => target.classList.add("is-visible"));
     return;
