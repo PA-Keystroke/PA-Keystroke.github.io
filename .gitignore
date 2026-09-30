@@ -1,0 +1,5 @@
+assets/fonts/*.ttf
+assets/fonts/ResourceHanRoundedCN-Heavy.woff2
+assets/fonts/subset-text.txt
+.playwright-cli/
+output/

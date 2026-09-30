@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="PA Keystroke 功能：键盘、鼠标、手柄实时反馈，自动识别输入设备，并支持 OBS 窗口捕获。">
+  <meta property="og:title" content="PA Keystroke 功能">
+  <meta property="og:description" content="实时显示键盘、鼠标和 Xbox 兼容手柄操作。">
+  <meta property="og:url" content="https://pa-keystroke.github.io/PA-Keystroke-Web/features.html">
+  <title>功能 - PA Keystroke</title>
+  <link rel="canonical" href="https://pa-keystroke.github.io/PA-Keystroke-Web/features.html">
+  <link rel="icon" type="image/png" href="assets/brand/icon.png">
+  <link rel="preload" href="assets/fonts/LetsParty-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/styles.css?v=20260930-9">
+  <script src="assets/vendor/lucide.min.js" defer></script>
+  <script src="assets/main.js?v=20260930-9" defer></script>
+</head>
+<body data-page="features">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="site-header" data-header>
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="PA Keystroke 首页">
+        <img class="brand-icon" src="assets/brand/icon.png" alt="" width="34" height="34">
+        <span class="brand-text">PA Keystroke</span>
+      </a>
+      <nav class="site-nav" id="site-nav" aria-label="主导航" data-nav>
+        <a href="index.html">首页</a>
+        <a href="features.html" aria-current="page">功能</a>
+        <a href="demo.html">演示</a>
+        <a href="download.html">下载</a>
+        <a href="wiki.html">Wiki</a>
+        <div class="nav-dropdown" data-community-dropdown>
+          <button class="nav-link" type="button" aria-haspopup="true" aria-expanded="false" data-community-toggle>
+            社区
+            <i data-lucide="chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="community-menu" data-community-menu hidden>
+            <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=&amp;group_code=85121371" target="_blank" rel="noreferrer">
+              <span class="community-menu-mark">QQ</span>
+              <span><strong>QQ 群</strong><small>85121371</small></span>
+            </a>
+            <a href="https://github.com/PA-Keystroke/PA-Keystroke-Releases/issues" target="_blank" rel="noreferrer">
+              <img class="community-menu-icon" src="assets/icons/github-mark.svg" alt="" width="18" height="18">
+              <span><strong>GitHub Issues</strong><small>反馈问题与建议</small></span>
+            </a>
+          </div>
+        </div>
+        <a class="nav-link header-github-link" href="https://github.com/PA-Keystroke/PA-Keystroke-Releases" target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
+      <div class="header-actions">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+          <i data-lucide="menu" aria-hidden="true"></i>
+          <span class="sr-only">打开导航</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <p class="section-label">功能</p>
+        <h1>看见每一个输入。</h1>
+        <p>键盘、鼠标和 Xbox 兼容手柄的状态，实时出现在直播或录制画面中。</p>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="container">
+        <article class="feature-block">
+          <div class="feature-copy">
+            <p class="section-label">键盘与鼠标</p>
+            <h3>按键和移动方向，实时反馈。</h3>
+            <p>按键按下时立即高亮。鼠标支持左键、右键、中键、侧键以及位移方向指示器。</p>
+            <ul class="feature-list">
+              <li>键盘布局按实际位置显示</li>
+              <li>鼠标按键状态和高亮反馈</li>
+              <li>位移圆点跟随鼠标方向移动</li>
+            </ul>
+          </div>
+          <div class="feature-media">
+            <img src="assets/screenshots/02-overlay-keyboard.png" alt="PA Keystroke 键盘覆盖层" width="844" height="340" loading="eager">
+          </div>
+        </article>
+
+        <article class="feature-block reverse">
+          <div class="feature-copy">
+            <p class="section-label">手柄</p>
+            <h3>整只手柄，或单独放下一个按钮。</h3>
+            <p>支持 Xbox 兼容手柄。可以显示完整手柄，也可以只放置按钮、摇杆、扳机和方向键。</p>
+            <ul class="feature-list">
+              <li>A、B、X、Y 与肩键</li>
+              <li>LT、RT 扳机进度</li>
+              <li>左右摇杆与十字方向键</li>
+            </ul>
+          </div>
+          <div class="feature-media compact-media">
+            <img src="assets/screenshots/03-overlay-gamepad.png" alt="PA Keystroke 手柄覆盖层" width="735" height="560" loading="lazy">
+          </div>
+        </article>
+
+        <article class="feature-block">
+          <div class="feature-copy">
+            <p class="section-label">输入模式</p>
+            <h3>按设备自动切换布局。</h3>
+            <p>可选择固定键盘模式、固定手柄模式，或根据最近操作的设备自动切换。</p>
+            <ul class="feature-list">
+              <li>鼠标操作不会触发模式切换</li>
+              <li>自动识别期间锁定布局编辑</li>
+              <li>键盘预设与手柄预设互相独立</li>
+            </ul>
+          </div>
+          <div class="feature-media compact-media">
+            <img src="assets/screenshots/04-auto-mode.png" alt="PA Keystroke 自动识别模式" width="401" height="274" loading="lazy">
+          </div>
+        </article>
+
+        <article class="feature-block reverse">
+          <div class="feature-copy">
+            <p class="section-label">OBS</p>
+            <h3>直接加入现有直播场景。</h3>
+            <p>在 OBS 中添加窗口捕获，选择 <code>PA Keystroke Overlay</code>，即可显示全部输入控件。</p>
+            <ul class="feature-list">
+              <li>支持 Windows 10 窗口捕获方式</li>
+              <li>可自由裁剪显示范围</li>
+              <li>锁定后鼠标点击自动穿透</li>
+            </ul>
+            <a class="text-link" href="wiki.html#obs">查看 OBS 设置方法 <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+          </div>
+          <div class="feature-media">
+            <img src="assets/screenshots/09-obs-window-capture.png" alt="在 OBS 中选择 PA Keystroke Overlay" width="900" height="491" loading="lazy">
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-main">
+      <a class="footer-brand" href="index.html">
+        <img src="assets/brand/icon.png" alt="" width="28" height="28">
+        <span>PA Keystroke</span>
+      </a>
+      <nav class="footer-nav" aria-label="页脚导航">
+        <a href="features.html">功能</a>
+        <a href="demo.html">演示</a>
+        <a href="download.html">下载</a>
+        <a href="wiki.html">Wiki</a>
+      </nav>
+    </div>
+    <div class="container footer-meta">
+      <span>© <span data-current-year>2026</span> PA Keystroke</span>
+    </div>
+  </footer>
+
+  <div class="toast" role="status" aria-live="polite" aria-atomic="true" data-toast></div>
+</body>
+</html>

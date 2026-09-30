@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111214">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="PA Keystroke Wiki：安装、输入模式、按键与手柄布局、预设、OBS 捕获、自动更新和常见问题。">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="PA Keystroke Wiki">
+  <meta property="og:description" content="从首次启动到 OBS 捕获，完整了解 PA Keystroke 的使用方法。">
+  <meta property="og:url" content="https://pa-keystroke.github.io/PA-Keystroke-Web/wiki.html">
+  <meta property="og:image" content="https://pa-keystroke.github.io/PA-Keystroke-Web/assets/screenshots/01-main-window.png">
+  <title>PA Keystroke Wiki</title>
+  <link rel="canonical" href="https://pa-keystroke.github.io/PA-Keystroke-Web/wiki.html">
+  <link rel="icon" type="image/png" href="assets/brand/icon.png">
+  <link rel="preload" as="image" href="assets/brand/text.png">
+  <link rel="preload" href="assets/fonts/LetsParty-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/styles.css?v=20260930-9">
+  <script src="assets/vendor/lucide.min.js" defer></script>
+  <script src="assets/main.js?v=20260930-9" defer></script>
+</head>
+<body data-page="wiki">
+  <a class="skip-link" href="#wiki-content">跳到 Wiki 正文</a>
+
+  <header class="site-header" data-header>
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="PA Keystroke 首页">
+        <img class="brand-icon" src="assets/brand/icon.png" alt="" width="42" height="42">
+        <span class="brand-text">PA Keystroke</span>
+      </a>
+      <nav class="site-nav" id="site-nav" aria-label="主导航" data-nav>
+        <a href="index.html">首页</a>
+        <a href="features.html">功能</a>
+        <a href="demo.html">演示</a>
+        <a href="download.html">下载</a>
+        <a href="wiki.html" aria-current="page">Wiki</a>
+        <div class="nav-dropdown" data-community-dropdown>
+          <button class="nav-link" type="button" aria-haspopup="true" aria-expanded="false" data-community-toggle>
+            社区
+            <i data-lucide="chevron-down" aria-hidden="true"></i>
+          </button>
+          <div class="community-menu" data-community-menu hidden>
+            <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=&amp;group_code=85121371" target="_blank" rel="noreferrer">
+              <span class="community-menu-mark">QQ</span>
+              <span><strong>QQ 群</strong><small>85121371</small></span>
+            </a>
+            <a href="https://github.com/PA-Keystroke/PA-Keystroke-Releases/issues" target="_blank" rel="noreferrer">
+              <img class="community-menu-icon" src="assets/icons/github-mark.svg" alt="" width="18" height="18">
+              <span><strong>GitHub Issues</strong><small>反馈问题与建议</small></span>
+            </a>
+          </div>
+        </div>
+        <a class="nav-link header-github-link" href="https://github.com/PA-Keystroke/PA-Keystroke-Releases" target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
+      <div class="header-actions">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+          <i data-lucide="menu" aria-hidden="true"></i>
+          <span class="sr-only">打开导航</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="wiki-content">
+    <section class="wiki-hero">
+      <div class="container">
+        <nav class="breadcrumbs" aria-label="面包屑">
+          <a href="index.html">首页</a>
+          <i data-lucide="chevron-right" aria-hidden="true"></i>
+          <span>Wiki</span>
+        </nav>
+        <div class="wiki-hero-grid">
+          <div>
+            <p class="section-kicker">WIKI</p>
+            <h1>PA Keystroke Wiki</h1>
+            <p>从首次启动、添加控件，到预设管理和 OBS 捕获，这里按实际操作顺序整理了完整步骤。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container wiki-shell">
+      <aside class="wiki-sidebar" aria-label="Wiki 目录" data-wiki-sidebar>
+        <div class="wiki-sidebar-inner">
+          <button class="wiki-mobile-toggle" type="button" aria-expanded="false" data-wiki-toggle>
+            <span>
+              <i data-lucide="list" aria-hidden="true"></i>
+              <span>Wiki 目录</span>
+              <span class="wiki-current-section" data-wiki-current-section></span>
+            </span>
+            <i data-lucide="chevron-down" aria-hidden="true"></i>
+          </button>
+          <nav class="wiki-nav" data-wiki-nav>
+            <a href="#quick-start">快速开始</a>
+            <a href="#requirements">系统要求</a>
+            <a href="#input-modes">输入模式</a>
+            <a href="#add-keyboard">添加按键</a>
+            <a href="#add-mouse">添加鼠标</a>
+            <a href="#add-movement">位移指示器</a>
+            <a href="#add-text">添加文本</a>
+            <a href="#add-gamepad">手柄控件</a>
+            <a href="#edit-controls">编辑控件</a>
+            <a href="#presets">管理预设</a>
+            <a href="#overlay">覆盖层设置</a>
+            <a href="#obs">在 OBS 中使用</a>
+            <a href="#updates">自动更新</a>
+            <a href="#data-directory">数据目录</a>
+            <a href="#faq">常见问题</a>
+            <a href="#feedback">反馈</a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="wiki-content">
+        <section class="wiki-section" id="quick-start">
+          <p class="section-kicker">01</p>
+          <h2>快速开始</h2>
+          <p>下载免安装版本后，按下面的顺序完成第一次使用即可。</p>
+          <ol class="step-list">
+            <li><span>1</span><div><strong>下载程序</strong><p>从官网或最新 Release 页面下载 <code>PA-Keystroke.exe</code>。</p></div></li>
+            <li><span>2</span><div><strong>运行程序</strong><p>双击运行，并按 Windows 提示允许管理员权限。程序会打开设置窗口和透明覆盖层。</p></div></li>
+            <li><span>3</span><div><strong>选择输入模式</strong><p>根据场景选择键盘、手柄或自动识别模式。</p></div></li>
+            <li><span>4</span><div><strong>添加并调整控件</strong><p>在预览区移动控件、调整尺寸，再根据直播画面调整覆盖层位置。</p></div></li>
+            <li><span>5</span><div><strong>保存并应用</strong><p>完成修改后必须点击“保存并应用”，覆盖层才会使用新布局。</p></div></li>
+            <li><span>6</span><div><strong>在 OBS 中添加窗口捕获</strong><p>选择 <code>PA Keystroke Overlay</code>，采集方式选择 <code>Windows 10（1903 或更新版本）</code>。</p></div></li>
+          </ol>
+
+          <figure class="wiki-media wiki-media-portrait">
+            <button class="image-zoom" type="button" data-zoom="assets/screenshots/01-main-window.png" aria-label="放大查看设置主窗口">
+              <img src="assets/screenshots/01-main-window.png" alt="PA Keystroke 设置主窗口" width="1000" height="1187" loading="eager">
+            </button>
+            <figcaption>设置主窗口集成了预览、控件编辑和覆盖层设置。</figcaption>
+          </figure>
+        </section>
+
+        <section class="wiki-section" id="requirements">
+          <p class="section-kicker">02</p>
+          <h2>系统要求</h2>
+          <ul class="plain-list">
+            <li>Windows 10 64 位</li>
+            <li>Windows 11 64 位</li>
+            <li>使用手柄时，需要 Windows 能正常识别 Xbox 兼容手柄</li>
+          </ul>
+          <div class="wiki-note">
+            <i data-lucide="info" aria-hidden="true"></i>
+            <p>PA Keystroke 是免安装程序，不需要安装到固定目录。</p>
+          </div>
+        </section>
+
+        <section class="wiki-section" id="input-modes">
+          <p class="section-kicker">03</p>
+          <h2>选择输入模式</h2>
+          <div class="mode-grid">
+            <article>
+              <i data-lucide="keyboard" aria-hidden="true"></i>
+              <h3>键盘输入</h3>
+              <p>始终显示键盘布局。</p>
+            </article>
+            <article>
+              <i data-lucide="gamepad-2" aria-hidden="true"></i>
+              <h3>手柄输入</h3>
+              <p>始终显示手柄布局。</p>
+            </article>
+            <article>
+              <i data-lucide="repeat-2" aria-hidden="true"></i>
+              <h3>自动识别</h3>
+              <p>根据最近操作的设备，自动切换键盘或手柄布局。</p>
+            </article>
+          </div>
+          <p>鼠标操作不会触发自动识别模式切换，只有键盘按键和手柄操作会参与判断。</p>
+          <p>自动识别模式下，预览区和预设栏会锁定为只读，避免误改布局。</p>
+          <figure class="wiki-media wiki-media-small">
+            <button class="image-zoom" type="button" data-zoom="assets/screenshots/04-auto-mode.png" aria-label="放大查看自动识别模式">
+              <img src="assets/screenshots/04-auto-mode.png" alt="PA Keystroke 自动识别模式" width="401" height="274" loading="lazy">
+            </button>
+            <figcaption>自动识别模式会显示当前设备正在使用的预设，并锁定编辑操作。</figcaption>
+          </figure>
+        </section>
+
+        <section class="wiki-section" id="add-keyboard">
+          <p class="section-kicker">04</p>
+          <h2>添加按键</h2>
+          <ol class="step-list compact">
+            <li><span>1</span><div><strong>点击“＋ 添加”</strong><p>在菜单中选择“按键”。</p></div></li>
+            <li><span>2</span><div><strong>填写按键名称</strong><p>名称用于在编辑列表和预览区识别该控件。</p></div></li>
+            <li><span>3</span><div><strong>绑定键盘按键</strong><p>点击“绑定按键”，然后按下需要显示的键盘按键。</p></div></li>
+            <li><span>4</span><div><strong>调整位置和尺寸</strong><p>在上方预览区拖动控件；编辑完成后点击“保存”。</p></div></li>
+            <li><span>5</span><div><strong>保存并应用</strong><p>回到主窗口点击“保存并应用”，覆盖层才会更新。</p></div></li>
+          </ol>
+          <p>按键按下时，对应控件会高亮显示。</p>
+        </section>
+
+        <section class="wiki-section" id="add-mouse">
+          <p class="section-kicker">05</p>
+          <h2>添加鼠标</h2>
+          <ol class="step-list compact">
+            <li><span>1</span><div><strong>选择“鼠标”</strong><p>点击“＋ 添加”，然后选择“鼠标”。</p></div></li>
+            <li><span>2</span><div><strong>设置显示区域</strong><p>选择是否显示侧键和中键。</p></div></li>
+            <li><span>3</span><div><strong>调整预览控件</strong><p>移动鼠标控件并拖动边缘改变尺寸。</p></div></li>
+            <li><span>4</span><div><strong>保存并应用</strong><p>先点击弹窗中的“保存”，再点击主窗口的“保存并应用”。</p></div></li>
+          </ol>
+          <p>鼠标控件支持左键、右键、中键、侧键 1 和侧键 2。</p>
+        </section>
+
+        <section class="wiki-section" id="add-movement">
+          <p class="section-kicker">06</p>
+          <h2>添加位移指示器</h2>
+          <ol class="step-list compact">
+            <li><span>1</span><div><strong>添加控件</strong><p>选择“位移指示器”。</p></div></li>
+            <li><span>2</span><div><strong>调整参数</strong><p>设置圆点尺寸、鼠标敏感度和回中速度。</p></div></li>
+            <li><span>3</span><div><strong>调整位置和尺寸</strong><p>在预览区拖动控件或拖动边缘调整显示范围。</p></div></li>
+            <li><span>4</span><div><strong>保存并应用</strong><p>完成修改后应用布局。</p></div></li>
+          </ol>
+          <p>位移指示器会显示鼠标移动方向，并在停止移动后逐渐回到中心。</p>
+        </section>
+
+        <section class="wiki-section" id="add-text">
+          <p class="section-kicker">07</p>
+          <h2>添加文本</h2>
+          <ol class="step-list compact">
+            <li><span>1</span><div><strong>选择“文本”</strong><p>输入需要显示的文字内容。</p></div></li>
+            <li><span>2</span><div><strong>设置基础文字</strong><p>调整字体大小、行距、字间距和文字颜色。</p></div></li>
+            <li><span>3</span><div><strong>设置对齐和字形</strong><p>选择水平、垂直对齐，以及粗体和斜体。</p></div></li>
+            <li><span>4</span><div><strong>设置视觉效果</strong><p>按需要开启描边、阴影和背景，并分别调整颜色与透明度。</p></div></li>
+            <li><span>5</span><div><strong>保存并应用</strong><p>文本支持多行和自动换行。</p></div></li>
+          </ol>
+        </section>
+
+        <section class="wiki-section" id="add-gamepad">
+          <p class="section-kicker">08</p>
+          <h2>添加手柄控件</h2>
+          <h3>添加整只手柄</h3>
+          <ol class="step-list compact">
+            <li><span>1</span><div><strong>切换到手柄输入模式</strong><p>在输入模式选择器中选择“手柄输入”。</p></div></li>
+            <li><span>2</span><div><strong>添加整只手柄</strong><p>点击“＋ 添加”，然后选择“整只手柄”。</p></div></li>
+            <li><span>3</span><div><strong>调整位置和尺寸</strong><p>在预览区完成布局调整，再点击“保存并应用”。</p></div></li>
+          </ol>
+          <p>整只手柄会显示 A、B、X、Y、LB、RB、LT、RT、十字方向键、View、Xbox、Menu 和左右摇杆。</p>
+
+          <h3>添加独立手柄控件</h3>
+          <p>在手柄模式的“＋ 添加”菜单中，可以分别选择“手柄按键”“摇杆”“扳机”和“文本”。添加后可以单独调整位置、尺寸和显示名称。</p>
+          <figure class="wiki-media">
+            <button class="image-zoom" type="button" data-zoom="assets/screenshots/03-overlay-gamepad.png" aria-label="放大查看手柄覆盖层">
+              <img src="assets/screenshots/03-overlay-gamepad.png" alt="PA Keystroke 手柄覆盖层" width="735" height="560" loading="lazy">
+            </button>
+            <figcaption>可以使用整只手柄，也可以拆分成独立控件放置。</figcaption>
+          </figure>
+        </section>
+
+        <section class="wiki-section" id="edit-controls">
+          <p class="section-kicker">09</p>
+          <h2>编辑已有控件</h2>
+          <div class="shortcut-table" role="table" aria-label="预览区操作">
+            <div role="row"><strong role="cell">左键拖动</strong><span role="cell">移动控件</span></div>
+            <div role="row"><strong role="cell">拖动边缘</strong><span role="cell">调整尺寸</span></div>
+            <div role="row"><strong role="cell">右键</strong><span role="cell">编辑、复制或删除</span></div>
+            <div role="row"><strong role="cell">中键拖动</strong><span role="cell">平移预览区域</span></div>
+            <div role="row"><strong role="cell">左键拖动空白区域</strong><span role="cell">平移预览区域</span></div>
+          </div>
+          <div class="wiki-note">
+            <i data-lucide="info" aria-hidden="true"></i>
+            <p>完成编辑后必须点击“保存并应用”，覆盖层才会使用新布局。</p>
+          </div>
+        </section>
+
+        <section class="wiki-section" id="presets">
+          <p class="section-kicker">10</p>
+          <h2>管理预设</h2>
+          <p>预设用于保存多套布局。键盘预设和手柄预设互相独立，切换设备模式时不会互相覆盖。</p>
+          <ol class="step-list compact">
+            <li><span>1</span><div><strong>切换预设</strong><p>在预览窗下方打开预设选择器，选择已有预设即可切换。</p></div></li>
+            <li><span>2</span><div><strong>创建预设</strong><p>点击“＋ 添加预设”，新建后可直接输入名称。</p></div></li>
+            <li><span>3</span><div><strong>重命名或删除</strong><p>自定义预设支持重命名和删除。只有未被选中的自定义预设可以被删除。</p></div></li>
+            <li><span>4</span><div><strong>恢复布局</strong><p>内置预设不能删除，但可以修改显示名称，布局也可以恢复到初始状态。</p></div></li>
+          </ol>
+
+          <figure class="wiki-media wiki-media-small">
+            <button class="image-zoom" type="button" data-zoom="assets/screenshots/08-preset-list.png" aria-label="放大查看预设列表">
+              <img src="assets/screenshots/08-preset-list.png" alt="PA Keystroke 预设列表" width="321" height="325" loading="lazy">
+            </button>
+            <figcaption>预设选择器中也可以导入和导出布局。</figcaption>
+          </figure>
+
+          <h3>导出预设</h3>
+          <ol class="plain-steps">
+            <li>在预设选择器中点击“导出预设”。</li>
+            <li>勾选需要导出的键盘预设和手柄预设，可以同时选择多套。</li>
+            <li>点击“导出”，选择保存位置。文件格式为 <code>.json</code>。</li>
+          </ol>
+
+          <h3>导入预设</h3>
+          <ol class="plain-steps">
+            <li>在预设选择器中点击“导入预设”。</li>
+            <li>选择一个或多个 <code>.json</code> 预设文件。</li>
+            <li>如果名称冲突，可分别为每项选择“覆盖”“跳过”或“副本”。</li>
+            <li>点击“继续导入”完成处理。</li>
+          </ol>
+
+          <h3>键盘配列预设</h3>
+          <p>发行仓库提供可直接导入的键盘配列预设：</p>
+          <div class="tag-list">
+            <span>68K-ANSI</span>
+            <span>68K-ISO</span>
+            <span>75K-ANSI</span>
+            <span>75K-ISO</span>
+            <span>87K-ANSI</span>
+            <span>87K-ISO</span>
+            <span>98K-ANSI</span>
+            <span>98K-ISO</span>
+            <span>104K-ANSI</span>
+            <span>105K-ISO</span>
+          </div>
+          <p>这些预设不保留 Fn 按键，并分别区分 ANSI 和 ISO 主键区布局。使用这些预设时，不建议把“整体缩放”调整得过低。</p>
+        </section>
+
+        <section class="wiki-section" id="overlay">
+          <p class="section-kicker">11</p>
+          <h2>覆盖层设置</h2>
+          <h3>按键背景</h3>
+          <p>勾选“显示按键背景”后，可以修改背景颜色和背景不透明度。</p>
+
+          <h3>整体不透明度</h3>
+          <p>“覆盖层不透明度”会统一改变所有控件和背景的整体透明程度。</p>
+
+          <h3>整体缩放</h3>
+          <p>“整体缩放”会改变覆盖层中控件的整体大小，适合适配不同分辨率的直播画面。</p>
+
+          <h3>覆盖层交互</h3>
+          <div class="two-column-list">
+            <div>
+              <strong>锁定后</strong>
+              <ul class="plain-list">
+                <li>鼠标点击会穿透覆盖层</li>
+                <li>不会拦截游戏或软件操作</li>
+                <li>按键、文字和填充不会抢占鼠标</li>
+              </ul>
+            </div>
+            <div>
+              <strong>解锁后</strong>
+              <ul class="plain-list">
+                <li>可以拖动调整覆盖层位置</li>
+                <li>位置会自动保存</li>
+                <li>重新启动后恢复到原位置</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="wiki-section" id="obs">
+          <p class="section-kicker">12</p>
+          <h2>在 OBS 中使用</h2>
+          <ol class="step-list compact">
+            <li><span>1</span><div><strong>添加来源</strong><p>在 OBS 的来源面板点击“＋”，选择“窗口捕获”。</p></div></li>
+            <li><span>2</span><div><strong>选择覆盖层窗口</strong><p>在窗口列表中选择 <code>PA Keystroke Overlay</code>。</p></div></li>
+            <li><span>3</span><div><strong>选择采集方式</strong><p>采集方式请选择 <code>Windows 10（1903 或更新版本）</code>。</p></div></li>
+            <li><span>4</span><div><strong>调整显示范围</strong><p>使用裁剪或滤镜调整覆盖层在画面中的位置和尺寸。</p></div></li>
+          </ol>
+          <div class="wiki-warning">
+            <i data-lucide="triangle-alert" aria-hidden="true"></i>
+            <p>不要选择 PA Keystroke 设置主窗口，应选择独立的 <code>PA Keystroke Overlay</code>。</p>
+          </div>
+          <figure class="wiki-media">
+            <button class="image-zoom" type="button" data-zoom="assets/screenshots/09-obs-window-capture.png" aria-label="放大查看 OBS 窗口捕获设置">
+              <img src="assets/screenshots/09-obs-window-capture.png" alt="在 OBS 中选择 PA Keystroke Overlay" width="900" height="491" loading="lazy">
+            </button>
+            <figcaption>窗口来源应选择 PA Keystroke Overlay，并使用 Windows 10 采集方式。</figcaption>
+          </figure>
+        </section>
+
+        <section class="wiki-section" id="updates">
+          <p class="section-kicker">13</p>
+          <h2>自动检查更新</h2>
+          <p>程序每次启动时都会检查公开 Release 仓库。检查期间标题栏会显示加载动画；如果没有新版本，动画会自动隐藏。</p>
+          <p>发现新版本时，可以从更新提示中查看更新日志、打开发布页面、下载更新，并自动替换和重启。更新日志支持保留原文换行和显示 GitHub Release 正文中的远程图片。</p>
+          <p>也可以在关于页手动检查更新。</p>
+        </section>
+
+        <section class="wiki-section" id="data-directory">
+          <p class="section-kicker">14</p>
+          <h2>数据目录</h2>
+          <p>配置默认保存在：</p>
+          <pre><code>%APPDATA%\PA Keystroke</code></pre>
+          <div class="file-list">
+            <div><code>keystroke_config.json</code><span>当前键盘布局</span></div>
+            <div><code>keystroke_presets.json</code><span>键盘预设</span></div>
+            <div><code>keystroke_gamepad.json</code><span>当前手柄布局</span></div>
+            <div><code>keystroke_gamepad_presets.json</code><span>手柄预设</span></div>
+            <div><code>user_settings.json</code><span>用户设置、覆盖层和运行设置</span></div>
+          </div>
+          <p>备份或迁移数据时，请先退出 PA Keystroke，再复制整个数据目录。</p>
+        </section>
+
+        <section class="wiki-section" id="faq">
+          <p class="section-kicker">15</p>
+          <h2>常见问题</h2>
+          <div class="faq-list">
+            <details>
+              <summary>Windows 显示“发布者未知”</summary>
+              <p>当前版本未使用受信任的代码签名证书。请确认文件来自公开 Release 仓库，并核对 Release 页面提供的 SHA256。</p>
+            </details>
+            <details>
+              <summary>覆盖层挡住鼠标操作</summary>
+              <p>在设置页开启“锁定覆盖层”。锁定后点击会穿透覆盖层。</p>
+            </details>
+            <details>
+              <summary>OBS 看不到覆盖层</summary>
+              <p>确认使用“窗口捕获”，选择 <code>PA Keystroke Overlay</code>，并把采集方式设为 <code>Windows 10（1903 或更新版本）</code>。</p>
+            </details>
+            <details>
+              <summary>手柄没有反应</summary>
+              <p>确认手柄已被 Windows 识别，已选择手柄模式或开启自动识别，并已添加整只手柄或对应手柄控件。</p>
+            </details>
+            <details>
+              <summary>没有检测到更新</summary>
+              <p>确认电脑可以正常访问 GitHub，当前版本不是最新版本，并且 Release 中包含可下载的更新文件。</p>
+            </details>
+          </div>
+        </section>
+
+        <section class="wiki-section" id="feedback">
+          <p class="section-kicker">16</p>
+          <h2>反馈</h2>
+          <p>欢迎在 GitHub Issues 中提交问题和建议，或加入社区 QQ 群交流。</p>
+          <div class="feedback-actions">
+            <button class="button button-accent" type="button" data-copy="85121371">
+              <i data-lucide="copy" aria-hidden="true"></i>
+              复制 QQ 群号 85121371
+            </button>
+            <a class="button button-secondary" href="https://github.com/PA-Keystroke/PA-Keystroke-Releases/issues" target="_blank" rel="noreferrer">
+              <i data-lucide="message-square" aria-hidden="true"></i>
+              打开 GitHub Issues
+            </a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-main">
+      <a class="footer-brand" href="index.html">
+        <img src="assets/brand/icon.png" alt="" width="28" height="28">
+        <span>PA Keystroke</span>
+      </a>
+      <nav class="footer-nav" aria-label="页脚导航">
+        <a href="features.html">功能</a>
+        <a href="demo.html">演示</a>
+        <a href="download.html">下载</a>
+          <a href="wiki.html">Wiki</a>
+      </nav>
+    </div>
+    <div class="container footer-meta">
+      <span>© <span data-current-year>2026</span> PA Keystroke</span>
+    </div>
+  </footer>
+
+  <button class="back-to-top" type="button" aria-label="返回顶部" data-back-to-top>
+    <i data-lucide="arrow-up" aria-hidden="true"></i>
+  </button>
+  <div class="toast" role="status" aria-live="polite" aria-atomic="true" data-toast></div>
+  <div class="lightbox" role="dialog" aria-modal="true" aria-label="图片预览" data-lightbox hidden>
+    <button class="lightbox-close" type="button" aria-label="关闭预览" data-lightbox-close>
+      <i data-lucide="x" aria-hidden="true"></i>
+    </button>
+    <img alt="" data-lightbox-image>
+  </div>
+</body>
+</html>
