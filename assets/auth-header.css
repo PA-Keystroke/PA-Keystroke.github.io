@@ -33,6 +33,11 @@
   cursor: pointer;
 }
 
+.header-account-button {
+  padding-right: 22px;
+  padding-left: 4px;
+}
+
 .header-account-button:hover,
 .header-account-login:hover {
   border-color: rgba(255, 255, 255, 0.28);
