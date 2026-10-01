@@ -1,0 +1,642 @@
+(function () {
+  "use strict";
+
+  const PRESET_FILE_BUCKET = "preset-files";
+  const SCREENSHOT_BUCKET = "preset-screenshots";
+  const MAX_JSON_SIZE = 5 * 1024 * 1024;
+  const MAX_SCREENSHOT_SIZE = 5 * 1024 * 1024;
+  const MAX_SCREENSHOTS = 5;
+  const FALLBACK_PA_VERSIONS = ["1.0.01", "1.0.00"];
+
+  let client = null;
+
+  function getConfig() {
+    return window.PA_SUPABASE_CONFIG || {};
+  }
+
+  function isConfigured() {
+    const config = getConfig();
+    return Boolean(
+      config.url
+      && config.anonKey
+      && window.supabase
+      && typeof window.supabase.createClient === "function"
+    );
+  }
+
+  function getClient() {
+    if (!isConfigured()) {
+      return null;
+    }
+
+    if (!client) {
+      const config = getConfig();
+      client = window.supabase.createClient(config.url, config.anonKey, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      });
+    }
+
+    return client;
+  }
+
+  function errorMessage(error) {
+    if (!error) {
+      return "发生未知错误。";
+    }
+
+    if (typeof error === "string") {
+      return error;
+    }
+
+    return error.message || error.error_description || "发生未知错误。";
+  }
+
+  function normalizeText(value) {
+    return String(value || "").trim();
+  }
+
+  function validatePresetPayload(data) {
+    if (!data || typeof data !== "object") {
+      throw new Error("JSON 内容不是有效的预设对象。");
+    }
+
+    if (data.format !== "pa-keystroke-presets" || Number(data.version) !== 1) {
+      throw new Error("这不是 PA Keystroke 支持的预设文件。");
+    }
+
+    if (!Array.isArray(data.presets) || !data.presets.length) {
+      throw new Error("预设文件中没有可用的预设。");
+    }
+
+    const items = [];
+    const seen = new Set();
+
+    data.presets.forEach((entry, index) => {
+      if (!entry || typeof entry !== "object") {
+        throw new Error(`第 ${index + 1} 个预设格式不正确。`);
+      }
+
+      const scope = normalizeText(entry.scope).toLowerCase();
+      const name = normalizeText(entry.name);
+      const displayName = normalizeText(entry.display_name) || name;
+
+      if (!["keyboard", "gamepad"].includes(scope)) {
+        throw new Error(`第 ${index + 1} 个预设缺少有效的 scope。`);
+      }
+
+      if (!name || !Array.isArray(entry.keys)) {
+        throw new Error(`第 ${index + 1} 个预设缺少名称或控件数据。`);
+      }
+
+      const key = `${scope}:${name}`;
+      if (seen.has(key)) {
+        throw new Error(`预设 ${displayName} 重复出现。`);
+      }
+
+      seen.add(key);
+      items.push({
+        scope,
+        name,
+        displayName,
+        sortOrder: items.length
+      });
+    });
+
+    return {
+      items,
+      presetCount: items.length,
+      scopes: [...new Set(items.map((item) => item.scope))]
+    };
+  }
+
+  async function readPresetFile(file) {
+    if (!file) {
+      throw new Error("请选择预设 JSON 文件。");
+    }
+
+    if (!file.name.toLowerCase().endsWith(".json")) {
+      throw new Error("预设文件必须是 JSON 格式。");
+    }
+
+    if (file.size > MAX_JSON_SIZE) {
+      throw new Error("预设 JSON 文件不能超过 5 MB。");
+    }
+
+    let data;
+    try {
+      data = JSON.parse(await file.text());
+    } catch (error) {
+      throw new Error("JSON 文件无法解析。");
+    }
+
+    return validatePresetPayload(data);
+  }
+
+  function normalizeReleaseVersion(value) {
+    return String(value || "").trim().replace(/^v/i, "");
+  }
+
+  function compareVersions(left, right) {
+    const leftParts = normalizeReleaseVersion(left).split(".").map(Number);
+    const rightParts = normalizeReleaseVersion(right).split(".").map(Number);
+    const length = Math.max(leftParts.length, rightParts.length);
+
+    for (let index = 0; index < length; index += 1) {
+      const leftPart = Number.isFinite(leftParts[index]) ? leftParts[index] : 0;
+      const rightPart = Number.isFinite(rightParts[index]) ? rightParts[index] : 0;
+      if (leftPart !== rightPart) {
+        return leftPart > rightPart ? 1 : -1;
+      }
+    }
+
+    return 0;
+  }
+
+  async function fetchReleaseVersions() {
+    let versions = [];
+    const cacheKey = "pa-keystroke-release-versions";
+
+    try {
+      const cached = JSON.parse(window.sessionStorage.getItem(cacheKey) || "null");
+      if (cached?.timestamp && Date.now() - cached.timestamp < 60 * 60 * 1000) {
+        versions = cached.versions || [];
+      }
+    } catch (error) {
+      // Ignore corrupted local cache and fetch fresh data.
+    }
+
+    if (!versions.length) {
+      try {
+        const response = await fetch(
+          "https://api.github.com/repos/PA-Keystroke/PA-Keystroke-Releases/releases?per_page=100",
+          {
+            headers: {
+              Accept: "application/vnd.github+json"
+            }
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`GitHub Releases 请求失败：${response.status}`);
+        }
+
+        const releases = await response.json();
+        versions = [...new Set(releases
+          .filter((release) => !release.draft && !release.prerelease)
+          .map((release) => normalizeReleaseVersion(release.tag_name))
+          .filter((version) => /^\d+(?:\.\d+){1,3}$/.test(version)))]
+          .sort((a, b) => compareVersions(b, a));
+
+        window.sessionStorage.setItem(cacheKey, JSON.stringify({
+          timestamp: Date.now(),
+          versions
+        }));
+      } catch (error) {
+        versions = FALLBACK_PA_VERSIONS;
+      }
+    }
+
+    return versions.length ? versions : FALLBACK_PA_VERSIONS;
+  }
+
+  function validateScreenshots(screenshots) {
+    const files = Array.from(screenshots || []);
+    const imageExtensions = /\.(avif|bmp|gif|jpe?g|png|webp)$/i;
+
+    if (files.length > MAX_SCREENSHOTS) {
+      throw new Error("每个投稿最多上传 5 张截图。");
+    }
+
+    files.forEach((file) => {
+      if (!file.type.startsWith("image/") && !imageExtensions.test(file.name || "")) {
+        throw new Error("截图只能上传图片文件。");
+      }
+
+      if (file.size > MAX_SCREENSHOT_SIZE) {
+        throw new Error("每张截图不能超过 5 MB。");
+      }
+    });
+
+    return files;
+  }
+
+  function imageContentType(file) {
+    if (file.type?.startsWith("image/")) {
+      return file.type;
+    }
+
+    const extension = String(file.name || "").split(".").pop()?.toLowerCase();
+    return {
+      avif: "image/avif",
+      bmp: "image/bmp",
+      gif: "image/gif",
+      jpeg: "image/jpeg",
+      jpg: "image/jpeg",
+      png: "image/png",
+      webp: "image/webp"
+    }[extension] || "application/octet-stream";
+  }
+
+  function validatePackageFields(fields) {
+    const required = [
+      ["title", "预设包标题"],
+      ["authorName", "作者名"],
+      ["version", "版本号"]
+    ];
+
+    required.forEach(([key, label]) => {
+      if (!normalizeText(fields[key])) {
+        throw new Error(`请填写${label}。`);
+      }
+    });
+
+  }
+
+  function safeExtension(file, fallback) {
+    const match = String(file?.name || "").match(/\.([a-z0-9]{1,8})$/i);
+    return match ? `.${match[1].toLowerCase()}` : fallback;
+  }
+
+  async function removeFiles(supabase, paths, strict = false) {
+    const objects = paths
+      .map((item) => ({ bucket: item.bucket, path: item.path }))
+      .filter((item) => item.path);
+
+    if (!objects.length) {
+      return;
+    }
+
+    const grouped = objects.reduce((result, item) => {
+      result[item.bucket] = result[item.bucket] || [];
+      result[item.bucket].push(item.path);
+      return result;
+    }, {});
+
+    await Promise.all(Object.entries(grouped).map(async ([bucket, bucketPaths]) => {
+      try {
+        await supabase.storage.from(bucket).remove(bucketPaths);
+      } catch (error) {
+        if (strict) {
+          throw error;
+        }
+      }
+    }));
+  }
+
+  async function createPresetPackage(supabase, options) {
+    const {
+      source,
+      status,
+      userId,
+      fields,
+      parsed,
+      jsonFile,
+      screenshots
+    } = options;
+
+    validatePackageFields(fields);
+
+    if (!userId) {
+      throw new Error("请先登录。");
+    }
+
+    if (!parsed || !parsed.presetCount) {
+      throw new Error("请先选择并解析预设文件。");
+    }
+
+    const screenshotFiles = validateScreenshots(screenshots);
+    const packageId = crypto.randomUUID();
+    const jsonPath = `${packageId}/preset.json`;
+    const screenshotPaths = screenshotFiles.map((file, index) => (
+      `${packageId}/screenshot-${index + 1}${safeExtension(file, ".png")}`
+    ));
+    const uploadedFiles = [];
+
+    const payload = {
+      id: packageId,
+      owner_id: userId,
+      source,
+      status,
+      title: normalizeText(fields.title),
+      author_name: normalizeText(fields.authorName),
+      game: "",
+      version: normalizeText(fields.version),
+      pa_version_range: normalizeText(fields.paVersionRange),
+      scope_keyboard: parsed.scopes.includes("keyboard"),
+      scope_gamepad: parsed.scopes.includes("gamepad"),
+      description: normalizeText(fields.description),
+      json_path: jsonPath,
+      json_size: jsonFile.size,
+      screenshot_paths: screenshotPaths,
+      preset_count: parsed.presetCount
+    };
+
+    const insertResult = await supabase.from("preset_packages").insert(payload);
+    if (insertResult.error) {
+      throw new Error(errorMessage(insertResult.error));
+    }
+
+    try {
+      const jsonUpload = await supabase.storage
+        .from(PRESET_FILE_BUCKET)
+        .upload(jsonPath, jsonFile, {
+          cacheControl: "3600",
+          contentType: "application/json",
+          upsert: false
+        });
+
+      if (jsonUpload.error) {
+        throw new Error(errorMessage(jsonUpload.error));
+      }
+      uploadedFiles.push({ bucket: PRESET_FILE_BUCKET, path: jsonPath });
+
+      for (let index = 0; index < screenshotFiles.length; index += 1) {
+        const file = screenshotFiles[index];
+        const path = screenshotPaths[index];
+        const uploadResult = await supabase.storage
+          .from(SCREENSHOT_BUCKET)
+          .upload(path, file, {
+            cacheControl: "3600",
+            contentType: imageContentType(file),
+            upsert: false
+          });
+
+        if (uploadResult.error) {
+          throw new Error(errorMessage(uploadResult.error));
+        }
+        uploadedFiles.push({ bucket: SCREENSHOT_BUCKET, path });
+      }
+
+      const itemResult = await supabase.from("preset_items").insert(
+        parsed.items.map((item) => ({
+          package_id: packageId,
+          scope: item.scope,
+          name: item.name,
+          display_name: item.displayName,
+          sort_order: item.sortOrder
+        }))
+      );
+
+      if (itemResult.error) {
+        throw new Error(errorMessage(itemResult.error));
+      }
+
+      return { packageId };
+    } catch (error) {
+      await removeFiles(supabase, uploadedFiles);
+      await supabase.from("preset_packages").delete().eq("id", packageId);
+      throw error;
+    }
+  }
+
+  async function hideOwnPresetPackage(supabase, packageId) {
+    const result = await supabase.rpc("hide_own_preset_package", {
+      p_package_id: packageId
+    });
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+  }
+
+  async function setPresetPackageVisibility(supabase, packageId, isHidden, userId) {
+    const result = await supabase
+      .from("preset_packages")
+      .update({
+        is_hidden: Boolean(isHidden),
+        hidden_at: isHidden ? new Date().toISOString() : null,
+        hidden_by: isHidden ? userId : null,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", packageId);
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+  }
+
+  async function deletePresetPackage(supabase, item) {
+    if (!item?.id) {
+      throw new Error("预设记录不存在。");
+    }
+
+    await removeFiles(supabase, [
+      { bucket: PRESET_FILE_BUCKET, path: item.json_path },
+      ...(item.screenshot_paths || []).map((path) => ({
+        bucket: SCREENSHOT_BUCKET,
+        path
+      }))
+    ], true);
+
+    const result = await supabase
+      .from("preset_packages")
+      .delete()
+      .eq("id", item.id);
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+  }
+
+  async function fetchApprovedPackages(supabase, source) {
+    const result = await supabase
+      .from("preset_packages")
+      .select(`
+        id,
+        owner_id,
+        source,
+        title,
+        author_name,
+        game,
+        version,
+        pa_version_range,
+        scope_keyboard,
+        scope_gamepad,
+        description,
+        json_path,
+        screenshot_paths,
+        preset_count,
+        is_hidden,
+        created_at,
+        preset_items(id, scope, name, display_name, sort_order)
+      `)
+      .eq("source", source)
+      .eq("status", "approved")
+      .eq("is_hidden", false)
+      .order("created_at", { ascending: false });
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+
+    return result.data || [];
+  }
+
+  async function fetchOwnPackages(supabase, userId) {
+    const result = await supabase
+      .from("preset_packages")
+      .select(`
+        id,
+        source,
+        title,
+        status,
+        rejection_reason,
+        is_hidden,
+        hidden_at,
+        created_at,
+        reviewed_at,
+        preset_count,
+        screenshot_paths
+      `)
+      .eq("owner_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+
+    return result.data || [];
+  }
+
+  async function fetchReviewPackages(supabase, status) {
+    let query = supabase
+      .from("preset_packages")
+      .select(`
+        id,
+        owner_id,
+        title,
+        author_name,
+        game,
+        version,
+        pa_version_range,
+        scope_keyboard,
+        scope_gamepad,
+        description,
+        status,
+        rejection_reason,
+        json_path,
+        screenshot_paths,
+        preset_count,
+        is_hidden,
+        hidden_at,
+        hidden_by,
+        created_at,
+        reviewed_at,
+        preset_items(id, scope, name, display_name, sort_order)
+      `)
+      .eq("source", "community");
+
+    query = status === "hidden"
+      ? query.eq("is_hidden", true)
+      : query.eq("status", status).eq("is_hidden", false);
+
+    const result = await query.order("created_at", { ascending: true });
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+
+    return result.data || [];
+  }
+
+  async function getSignedUrls(supabase, bucket, paths, expiresIn) {
+    const uniquePaths = [...new Set((paths || []).filter(Boolean))];
+    if (!uniquePaths.length) {
+      return {};
+    }
+
+    const result = await supabase.storage
+      .from(bucket)
+      .createSignedUrls(uniquePaths, expiresIn || 3600);
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+
+    return (result.data || []).reduce((urls, item) => {
+      if (item.signedUrl && item.path) {
+        urls[item.path] = item.signedUrl;
+      }
+      return urls;
+    }, {});
+  }
+
+  async function getDownloadUrl(supabase, path, filename) {
+    const result = await supabase.storage
+      .from(PRESET_FILE_BUCKET)
+      .createSignedUrl(path, 600, { download: filename || true });
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+
+    return result.data?.signedUrl || "";
+  }
+
+  async function getPresetFileText(supabase, path) {
+    const result = await supabase.storage.from(PRESET_FILE_BUCKET).download(path);
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+
+    return result.data.text();
+  }
+
+  async function getProfile(supabase, userId) {
+    const result = await supabase
+      .from("profiles")
+      .select("id, github_login, display_name, avatar_url, is_admin")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+
+    return result.data;
+  }
+
+  async function signInWithGitHub(supabase, returnPath) {
+    const redirectTo = new URL(returnPath || window.location.pathname, window.location.href).href;
+    const result = await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: { redirectTo }
+    });
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+  }
+
+  window.PA_PRESET_STORE = {
+    PRESET_FILE_BUCKET,
+    SCREENSHOT_BUCKET,
+    MAX_JSON_SIZE,
+    MAX_SCREENSHOT_SIZE,
+    MAX_SCREENSHOTS,
+    getClient,
+    isConfigured,
+    errorMessage,
+    readPresetFile,
+    fetchReleaseVersions,
+    validateScreenshots,
+    validatePackageFields,
+    createPresetPackage,
+    hideOwnPresetPackage,
+    setPresetPackageVisibility,
+    deletePresetPackage,
+    fetchApprovedPackages,
+    fetchOwnPackages,
+    fetchReviewPackages,
+    getSignedUrls,
+    getDownloadUrl,
+    getPresetFileText,
+    getProfile,
+    signInWithGitHub
+  };
+})();

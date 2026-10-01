@@ -17,9 +17,14 @@
   <link rel="icon" type="image/png" href="assets/brand/icon.png">
   <link rel="preload" href="assets/fonts/LetsParty-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" as="image" href="assets/brand/text.png">
-  <link rel="stylesheet" href="assets/styles.css?v=20260930-12">
+  <link rel="stylesheet" href="assets/styles.css?v=20261001-6">
+  <link rel="stylesheet" href="assets/auth-header.css?v=20261001-7">
   <script src="assets/vendor/lucide.min.js" defer></script>
-  <script src="assets/main.js?v=20260930-12" defer></script>
+  <script src="assets/vendor/supabase.js?v=20261001-3" defer></script>
+  <script src="assets/supabase-config.js?v=20261001-4" defer></script>
+  <script src="assets/preset-store.js?v=20261001-4" defer></script>
+  <script src="assets/auth-header.js?v=20261001-6" defer></script>
+  <script src="assets/main.js?v=20261001-4" defer></script>
 </head>
 <body data-page="home">
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -33,26 +38,10 @@
       <nav class="site-nav" id="site-nav" aria-label="主导航" data-nav>
         <a href="index.html" aria-current="page">首页</a>
         <a href="features.html">功能</a>
+        <a href="presets.html">预设</a>
         <a href="demo.html">演示</a>
         <a href="download.html">下载</a>
         <a href="wiki.html">Wiki</a>
-        <div class="nav-dropdown" data-community-dropdown>
-          <button class="nav-link" type="button" aria-haspopup="true" aria-expanded="false" data-community-toggle>
-            社区
-            <i data-lucide="chevron-down" aria-hidden="true"></i>
-          </button>
-          <div class="community-menu" data-community-menu hidden>
-            <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=&amp;group_code=85121371" target="_blank" rel="noreferrer">
-              <span class="community-menu-mark">QQ</span>
-              <span><strong>QQ 群</strong><small>85121371</small></span>
-            </a>
-            <a href="https://github.com/PA-Keystroke/PA-Keystroke-Releases/issues" target="_blank" rel="noreferrer">
-              <img class="community-menu-icon" src="assets/icons/github-mark.svg" alt="" width="18" height="18">
-              <span><strong>GitHub Issues</strong><small>反馈问题与建议</small></span>
-            </a>
-          </div>
-        </div>
-        <a class="nav-link header-github-link" href="https://github.com/PA-Keystroke/PA-Keystroke-Releases" target="_blank" rel="noreferrer">GitHub</a>
       </nav>
       <div class="header-actions">
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
@@ -139,10 +128,16 @@
       </a>
       <nav class="footer-nav" aria-label="页脚导航">
         <a href="features.html">功能</a>
+        <a href="presets.html">预设</a>
         <a href="demo.html">演示</a>
         <a href="download.html">下载</a>
         <a href="wiki.html">Wiki</a>
       </nav>
+      <div class="footer-contact" aria-label="联系与项目">
+        <a href="https://github.com/PA-Keystroke/PA-Keystroke-Releases" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=&amp;group_code=85121371" target="_blank" rel="noreferrer">QQ 群</a>
+        <a href="https://github.com/PA-Keystroke/PA-Keystroke-Releases/issues" target="_blank" rel="noreferrer">GitHub Issues</a>
+      </div>
     </div>
     <div class="container footer-meta">
       <span>© <span data-current-year>2026</span> PA Keystroke</span>

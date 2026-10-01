@@ -1,0 +1,170 @@
+.header-account {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.header-account-skeleton {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 13px;
+  border: 1px solid var(--line-dark);
+  border-radius: 999px;
+  background: rgba(28, 28, 30, 0.72);
+  pointer-events: none;
+}
+
+.header-account-skeleton .ui-skeleton-line {
+  width: 72px;
+}
+
+.header-account-button,
+.header-account-login {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 13px;
+  border: 1px solid var(--line-dark);
+  border-radius: 999px;
+  background: rgba(28, 28, 30, 0.86);
+  color: var(--white);
+  cursor: pointer;
+}
+
+.header-account-button:hover,
+.header-account-login:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: #29292c;
+}
+
+.header-account-login img {
+  width: 18px;
+  height: 18px;
+  filter: invert(1);
+}
+
+.header-account-avatar {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #35363b;
+  color: var(--white);
+  font-size: 12px;
+}
+
+.header-account-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.header-account-name {
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-account-button svg {
+  width: 15px;
+  height: 15px;
+}
+
+.header-account-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 130;
+  width: 210px;
+  padding: 7px;
+  border: 1px solid var(--line-dark);
+  border-radius: 12px;
+  background: rgba(24, 24, 26, 0.98);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.38);
+}
+
+.header-account-menu[hidden] {
+  display: none !important;
+}
+
+.header-account-menu button {
+  width: 100%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--white);
+  text-align: left;
+  cursor: pointer;
+}
+
+.header-account-menu button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.header-account-menu button.is-danger {
+  color: #ff9ba3;
+}
+
+@media (max-width: 960px) {
+  .site-nav > .header-account {
+    width: 100%;
+    margin: auto 0 0;
+    padding-top: 18px;
+    border-top: 1px solid var(--line-dark);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition:
+      opacity 180ms ease,
+      transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .site-nav.is-open > .header-account {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .site-nav > .header-account .header-account-button,
+  .site-nav > .header-account .header-account-login {
+    width: 100%;
+    min-height: 48px;
+    justify-content: flex-start;
+    padding: 0 4px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    font-size: 18px;
+  }
+
+  .site-nav > .header-account .header-account-menu {
+    position: static;
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .header-actions {
+    margin-left: auto;
+  }
+
+}
+
+@media (max-width: 700px) {
+  .site-nav > .header-account .header-account-skeleton {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 4px;
+    border: 0;
+    background: transparent;
+  }
+}

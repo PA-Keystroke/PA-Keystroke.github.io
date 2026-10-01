@@ -3,3 +3,6 @@ assets/fonts/ResourceHanRoundedCN-Heavy.woff2
 assets/fonts/subset-text.txt
 .playwright-cli/
 output/
+README.md
+span
+supabase/

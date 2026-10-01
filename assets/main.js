@@ -424,6 +424,7 @@ function setupVideoDemo() {
 }
 
 function applyReleaseData(release) {
+  setReleaseLoading(false);
   document.querySelectorAll("[data-release-version]").forEach((node) => {
     node.textContent = release.version || releaseFallback.version;
   });
@@ -442,6 +443,15 @@ function applyReleaseData(release) {
 
   if (release.notes) {
     renderReleaseNotes(release.notes);
+  }
+}
+
+function setReleaseLoading(isLoading) {
+  document.querySelector("[data-release-facts]")?.classList.toggle("is-loading", isLoading);
+  const notes = document.querySelector("[data-release-notes-panel]");
+  notes?.classList.toggle("is-loading", isLoading);
+  if (notes) {
+    notes.setAttribute("aria-busy", String(isLoading));
   }
 }
 
@@ -521,6 +531,8 @@ async function setupLatestRelease() {
       sessionStorage.removeItem(cacheKey);
     }
   }
+
+  setReleaseLoading(true);
 
   try {
     const response = await fetch("https://api.github.com/repos/PA-Keystroke/PA-Keystroke-Releases/releases/latest", {
@@ -771,6 +783,43 @@ function setupCurrentYear() {
   });
 }
 
+function setupDialogScrollLock() {
+  let lockedScrollY = 0;
+
+  const update = () => {
+    const hasOpenDialog = Boolean(document.querySelector("dialog[open]"));
+    const isLocked = document.body.classList.contains("dialog-open");
+
+    if (hasOpenDialog && !isLocked) {
+      lockedScrollY = window.scrollY;
+      const gutter = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
+      document.body.style.setProperty("--dialog-scrollbar-gutter", `${gutter}px`);
+      document.body.classList.add("dialog-open");
+      window.requestAnimationFrame(() => {
+        if (window.scrollY !== lockedScrollY) {
+          window.scrollTo(0, lockedScrollY);
+        }
+      });
+      return;
+    }
+
+    if (hasOpenDialog) {
+      return;
+    }
+
+    document.body.classList.remove("dialog-open");
+    if (isLocked) {
+      document.body.style.removeProperty("--dialog-scrollbar-gutter");
+      window.scrollTo(0, lockedScrollY);
+    }
+  };
+
+  document.querySelectorAll("dialog").forEach((dialog) => {
+    dialog.addEventListener("toggle", update);
+  });
+  update();
+}
+
 function initializeIcons() {
   if (window.lucide && typeof window.lucide.createIcons === "function") {
     window.lucide.createIcons({
@@ -794,6 +843,7 @@ function init() {
   setupWikiNavigation();
   setupBackToTop();
   setupCurrentYear();
+  setupDialogScrollLock();
 }
 
 if (document.readyState === "loading") {

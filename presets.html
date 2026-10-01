@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="浏览和下载 PA Keystroke 官方预设与社区预设，并按游戏、输入类型和版本筛选。">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="预设 - PA Keystroke">
+  <meta property="og:description" content="找到适合你的 PA Keystroke 键盘、鼠标和手柄预设。">
+  <meta property="og:url" content="https://pa-keystroke.github.io/PA-Keystroke-Web/presets.html">
+  <title>预设 - PA Keystroke</title>
+  <link rel="canonical" href="https://pa-keystroke.github.io/PA-Keystroke-Web/presets.html">
+  <link rel="icon" type="image/png" href="assets/brand/icon.png">
+  <link rel="preload" href="assets/fonts/LetsParty-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/styles.css?v=20261001-6">
+  <link rel="stylesheet" href="assets/presets.css?v=20261001-34">
+  <link rel="stylesheet" href="assets/auth-header.css?v=20261001-7">
+  <script src="assets/vendor/lucide.min.js" defer></script>
+  <script src="assets/vendor/supabase.js" defer></script>
+  <script src="assets/supabase-config.js?v=20261001-4" defer></script>
+  <script src="assets/preset-store.js?v=20261001-7" defer></script>
+  <script src="assets/auth-header.js?v=20261001-6" defer></script>
+  <script src="assets/main.js?v=20261001-4" defer></script>
+  <script src="assets/presets.js?v=20261001-26" defer></script>
+</head>
+<body data-page="presets">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <header class="site-header" data-header>
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="PA Keystroke 首页">
+        <img class="brand-icon" src="assets/brand/icon.png" alt="" width="42" height="42">
+        <span class="brand-text">PA Keystroke</span>
+      </a>
+      <nav class="site-nav" id="site-nav" aria-label="主导航" data-nav>
+        <a href="index.html">首页</a>
+        <a href="features.html">功能</a>
+        <a href="presets.html" aria-current="page">预设</a>
+        <a href="demo.html">演示</a>
+        <a href="download.html">下载</a>
+        <a href="wiki.html">Wiki</a>
+      </nav>
+      <div class="header-actions">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+          <i data-lucide="menu" aria-hidden="true"></i>
+          <span class="sr-only">打开导航</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="preset-hero">
+      <div class="container preset-hero-inner">
+        <div class="preset-hero-copy">
+          <p class="section-kicker">PRESETS</p>
+          <h1>预设市场</h1>
+          <p>浏览 PA Keystroke 的官方预设与社区投稿预设，选择最适合的。</p>
+        </div>
+        <div class="preset-hero-actions">
+          <button class="button button-primary" type="button" data-open-submit>
+            <i data-lucide="upload" aria-hidden="true"></i>
+            发布预设
+          </button>
+        </div>
+      </div>
+      <div class="container">
+        <form class="preset-filters" id="preset-filters" data-preset-filters>
+          <label class="preset-field preset-search-field">
+            <span class="sr-only">关键词</span>
+            <span class="preset-input-wrap">
+              <i data-lucide="search" aria-hidden="true"></i>
+              <input type="search" name="keyword" placeholder="搜索预设、游戏或作者">
+            </span>
+          </label>
+          <div class="preset-field preset-select" data-preset-select="source" data-label="来源">
+            <span class="sr-only">来源</span>
+            <input type="hidden" name="source" value="">
+            <button class="preset-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" data-preset-select-trigger>
+              <span class="preset-select-prefix" aria-hidden="true">来源：</span>
+              <span class="preset-select-value" data-preset-select-value>不限</span>
+              <i data-lucide="chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="preset-select-menu" role="listbox" hidden data-preset-select-menu>
+              <button class="preset-select-option is-selected" type="button" role="option" aria-selected="true" data-preset-select-option data-value="">不限</button>
+              <button class="preset-select-option" type="button" role="option" aria-selected="false" data-preset-select-option data-value="official">官方</button>
+              <button class="preset-select-option" type="button" role="option" aria-selected="false" data-preset-select-option data-value="community">社区</button>
+            </div>
+          </div>
+          <div class="preset-field preset-select" data-preset-select="scope" data-label="输入类型">
+            <span class="sr-only">输入类型</span>
+            <input type="hidden" name="scope" value="">
+            <button class="preset-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" data-preset-select-trigger>
+              <span class="preset-select-prefix" aria-hidden="true">类型：</span>
+              <span class="preset-select-value" data-preset-select-value>不限</span>
+              <i data-lucide="chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="preset-select-menu" role="listbox" hidden data-preset-select-menu>
+              <button class="preset-select-option is-selected" type="button" role="option" aria-selected="true" data-preset-select-option data-value="">不限</button>
+              <button class="preset-select-option" type="button" role="option" aria-selected="false" data-preset-select-option data-value="keyboard">键鼠</button>
+              <button class="preset-select-option" type="button" role="option" aria-selected="false" data-preset-select-option data-value="gamepad">手柄</button>
+            </div>
+          </div>
+          <div class="preset-field preset-select" data-preset-select="version" data-label="PA Keystroke 版本">
+            <span class="sr-only">PA Keystroke 版本</span>
+            <input type="hidden" name="version" value="" data-preset-version>
+            <button class="preset-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" data-preset-select-trigger>
+              <span class="preset-select-prefix" aria-hidden="true">版本：</span>
+              <span class="preset-select-value" data-preset-select-value>不限</span>
+              <i data-lucide="chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="preset-select-menu" role="listbox" hidden data-preset-select-menu>
+              <button class="preset-select-option is-selected" type="button" role="option" aria-selected="true" data-preset-select-option data-value="">不限</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="preset-library">
+      <div class="container">
+        <div class="preset-config-warning" data-config-warning hidden>
+          <i data-lucide="settings-2" aria-hidden="true"></i>
+          <p>预设服务尚未配置。完成 Supabase 配置后会在这里显示官方和社区预设。</p>
+        </div>
+
+        <div class="preset-feedback" data-preset-feedback role="status"></div>
+        <div class="preset-grid" data-preset-grid></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-main">
+      <a class="footer-brand" href="index.html">
+        <img src="assets/brand/icon.png" alt="" width="28" height="28">
+        <span>PA Keystroke</span>
+      </a>
+      <nav class="footer-nav" aria-label="页脚导航">
+        <a href="features.html">功能</a>
+        <a href="presets.html">预设</a>
+        <a href="demo.html">演示</a>
+        <a href="download.html">下载</a>
+        <a href="wiki.html">Wiki</a>
+      </nav>
+      <div class="footer-contact" aria-label="联系与项目">
+        <a href="https://github.com/PA-Keystroke/PA-Keystroke-Releases" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=&amp;group_code=85121371" target="_blank" rel="noreferrer">QQ 群</a>
+        <a href="https://github.com/PA-Keystroke/PA-Keystroke-Releases/issues" target="_blank" rel="noreferrer">GitHub Issues</a>
+      </div>
+    </div>
+    <div class="container footer-meta">
+      <span>© <span data-current-year>2026</span> PA Keystroke</span>
+    </div>
+  </footer>
+
+  <dialog class="preset-dialog" data-detail-dialog>
+    <button class="preset-dialog-close" type="button" aria-label="关闭" data-close-dialog>
+      <i data-lucide="x" aria-hidden="true"></i>
+    </button>
+    <div class="preset-dialog-frame">
+      <div class="preset-dialog-body" data-detail-body></div>
+    </div>
+  </dialog>
+
+  <dialog class="preset-dialog" data-submit-dialog>
+    <button class="preset-dialog-close" type="button" aria-label="关闭" data-close-dialog>
+      <i data-lucide="x" aria-hidden="true"></i>
+    </button>
+    <div class="preset-dialog-frame preset-form-frame">
+      <div class="preset-dialog-head">
+        <div>
+          <p class="section-kicker">COMMUNITY</p>
+          <h2>发布预设</h2>
+        </div>
+      </div>
+      <form class="preset-form" data-submit-form>
+        <div class="preset-form-grid">
+          <label class="preset-field">
+            <span>预设包标题 <strong>必填</strong></span>
+            <input type="text" name="title" maxlength="120" required>
+          </label>
+          <label class="preset-field">
+            <span>版本号 <strong>必填</strong></span>
+            <input type="text" name="version" maxlength="40" placeholder="例如：1.0.0" required>
+          </label>
+          <div class="preset-field preset-field-wide preset-multi-select" data-preset-multi-select="version-support">
+            <span>PA Keystroke 支持版本</span>
+            <input type="hidden" name="paVersionRange" value="" data-preset-multi-value>
+            <div class="preset-multi-control">
+              <button class="preset-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" data-preset-multi-trigger>
+                <span class="preset-select-prefix" aria-hidden="true">支持版本：</span>
+                <span class="preset-select-value" data-preset-multi-label>不限</span>
+                <i data-lucide="chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="preset-select-menu preset-multi-menu" role="listbox" aria-multiselectable="true" hidden data-preset-multi-menu>
+                <div class="preset-select-loading" aria-hidden="true">
+                  <span class="preset-skeleton-line"></span>
+                  <span class="preset-skeleton-line"></span>
+                  <span class="preset-skeleton-line"></span>
+                </div>
+              </div>
+            </div>
+            <small class="preset-field-hint">不选表示支持所有已发布版本</small>
+          </div>
+        </div>
+
+        <label class="preset-field">
+          <span>介绍</span>
+          <textarea name="description" rows="5" maxlength="2000" placeholder="介绍预设适合的玩法、按键布局或使用方式"></textarea>
+        </label>
+
+        <label class="preset-file-field">
+          <input type="file" name="presetFile" accept=".json,application/json" required>
+          <span class="preset-file-icon"><i data-lucide="file-json" aria-hidden="true"></i></span>
+          <span>
+            <strong>选择预设 JSON</strong>
+            <small>最多 5 MB，可包含多个键盘或手柄预设</small>
+          </span>
+        </label>
+        <div class="preset-json-summary" data-json-summary hidden></div>
+
+        <label class="preset-file-field">
+          <input type="file" name="screenshots" accept=".png,.jpg,.jpeg,.webp,.gif,.avif,.bmp,image/png,image/jpeg,image/webp,image/gif,image/avif,image/bmp" multiple>
+          <span class="preset-file-icon"><i data-lucide="images" aria-hidden="true"></i></span>
+          <span>
+            <strong>添加截图</strong>
+            <small>最多 5 张，每张不超过 5 MB</small>
+          </span>
+        </label>
+        <p class="preset-file-list" data-screenshot-list></p>
+
+        <p class="preset-form-error" data-submit-error role="alert"></p>
+        <div class="preset-form-actions">
+          <button class="button button-secondary" type="button" data-close-dialog>取消</button>
+          <button class="button button-primary" type="submit" data-submit-confirm>
+            <i data-lucide="send" aria-hidden="true"></i>
+            提交审核
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <dialog class="preset-dialog preset-auth-dialog" data-auth-dialog>
+    <button class="preset-dialog-close" type="button" aria-label="关闭" data-close-dialog>
+      <i data-lucide="x" aria-hidden="true"></i>
+    </button>
+    <div class="preset-dialog-frame">
+      <div class="preset-auth-copy">
+        <img src="assets/icons/github-mark.svg" alt="" width="34" height="34">
+        <h2>使用 GitHub 继续</h2>
+        <p>发布和查看社区预设投稿需要通过 GitHub 登录。</p>
+      </div>
+      <div class="preset-form-actions">
+        <button class="button button-secondary" type="button" data-close-dialog>取消</button>
+        <button class="button button-primary" type="button" data-auth-dialog-login>
+          <img src="assets/icons/github-mark.svg" alt="" width="18" height="18">
+          使用 GitHub 登录
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="preset-dialog" data-mine-dialog>
+    <button class="preset-dialog-close" type="button" aria-label="关闭" data-close-dialog>
+      <i data-lucide="x" aria-hidden="true"></i>
+    </button>
+    <div class="preset-dialog-frame preset-form-frame">
+      <div class="preset-dialog-head">
+        <div>
+          <p class="section-kicker">MY SUBMISSIONS</p>
+          <h2>我的投稿</h2>
+        </div>
+      </div>
+      <div class="preset-submission-list" data-my-submissions></div>
+    </div>
+  </dialog>
+
+  <dialog class="preset-dialog preset-confirm-dialog" data-hide-dialog>
+    <button class="preset-dialog-close" type="button" aria-label="关闭" data-close-dialog>
+      <i data-lucide="x" aria-hidden="true"></i>
+    </button>
+    <div class="preset-dialog-frame">
+      <div class="preset-dialog-head">
+        <div>
+          <p class="section-kicker">DELETE PRESET</p>
+          <h2>删除预设</h2>
+        </div>
+      </div>
+      <p class="preset-dialog-copy">删除后将从预设市场移除，此操作无法撤销。</p>
+      <p class="preset-dialog-highlight" data-hide-title></p>
+      <div class="preset-form-actions">
+        <button class="button button-secondary" type="button" data-close-dialog>取消</button>
+        <button class="button button-primary" type="button" data-confirm-hide>确认删除</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" role="status" aria-live="polite" aria-atomic="true" data-toast></div>
+</body>
+</html>
