@@ -134,8 +134,8 @@
       </button>
       <div class="header-account-menu" role="menu" data-header-account-menu hidden>
         <button type="button" role="menuitem" data-header-my-submissions>
-          <i data-lucide="folder-clock" aria-hidden="true"></i>
-          我的投稿
+          <i data-lucide="user-round" aria-hidden="true"></i>
+          个人中心
           <span class="header-account-badge" data-header-my-submissions-count hidden>0</span>
         </button>
         <button class="is-danger" type="button" role="menuitem" data-header-sign-out>
@@ -190,16 +190,16 @@
   function openMySubmissions() {
     closeMenu();
     clearReviewNotifications();
-    if (window.location.pathname.endsWith("/presets.html")) {
-      window.dispatchEvent(new CustomEvent("pa-open-my-submissions"));
+    if (window.location.pathname.endsWith("/account.html")) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
-    window.location.href = "presets.html?open=mine";
+    window.location.href = "account.html";
   }
 
   async function loadReviewNotifications() {
-    if (!user || reviewNotificationsCleared) {
+    if (!user || reviewNotificationsCleared || window.location.pathname.endsWith("/account.html")) {
       return;
     }
 

@@ -526,6 +526,282 @@
     return result.data || [];
   }
 
+  async function fetchOwnPackagePage(supabase, userId, options) {
+    const {
+      status = "",
+      query = "",
+      page = 1,
+      pageSize = 10
+    } = options || {};
+
+    const safePage = Math.max(1, Number(page) || 1);
+    const safePageSize = Math.min(50, Math.max(1, Number(pageSize) || 10));
+    const from = (safePage - 1) * safePageSize;
+    const to = from + safePageSize - 1;
+
+    let request = supabase
+      .from("preset_packages")
+      .select(`
+        id,
+        source,
+        title,
+        author_name,
+        game,
+        version,
+        pa_version_range,
+        scope_keyboard,
+        scope_gamepad,
+        description,
+        status,
+        rejection_reason,
+        json_path,
+        json_size,
+        screenshot_paths,
+        preset_count,
+        is_hidden,
+        created_at,
+        updated_at,
+        reviewed_at
+      `, { count: "exact" })
+      .eq("owner_id", userId)
+      .eq("is_hidden", false)
+      .order("updated_at", { ascending: false })
+      .range(from, to);
+
+    if (status) {
+      request = request.eq("status", status);
+    }
+
+    const keyword = String(query || "").trim().replace(/[%_]/g, "");
+    if (keyword) {
+      request = request.ilike("title", `%${keyword}%`);
+    }
+
+    const result = await request;
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+
+    return {
+      items: result.data || [],
+      total: Number(result.count) || 0
+    };
+  }
+
+  async function fetchOwnPackageDetail(supabase, userId, packageId) {
+    const result = await supabase
+      .from("preset_packages")
+      .select(`
+        id,
+        owner_id,
+        source,
+        title,
+        author_name,
+        game,
+        version,
+        pa_version_range,
+        scope_keyboard,
+        scope_gamepad,
+        description,
+        status,
+        rejection_reason,
+        json_path,
+        json_size,
+        screenshot_paths,
+        preset_count,
+        is_hidden,
+        created_at,
+        reviewed_at,
+        preset_items(id, scope, name, display_name, sort_order)
+      `)
+      .eq("id", packageId)
+      .eq("owner_id", userId)
+      .maybeSingle();
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+
+    return result.data || null;
+  }
+
+  async function fetchOwnSubmissionStats(supabase, userId) {
+    const buildQuery = (status) => {
+      let request = supabase
+        .from("preset_packages")
+        .select("id", { count: "exact", head: true })
+        .eq("owner_id", userId)
+        .eq("is_hidden", false);
+
+      if (status) {
+        request = request.eq("status", status);
+      }
+
+      return request;
+    };
+
+    const [all, pending, approved, rejected] = await Promise.all([
+      buildQuery(""),
+      buildQuery("pending"),
+      buildQuery("approved"),
+      buildQuery("rejected")
+    ]);
+
+    const results = [all, pending, approved, rejected];
+    const failed = results.find((result) => result.error);
+    if (failed) {
+      throw new Error(errorMessage(failed.error));
+    }
+
+    return {
+      all: Number(all.count) || 0,
+      pending: Number(pending.count) || 0,
+      approved: Number(approved.count) || 0,
+      rejected: Number(rejected.count) || 0
+    };
+  }
+
+  async function fetchUnseenReviewResults(supabase, userId, seenAt) {
+    let request = supabase
+      .from("preset_packages")
+      .select("id, title, status, reviewed_at")
+      .eq("owner_id", userId)
+      .eq("is_hidden", false)
+      .in("status", ["approved", "rejected"])
+      .order("reviewed_at", { ascending: false })
+      .limit(200);
+
+    if (seenAt) {
+      request = request.gt("reviewed_at", seenAt);
+    }
+
+    const result = await request;
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+
+    return result.data || [];
+  }
+
+  async function resubmitOwnPresetPackage(supabase, options) {
+    const {
+      packageId,
+      fields,
+      presetContent,
+      parsed,
+      current,
+      keepScreenshotPaths,
+      screenshots
+    } = options;
+
+    if (!packageId) {
+      throw new Error("预设记录不存在。");
+    }
+    if (!presetContent) {
+      throw new Error("预设 JSON 内容不能为空。");
+    }
+    if (!parsed || !parsed.presetCount) {
+      throw new Error("预设文件中没有可用的预设。");
+    }
+
+    validatePackageFields(fields);
+
+    const newScreenshots = validateScreenshots(screenshots);
+    const keptScreenshots = [...new Set((keepScreenshotPaths || []).filter(Boolean))];
+    if (keptScreenshots.length + newScreenshots.length > MAX_SCREENSHOTS) {
+      throw new Error(`每个预设最多保留 ${MAX_SCREENSHOTS} 张截图。`);
+    }
+
+    const blob = new Blob([presetContent], { type: "application/json" });
+    if (blob.size > MAX_JSON_SIZE) {
+      throw new Error("预设 JSON 文件不能超过 5 MB。");
+    }
+
+    const uploadedFiles = [];
+    const removedFiles = [];
+    let jsonPath = "";
+    let jsonSize = blob.size;
+
+    try {
+      jsonPath = `${packageId}/preset-${Date.now()}.json`;
+      const jsonUpload = await supabase.storage
+        .from(PRESET_FILE_BUCKET)
+        .upload(jsonPath, blob, {
+          cacheControl: "3600",
+          contentType: "application/json",
+          upsert: false
+        });
+
+      if (jsonUpload.error) {
+        throw new Error(errorMessage(jsonUpload.error));
+      }
+      uploadedFiles.push({ bucket: PRESET_FILE_BUCKET, path: jsonPath });
+
+      if (current?.json_path && current.json_path !== jsonPath) {
+        removedFiles.push({ bucket: PRESET_FILE_BUCKET, path: current.json_path });
+      }
+
+      const addedScreenshotPaths = [];
+      for (let index = 0; index < newScreenshots.length; index += 1) {
+        const file = newScreenshots[index];
+        const path = `${packageId}/screenshot-${Date.now()}-${index + 1}${safeExtension(file, ".png")}`;
+        const uploadResult = await supabase.storage
+          .from(SCREENSHOT_BUCKET)
+          .upload(path, file, {
+            cacheControl: "3600",
+            contentType: imageContentType(file),
+            upsert: false
+          });
+
+        if (uploadResult.error) {
+          throw new Error(errorMessage(uploadResult.error));
+        }
+
+        uploadedFiles.push({ bucket: SCREENSHOT_BUCKET, path });
+        addedScreenshotPaths.push(path);
+      }
+
+      const screenshotPaths = [...keptScreenshots, ...addedScreenshotPaths];
+      const keptSet = new Set(keptScreenshots);
+      (current?.screenshot_paths || []).forEach((path) => {
+        if (path && !keptSet.has(path)) {
+          removedFiles.push({ bucket: SCREENSHOT_BUCKET, path });
+        }
+      });
+
+      const rpcResult = await supabase.rpc("resubmit_own_preset_package", {
+        p_package_id: packageId,
+        p_title: normalizeText(fields.title),
+        p_game: normalizeText(fields.game),
+        p_version: normalizeText(fields.version),
+        p_description: normalizeText(fields.description),
+        p_json_path: jsonPath,
+        p_json_size: jsonSize,
+        p_screenshot_paths: screenshotPaths,
+        p_pa_version_range: parsed.paVersionRange,
+        p_scope_keyboard: parsed.scopes.includes("keyboard"),
+        p_scope_gamepad: parsed.scopes.includes("gamepad"),
+        p_preset_count: parsed.presetCount,
+        p_items: parsed.items.map((item) => ({
+          scope: item.scope,
+          name: item.name,
+          display_name: item.displayName,
+          sort_order: item.sortOrder
+        }))
+      });
+
+      if (rpcResult.error) {
+        throw new Error(errorMessage(rpcResult.error));
+      }
+
+      await removeFiles(supabase, removedFiles, false);
+      return { packageId, jsonPath };
+    } catch (error) {
+      await removeFiles(supabase, uploadedFiles, false);
+      throw error;
+    }
+  }
+
   async function fetchReviewPackages(supabase, status) {
     let query = supabase
       .from("preset_packages")
@@ -881,6 +1157,11 @@
     deletePresetPackage,
     fetchApprovedPackages,
     fetchOwnPackages,
+    fetchOwnPackagePage,
+    fetchOwnPackageDetail,
+    fetchOwnSubmissionStats,
+    fetchUnseenReviewResults,
+    resubmitOwnPresetPackage,
     fetchReviewPackages,
     fetchAllPackages,
     updatePresetPackage,

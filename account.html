@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex,nofollow">
+  <title>个人中心 - PA Keystroke</title>
+  <link rel="icon" type="image/png" href="assets/brand/icon.png">
+  <link rel="preload" href="assets/fonts/LetsParty-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/styles.css?v=20261001-6">
+  <link rel="stylesheet" href="assets/presets.css?v=20261002-1">
+  <link rel="stylesheet" href="assets/account.css?v=20261002-2">
+  <link rel="stylesheet" href="assets/auth-header.css?v=20261002-1">
+  <script src="assets/vendor/lucide.min.js" defer></script>
+  <script src="assets/vendor/supabase.js" defer></script>
+  <script src="assets/supabase-config.js?v=20261001-4" defer></script>
+  <script src="assets/preset-store.js?v=20261002-2" defer></script>
+  <script src="assets/auth-header.js?v=20261002-2" defer></script>
+  <script src="assets/main.js?v=20261001-4" defer></script>
+  <script src="assets/account.js?v=20261002-2" defer></script>
+</head>
+<body data-page="account">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <header class="site-header" data-header>
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="PA Keystroke 首页">
+        <img class="brand-icon" src="assets/brand/icon.png" alt="" width="42" height="42">
+        <span class="brand-text">PA Keystroke</span>
+      </a>
+      <nav class="site-nav" id="site-nav" aria-label="主导航" data-nav>
+        <a href="index.html">首页</a>
+        <a href="features.html">功能</a>
+        <a href="presets.html">预设</a>
+        <a href="demo.html">演示</a>
+        <a href="download.html">下载</a>
+        <a href="wiki.html">Wiki</a>
+      </nav>
+      <div class="header-actions">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+          <i data-lucide="menu" aria-hidden="true"></i>
+          <span class="sr-only">打开导航</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="account-hero">
+      <div class="container account-hero-inner">
+        <div>
+          <p class="section-kicker">ACCOUNT</p>
+          <h1>个人中心</h1>
+          <p>管理你的投稿，查看审核结果和预设详情。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="account-center">
+      <div class="container">
+        <div class="account-gate" data-account-gate hidden>
+          <i data-lucide="log-in" aria-hidden="true"></i>
+          <h2>登录后查看个人中心</h2>
+          <p>使用 GitHub 登录后，可以在这里管理自己的投稿。</p>
+          <button class="button button-primary" type="button" data-account-login>
+            <img src="assets/icons/github-mark.svg" alt="" width="18" height="18">
+            使用 GitHub 登录
+          </button>
+        </div>
+
+        <div class="account-content" data-account-content hidden>
+          <div class="account-card">
+            <div class="account-card-profile">
+              <span class="account-avatar" data-account-avatar></span>
+              <div>
+                <p class="account-card-label">GitHub 账号</p>
+                <h2 data-account-name>@user</h2>
+                <p data-account-email></p>
+              </div>
+            </div>
+            <div class="account-card-actions">
+              <a class="button button-secondary" href="presets.html">
+                <i data-lucide="arrow-left" aria-hidden="true"></i>
+                返回预设市场
+              </a>
+              <button class="button button-secondary is-danger" type="button" data-account-logout>
+                <i data-lucide="log-out" aria-hidden="true"></i>
+                退出登录
+              </button>
+            </div>
+          </div>
+
+          <div class="account-stats">
+            <div class="account-stat"><span>全部投稿</span><strong data-account-stat="all">0</strong></div>
+            <div class="account-stat"><span>待审核</span><strong data-account-stat="pending">0</strong></div>
+            <div class="account-stat"><span>已通过</span><strong data-account-stat="approved">0</strong></div>
+            <div class="account-stat"><span>已拒绝</span><strong data-account-stat="rejected">0</strong></div>
+          </div>
+
+          <div class="account-panel">
+            <div class="account-panel-head">
+              <div class="account-tabs" role="tablist" aria-label="投稿状态">
+                <button class="account-tab is-active" type="button" role="tab" aria-selected="true" data-account-tab="">
+                  全部
+                  <span data-account-tab-count="all">0</span>
+                </button>
+                <button class="account-tab" type="button" role="tab" aria-selected="false" data-account-tab="pending">
+                  待审核
+                  <span data-account-tab-count="pending">0</span>
+                </button>
+                <button class="account-tab" type="button" role="tab" aria-selected="false" data-account-tab="approved">
+                  已通过
+                  <span data-account-tab-count="approved">0</span>
+                </button>
+                <button class="account-tab" type="button" role="tab" aria-selected="false" data-account-tab="rejected">
+                  已拒绝
+                  <span data-account-tab-count="rejected">0</span>
+                </button>
+              </div>
+              <label class="account-search">
+                <i data-lucide="search" aria-hidden="true"></i>
+                <input type="search" placeholder="搜索投稿标题" data-account-search>
+              </label>
+            </div>
+
+            <div class="account-feedback" data-account-feedback role="status"></div>
+
+            <div class="account-layout">
+              <div class="account-list-col">
+                <div class="account-list" data-account-list></div>
+                <div class="account-pagination" data-account-pagination></div>
+              </div>
+              <aside class="account-detail-col" data-account-detail>
+                <div class="account-detail-empty">
+                  <i data-lucide="mouse-pointer-click" aria-hidden="true"></i>
+                  <p>从左边选一条投稿，这里会显示它的完整详情。</p>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-main">
+      <a class="footer-brand" href="index.html">
+        <img src="assets/brand/icon.png" alt="" width="28" height="28">
+        <span>PA Keystroke</span>
+      </a>
+      <nav class="footer-nav" aria-label="页脚导航">
+        <a href="features.html">功能</a>
+        <a href="presets.html">预设</a>
+        <a href="demo.html">演示</a>
+        <a href="download.html">下载</a>
+        <a href="wiki.html">Wiki</a>
+      </nav>
+      <div class="footer-contact" aria-label="联系与项目">
+        <a href="https://github.com/PA-Keystroke/PA-Keystroke-Releases" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&amp;k=&amp;group_code=85121371" target="_blank" rel="noreferrer">QQ 群</a>
+        <a href="https://github.com/PA-Keystroke/PA-Keystroke-Releases/issues" target="_blank" rel="noreferrer">GitHub Issues</a>
+      </div>
+    </div>
+    <div class="container footer-meta">
+      <span>© <span data-current-year>2026</span> PA Keystroke</span>
+    </div>
+  </footer>
+
+  <dialog class="preset-dialog account-resubmit-dialog" data-account-resubmit-dialog>
+    <button class="preset-dialog-close" type="button" aria-label="关闭" data-close-dialog>
+      <i data-lucide="x" aria-hidden="true"></i>
+    </button>
+    <div class="preset-dialog-frame preset-form-frame">
+      <div class="preset-dialog-head">
+        <div>
+          <p class="section-kicker">RESUBMIT</p>
+          <h2>修改并重新提交</h2>
+        </div>
+      </div>
+      <form class="preset-form" data-account-resubmit-form>
+        <div class="preset-form-grid">
+          <label class="preset-field">
+            <span>预设包标题 <strong>必填</strong></span>
+            <input type="text" name="title" maxlength="120" required>
+          </label>
+          <label class="preset-field">
+            <span>游戏</span>
+            <input type="text" name="game" maxlength="120">
+          </label>
+          <label class="preset-field">
+            <span>版本号 <strong>必填</strong></span>
+            <input type="text" name="version" maxlength="40" required>
+          </label>
+          <div class="preset-field">
+            <span>PA Keystroke 支持版本</span>
+            <output class="preset-version-support-value" data-account-resubmit-version></output>
+          </div>
+          <div class="preset-field preset-field-wide">
+            <span>适用范围</span>
+            <output class="preset-version-support-value" data-account-resubmit-scope></output>
+          </div>
+          <label class="preset-field preset-field-wide">
+            <span>介绍</span>
+            <textarea name="description" rows="4" maxlength="2000"></textarea>
+          </label>
+          <label class="preset-field preset-field-wide">
+            <span>预设 JSON 内容 <strong>必填</strong></span>
+            <textarea class="preset-edit-json" name="presetJson" rows="14" spellcheck="false" required data-account-resubmit-json></textarea>
+            <small class="preset-field-hint">可以直接修改 JSON；保存时会校验并同步预设条目、支持版本和数量。</small>
+          </label>
+        </div>
+
+        <div class="preset-edit-json-summary" data-account-resubmit-summary></div>
+
+        <fieldset class="preset-edit-screenshots">
+          <legend>截图（最多保留 5 张）</legend>
+          <div class="preset-edit-screenshot-grid" data-account-resubmit-screenshots></div>
+          <label class="preset-file-field">
+            <input type="file" accept=".png,.jpg,.jpeg,.webp,.gif,.avif,.bmp,image/png,image/jpeg,image/webp,image/gif,image/avif,image/bmp" multiple data-account-resubmit-files>
+            <span class="preset-file-icon"><i data-lucide="images" aria-hidden="true"></i></span>
+            <span>
+              <strong>添加新截图</strong>
+              <small>新截图会追加到保留的截图后面，每张不超过 5 MB</small>
+            </span>
+          </label>
+        </fieldset>
+
+        <p class="preset-form-error" data-account-resubmit-error role="alert"></p>
+        <div class="preset-form-actions">
+          <button class="button button-secondary" type="button" data-close-dialog>取消</button>
+          <button class="button button-primary" type="submit" data-account-resubmit-submit>
+            <i data-lucide="send" aria-hidden="true"></i>
+            重新提交审核
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <dialog class="preset-dialog preset-confirm-dialog" data-account-delete-dialog>
+    <button class="preset-dialog-close" type="button" aria-label="关闭" data-close-dialog>
+      <i data-lucide="x" aria-hidden="true"></i>
+    </button>
+    <div class="preset-dialog-frame">
+      <div class="preset-dialog-head">
+        <div>
+          <p class="section-kicker">DELETE PRESET</p>
+          <h2>删除投稿</h2>
+        </div>
+      </div>
+      <p class="preset-dialog-copy">删除后将从预设市场移除，此操作无法撤销。</p>
+      <p class="preset-dialog-highlight" data-account-delete-title></p>
+      <div class="preset-form-actions">
+        <button class="button button-secondary" type="button" data-close-dialog>取消</button>
+        <button class="button button-primary" type="button" data-account-delete-confirm>确认删除</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" role="status" aria-live="polite" aria-atomic="true" data-toast></div>
+</body>
+</html>
