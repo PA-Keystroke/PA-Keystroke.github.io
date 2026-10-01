@@ -92,6 +92,7 @@
             <a href="#add-gamepad">手柄控件</a>
             <a href="#edit-controls">编辑控件</a>
             <a href="#presets">管理预设</a>
+            <a href="#global-style">全局样式</a>
             <a href="#overlay">覆盖层设置</a>
             <a href="#obs">在 OBS 中使用</a>
             <a href="#updates">自动更新</a>
@@ -111,7 +112,7 @@
             <li><span>1</span><div><strong>下载程序</strong><p>从官网或最新 Release 页面下载 <code>PA-Keystroke.exe</code>。</p></div></li>
             <li><span>2</span><div><strong>运行程序</strong><p>双击运行，并按 Windows 提示允许管理员权限。程序会打开设置窗口和透明覆盖层。</p></div></li>
             <li><span>3</span><div><strong>选择输入模式</strong><p>根据场景选择键盘、手柄或自动识别模式。</p></div></li>
-            <li><span>4</span><div><strong>添加并调整控件</strong><p>在预览区移动控件、调整尺寸，再根据直播画面调整覆盖层位置。</p></div></li>
+            <li><span>4</span><div><strong>调整布局与样式</strong><p>在预览区调整控件，并按需设置全局样式、整体缩放和覆盖层不透明度。</p></div></li>
             <li><span>5</span><div><strong>保存并应用</strong><p>完成修改后必须点击“保存并应用”，覆盖层才会使用新布局。</p></div></li>
             <li><span>6</span><div><strong>在 OBS 中添加窗口捕获</strong><p>选择 <code>PA Keystroke Overlay</code>，采集方式选择 <code>Windows 10（1903 或更新版本）</code>。</p></div></li>
           </ol>
@@ -156,8 +157,11 @@
               <i data-lucide="repeat-2" aria-hidden="true"></i>
               <h3>自动识别</h3>
               <p>根据最近操作的设备，自动切换键盘或手柄布局。</p>
+              <p>根据最近操作的设备，自动切换键盘或手柄布局。</p>
             </article>
           </div>
+          <p>鼠标操作不会触发自动识别模式切换，只有键盘按键和手柄操作会参与判断。</p>
+          <p>自动识别模式下，预览区和预设栏会锁定为只读，避免误改布局。</p>
           <p>鼠标操作不会触发自动识别模式切换，只有键盘按键和手柄操作会参与判断。</p>
           <p>自动识别模式下，预览区和预设栏会锁定为只读，避免误改布局。</p>
           <figure class="wiki-media wiki-media-small">
@@ -242,6 +246,7 @@
 
           <h3>添加独立手柄控件</h3>
           <p>在手柄模式的“＋ 添加”菜单中，可以分别选择“手柄按键”“摇杆”“扳机”和“文本”。添加后可以单独调整位置、尺寸和显示名称。</p>
+          <p>在手柄模式的“＋ 添加”菜单中，可以分别选择“手柄按键”“摇杆”“扳机”和“文本”。添加后可以单独调整位置、尺寸和显示名称。</p>
           <figure class="wiki-media">
             <button class="image-zoom" type="button" data-zoom="assets/screenshots/03-overlay-gamepad.png" aria-label="放大查看手柄覆盖层">
               <img src="assets/screenshots/03-overlay-gamepad.png" alt="PA Keystroke 手柄覆盖层" width="735" height="560" loading="lazy">
@@ -254,9 +259,17 @@
           <p class="section-kicker">10</p>
           <h2>编辑已有控件</h2>
           <div class="shortcut-table" role="table" aria-label="预览区操作">
-            <div role="row"><strong role="cell">左键拖动</strong><span role="cell">移动控件</span></div>
+            <div role="row"><strong role="cell">左键拖动</strong><span role="cell">自由移动控件，不触发对齐吸附</span></div>
+            <div role="row"><strong role="cell">Shift + 左键拖动</strong><span role="cell">拖动控件并触发对齐吸附</span></div>
+            <div role="row"><strong role="cell">Shift + 左键拖动空白区域</strong><span role="cell">矩形框选多个控件</span></div>
+            <div role="row"><strong role="cell">拖动已选控件</strong><span role="cell">整体移动全部选中项</span></div>
             <div role="row"><strong role="cell">拖动边缘</strong><span role="cell">调整尺寸</span></div>
-            <div role="row"><strong role="cell">右键</strong><span role="cell">编辑、复制或删除</span></div>
+            <div role="row"><strong role="cell">方向键</strong><span role="cell">以 1px 为步长微调选中控件</span></div>
+            <div role="row"><strong role="cell">Shift + 方向键</strong><span role="cell">以 10px 为步长微调选中控件</span></div>
+            <div role="row"><strong role="cell">Ctrl+C / Ctrl+X / Ctrl+V</strong><span role="cell">复制、剪切、粘贴选中控件</span></div>
+            <div role="row"><strong role="cell">右键</strong><span role="cell">复制、剪切、粘贴、编辑、创建副本或删除</span></div>
+            <div role="row"><strong role="cell">右键空白位置后粘贴</strong><span role="cell">将粘贴内容左上角放到点击位置</span></div>
+            <div role="row"><strong role="cell">左键单击空白位置</strong><span role="cell">取消选择</span></div>
             <div role="row"><strong role="cell">中键拖动</strong><span role="cell">平移预览区域</span></div>
             <div role="row"><strong role="cell">左键拖动空白区域</strong><span role="cell">平移预览区域</span></div>
           </div>
@@ -288,12 +301,14 @@
             <li>在预设选择器中点击“导出预设”。</li>
             <li>勾选需要导出的键盘预设和手柄预设，可以同时选择多套。</li>
             <li>点击“导出”，选择保存位置。文件格式为 <code>.json</code>。</li>
+            <li>导出文件会写入当前软件版本，作为该预设支持的最低兼容版本。</li>
           </ol>
 
           <h3>导入预设</h3>
           <ol class="plain-steps">
             <li>在预设选择器中点击“导入预设”。</li>
             <li>选择一个或多个 <code>.json</code> 预设文件。</li>
+            <li>如果预设要求的最低兼容版本高于当前软件版本，会弹出兼容提示，可选择取消或仍然导入。</li>
             <li>如果名称冲突，可分别为每项选择“覆盖”“跳过”或“副本”。</li>
             <li>点击“继续导入”完成处理。</li>
           </ol>
@@ -303,11 +318,23 @@
           <p>使用全键盘映射预设时，不建议把“整体缩放”调整得过低。</p>
         </section>
 
-        <section class="wiki-section" id="overlay">
+        <section class="wiki-section" id="global-style">
           <p class="section-kicker">12</p>
+          <h2>全局样式</h2>
+          <p>“全局样式”用于统一设置普通按键、鼠标、指示器和手柄控件的外观。展开后可以调整以下颜色：</p>
+          <ul class="plain-list">
+            <li><strong>背景颜色</strong>：控制控件背景显示，可通过左侧勾选框开启或关闭。</li>
+            <li><strong>外框颜色</strong>：控制控件外框显示，可通过左侧勾选框开启或关闭。</li>
+            <li><strong>触发颜色</strong>：控制按下或触发时的高亮颜色。</li>
+            <li><strong>文字颜色</strong>：控制按键文字的显示颜色，文本控件不受影响。</li>
+          </ul>
+          <p>颜色支持 Alpha，可直接输入 <code>#RRGGBBAA</code>，也可以打开选色器后通过透明度滑条调整。</p>
+          <p>外框颜色关闭时，普通按键不显示外框；鼠标、指示器和手柄控件会恢复各自默认外框，避免控件不可见。</p>
+        </section>
+
+        <section class="wiki-section" id="overlay">
+          <p class="section-kicker">13</p>
           <h2>覆盖层设置</h2>
-          <h3>按键背景</h3>
-          <p>勾选“显示按键背景”后，可以修改背景颜色和背景不透明度。</p>
 
           <h3>整体不透明度</h3>
           <p>“覆盖层不透明度”会统一改变所有控件和背景的整体透明程度。</p>
@@ -334,10 +361,22 @@
               </ul>
             </div>
           </div>
+
+          <h3>隐藏覆盖层</h3>
+          <p>开启后覆盖层会移出所有屏幕，用户当前屏幕和直播画面中不会看到它，但窗口仍保持运行，可通过 OBS 的窗口捕获继续获取画面。</p>
+          <p>关闭隐藏后，覆盖层会恢复到隐藏前的位置。切换锁定、调整缩放或保存设置不会把隐藏中的覆盖层拉回屏幕。</p>
+
+          <h3>系统托盘</h3>
+          <p>系统托盘菜单提供设置、锁定覆盖层、隐藏覆盖层、开机自启动、关于和退出。</p>
+          <p>“隐藏覆盖层”与设置窗口中的同名开关双向同步，修改后会立即保存。</p>
+
+          <h3>开机自启动</h3>
+          <p>勾选托盘菜单中的“开机自启动”后，程序会在 Windows 登录时启动。</p>
+          <p>开机启动只运行覆盖层并保留系统托盘图标，不显示设置主窗口。需要调整设置时，可以从托盘菜单点击“设置”或双击图标。</p>
         </section>
 
         <section class="wiki-section" id="obs">
-          <p class="section-kicker">13</p>
+          <p class="section-kicker">14</p>
           <h2>在 OBS 中使用</h2>
           <ol class="step-list compact">
             <li><span>1</span><div><strong>添加来源</strong><p>在 OBS 的来源面板点击“＋”，选择“窗口捕获”。</p></div></li>
@@ -349,6 +388,7 @@
             <i data-lucide="triangle-alert" aria-hidden="true"></i>
             <p>不要选择 PA Keystroke 设置主窗口，应选择独立的 <code>PA Keystroke Overlay</code>。</p>
           </div>
+          <p>如果启用了“隐藏覆盖层”，窗口不会出现在用户屏幕上，但仍可通过窗口捕获获取画面。请确保使用“窗口捕获”，不要使用“显示器采集”。</p>
           <figure class="wiki-media">
             <button class="image-zoom" type="button" data-zoom="assets/screenshots/09-obs-window-capture.png" aria-label="放大查看 OBS 窗口捕获设置">
               <img src="assets/screenshots/09-obs-window-capture.png" alt="在 OBS 中选择 PA Keystroke Overlay" width="900" height="491" loading="lazy">
@@ -358,7 +398,7 @@
         </section>
 
         <section class="wiki-section" id="updates">
-          <p class="section-kicker">14</p>
+          <p class="section-kicker">15</p>
           <h2>自动检查更新</h2>
           <p>程序每次启动时都会检查公开 Release 仓库。检查期间标题栏会显示加载动画；如果没有新版本，动画会自动隐藏。</p>
           <p>发现新版本时，可以从更新提示中查看更新日志、打开发布页面、下载更新，并自动替换和重启。更新日志支持保留原文换行和显示 GitHub Release 正文中的远程图片。</p>
@@ -366,7 +406,7 @@
         </section>
 
         <section class="wiki-section" id="data-directory">
-          <p class="section-kicker">15</p>
+          <p class="section-kicker">16</p>
           <h2>数据目录</h2>
           <p>配置默认保存在：</p>
           <pre><code>%APPDATA%\PA Keystroke</code></pre>
@@ -381,7 +421,7 @@
         </section>
 
         <section class="wiki-section" id="faq">
-          <p class="section-kicker">16</p>
+          <p class="section-kicker">17</p>
           <h2>常见问题</h2>
           <div class="faq-list">
             <details>
@@ -408,7 +448,7 @@
         </section>
 
         <section class="wiki-section" id="feedback">
-          <p class="section-kicker">17</p>
+          <p class="section-kicker">18</p>
           <h2>反馈</h2>
           <p>欢迎在 GitHub Issues 中提交问题和建议，或加入社区 QQ 群交流。</p>
           <div class="feedback-actions">
