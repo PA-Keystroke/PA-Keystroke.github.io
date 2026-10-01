@@ -19,7 +19,9 @@
     editId: "",
     editOriginalJson: "",
     editScreenshotPaths: [],
-    editScreenshotUrls: {}
+    editScreenshotUrls: {},
+    editNewFiles: [],
+    editNewUrls: []
   };
 
   const elements = {};
@@ -63,6 +65,7 @@
     elements.editScope = document.querySelector("[data-edit-scope]");
     elements.editScreenshotList = document.querySelector("[data-edit-screenshot-list]");
     elements.editScreenshotInput = document.querySelector("[data-edit-screenshots]");
+    elements.editNewScreenshotList = document.querySelector("[data-edit-new-screenshot-list]");
     elements.editSubmit = document.querySelector("[data-edit-submit]");
 
     bindEvents();
@@ -192,6 +195,14 @@
         checkbox.closest("[data-edit-screenshot]")?.classList.toggle("is-removed", checkbox.checked);
       }
     });
+    elements.editNewScreenshotList?.addEventListener("change", (event) => {
+      const checkbox = event.target.closest("[data-edit-new-remove]");
+      if (checkbox) {
+        checkbox.closest("[data-edit-new-screenshot]")?.classList.toggle("is-removed", checkbox.checked);
+      }
+    });
+    elements.editScreenshotInput?.addEventListener("change", handleEditScreenshotFiles);
+    elements.editDialog?.addEventListener("close", releaseEditNewUrls);
 
     elements.detailBody?.addEventListener("click", (event) => {
       const previewButton = event.target.closest("[data-preview-review-json]");
@@ -821,6 +832,9 @@
     state.editOriginalJson = "";
     state.editScreenshotPaths = [...(item.screenshot_paths || [])];
     state.editScreenshotUrls = {};
+    releaseEditNewUrls();
+    state.editNewFiles = [];
+    elements.editNewScreenshotList.innerHTML = "";
 
     elements.editError.textContent = "";
     elements.editJsonSummary.textContent = "";
@@ -927,6 +941,46 @@
         </label>
       `).join("")
       : `<p class="preset-file-list">当前没有截图。</p>`;
+
+    releaseEditNewUrls();
+    state.editNewUrls = state.editNewFiles.map((file) => URL.createObjectURL(file));
+    elements.editNewScreenshotList.innerHTML = state.editNewFiles.length
+      ? state.editNewFiles.map((file, index) => `
+        <label class="preset-edit-screenshot" data-edit-new-screenshot>
+          <input type="checkbox" data-edit-new-remove value="${index}">
+          <img src="${escapeAttribute(state.editNewUrls[index])}" alt="新截图 ${index + 1}">
+          <span>新增 · ${escapeHtml(file.name)}</span>
+        </label>
+      `).join("")
+      : "";
+  }
+
+  function handleEditScreenshotFiles() {
+    const selected = Array.from(elements.editScreenshotInput?.files || []);
+    if (!selected.length) {
+      return;
+    }
+
+    const removedPaths = new Set(
+      Array.from(elements.editForm.querySelectorAll("[data-edit-remove-screenshot]:checked"))
+        .map((input) => input.value)
+    );
+    const keptCount = state.editScreenshotPaths.filter((path) => !removedPaths.has(path)).length;
+    const capacity = Math.max(0, store.MAX_SCREENSHOTS - keptCount - state.editNewFiles.length);
+    const accepted = selected.slice(0, capacity);
+
+    if (accepted.length < selected.length) {
+      elements.editError.textContent = `最多只能保留 ${store.MAX_SCREENSHOTS} 张截图，超出的没有添加。`;
+    }
+
+    state.editNewFiles.push(...accepted);
+    elements.editScreenshotInput.value = "";
+    renderEditScreenshots();
+  }
+
+  function releaseEditNewUrls() {
+    (state.editNewUrls || []).forEach((url) => URL.revokeObjectURL(url));
+    state.editNewUrls = [];
   }
 
   async function saveEditedPackage(event) {
@@ -952,7 +1006,11 @@
         .map((input) => input.value)
     );
     const keepScreenshotPaths = state.editScreenshotPaths.filter((path) => !removedPaths.has(path));
-    const newScreenshots = elements.editScreenshotInput?.files || [];
+    const removedNewIndexes = new Set(
+      Array.from(elements.editForm.querySelectorAll("[data-edit-new-remove]:checked"))
+        .map((input) => Number(input.value))
+    );
+    const newScreenshots = state.editNewFiles.filter((file, index) => !removedNewIndexes.has(index));
     const jsonChanged = jsonText !== String(state.editOriginalJson || "").trim();
 
     const original = elements.editSubmit.innerHTML;

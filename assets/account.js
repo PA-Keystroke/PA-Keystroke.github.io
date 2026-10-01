@@ -3,6 +3,7 @@
 
   const store = window.PA_PRESET_STORE;
   const PAGE_SIZE = 10;
+  const MOBILE_DETAIL_QUERY = window.matchMedia("(max-width: 960px)");
   const state = {
     user: null,
     status: "",
@@ -21,9 +22,12 @@
     detailUrls: {},
     newIds: new Set(),
     resubmitId: "",
-    resubmitOriginalJson: "",
+    resubmitParsed: null,
+    resubmitFileText: null,
     resubmitScreenshotPaths: [],
     resubmitScreenshotUrls: {},
+    resubmitNewFiles: [],
+    resubmitNewUrls: [],
     deleteId: ""
   };
 
@@ -40,7 +44,6 @@
     elements.avatar = document.querySelector("[data-account-avatar]");
     elements.name = document.querySelector("[data-account-name]");
     elements.email = document.querySelector("[data-account-email]");
-    elements.stats = Array.from(document.querySelectorAll("[data-account-stat]"));
     elements.tabCounts = Array.from(document.querySelectorAll("[data-account-tab-count]"));
     elements.tabs = Array.from(document.querySelectorAll("[data-account-tab]"));
     elements.search = document.querySelector("[data-account-search]");
@@ -51,12 +54,13 @@
     elements.resubmitDialog = document.querySelector("[data-account-resubmit-dialog]");
     elements.resubmitForm = document.querySelector("[data-account-resubmit-form]");
     elements.resubmitError = document.querySelector("[data-account-resubmit-error]");
-    elements.resubmitJson = document.querySelector("[data-account-resubmit-json]");
+    elements.resubmitFile = document.querySelector("[data-account-resubmit-file]");
     elements.resubmitSummary = document.querySelector("[data-account-resubmit-summary]");
     elements.resubmitVersion = document.querySelector("[data-account-resubmit-version]");
     elements.resubmitScope = document.querySelector("[data-account-resubmit-scope]");
     elements.resubmitScreenshots = document.querySelector("[data-account-resubmit-screenshots]");
     elements.resubmitFiles = document.querySelector("[data-account-resubmit-files]");
+    elements.resubmitNewShots = document.querySelector("[data-account-resubmit-new-shots]");
     elements.resubmitSubmit = document.querySelector("[data-account-resubmit-submit]");
     elements.deleteDialog = document.querySelector("[data-account-delete-dialog]");
     elements.deleteTitle = document.querySelector("[data-account-delete-title]");
@@ -133,6 +137,12 @@
     });
 
     elements.detail?.addEventListener("click", (event) => {
+      const closeButton = event.target.closest("[data-account-detail-close]");
+      if (closeButton) {
+        closeMobileDetail();
+        return;
+      }
+
       const downloadButton = event.target.closest("[data-account-download]");
       if (downloadButton) {
         downloadJson(downloadButton);
@@ -154,12 +164,23 @@
     });
 
     elements.resubmitForm?.addEventListener("submit", submitResubmit);
-    elements.resubmitJson?.addEventListener("input", updateResubmitSummary);
+    elements.resubmitFile?.addEventListener("change", handleResubmitFile);
+    elements.resubmitFiles?.addEventListener("change", handleResubmitScreenshotFiles);
     elements.resubmitScreenshots?.addEventListener("change", (event) => {
       const checkbox = event.target.closest("[data-account-resubmit-remove]");
       if (checkbox) {
         checkbox.closest("[data-account-resubmit-shot]")?.classList.toggle("is-removed", checkbox.checked);
       }
+    });
+    elements.resubmitNewShots?.addEventListener("change", (event) => {
+      const checkbox = event.target.closest("[data-account-resubmit-new-remove]");
+      if (checkbox) {
+        checkbox.closest("[data-account-resubmit-shot-new]")?.classList.toggle("is-removed", checkbox.checked);
+      }
+    });
+
+    elements.resubmitDialog?.addEventListener("close", () => {
+      releaseResubmitNewUrls();
     });
 
     elements.deleteConfirm?.addEventListener("click", deleteSubmission);
@@ -176,6 +197,18 @@
           dialog.close();
         }
       });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && elements.detail?.classList.contains("is-mobile-open")) {
+        closeMobileDetail();
+      }
+    });
+
+    MOBILE_DETAIL_QUERY.addEventListener("change", () => {
+      if (!MOBILE_DETAIL_QUERY.matches) {
+        closeMobileDetail();
+      }
     });
   }
 
@@ -234,9 +267,6 @@
   async function loadStats() {
     try {
       state.stats = await store.fetchOwnSubmissionStats(store.getClient(), state.user.id);
-      elements.stats.forEach((item) => {
-        item.textContent = String(state.stats[item.dataset.accountStat] || 0);
-      });
       elements.tabCounts.forEach((item) => {
         const key = item.dataset.accountTabCount;
         item.textContent = String(key === "all" ? state.stats.all : (state.stats[key] || 0));
@@ -305,7 +335,7 @@
       }
 
       if (state.selectedId) {
-        openDetail(state.selectedId, true);
+        openDetail(state.selectedId, true, false);
       } else {
         renderDetailEmpty();
       }
@@ -385,12 +415,15 @@
     `;
   }
 
-  async function openDetail(packageId, keepList) {
+  async function openDetail(packageId, keepList, fromUser = true) {
     if (!state.user) {
       return;
     }
 
     state.selectedId = packageId;
+    if (fromUser && MOBILE_DETAIL_QUERY.matches) {
+      openMobileDetail();
+    }
     if (!keepList) {
       renderList();
     }
@@ -445,6 +478,10 @@
     const canManage = item.source === "community";
 
     elements.detail.innerHTML = `
+      <button class="account-detail-back" type="button" data-account-detail-close>
+        <i data-lucide="arrow-left" aria-hidden="true"></i>
+        返回投稿列表
+      </button>
       <div class="account-detail">
         ${renderScreenshotCarousel(item.screenshot_paths, state.detailUrls)}
         <div class="account-detail-head">
@@ -625,16 +662,21 @@
     }
 
     state.resubmitId = item.id;
-    state.resubmitOriginalJson = "";
+    state.resubmitParsed = null;
+    state.resubmitFileText = null;
     state.resubmitScreenshotPaths = [...(item.screenshot_paths || [])];
     state.resubmitScreenshotUrls = {};
     elements.resubmitError.textContent = "";
-    elements.resubmitSummary.textContent = "";
+    elements.resubmitSummary.textContent = "正在读取原来的 JSON...";
     elements.resubmitSummary.classList.remove("is-error");
-    elements.resubmitJson.value = "正在读取...";
-    elements.resubmitJson.disabled = true;
     elements.resubmitSubmit.disabled = true;
     elements.resubmitScreenshots.innerHTML = `<p class="preset-file-list">正在读取截图...</p>`;
+    releaseResubmitNewUrls();
+    state.resubmitNewFiles = [];
+    state.resubmitNewUrls = [];
+    if (elements.resubmitNewShots) {
+      elements.resubmitNewShots.innerHTML = "";
+    }
     elements.resubmitForm.reset();
 
     const form = elements.resubmitForm.elements;
@@ -660,46 +702,94 @@
         return;
       }
 
-      state.resubmitOriginalJson = jsonText;
+      state.resubmitParsed = store.validatePresetPayload(JSON.parse(jsonText));
+      state.resubmitFileText = null;
       state.resubmitScreenshotUrls = screenshotUrls || {};
-      elements.resubmitJson.value = jsonText;
-      elements.resubmitJson.disabled = false;
-      updateResubmitSummary();
+      updateResubmitSummary("current");
       renderResubmitScreenshots();
     } catch (error) {
-      elements.resubmitJson.disabled = false;
       elements.resubmitSummary.textContent = `读取原 JSON 失败：${store.errorMessage(error)}`;
       elements.resubmitSummary.classList.add("is-error");
-      elements.resubmitSubmit.disabled = false;
+      elements.resubmitSubmit.disabled = true;
       renderResubmitScreenshots();
     }
   }
 
-  function updateResubmitSummary() {
-    const text = String(elements.resubmitJson.value || "").trim();
+  function updateResubmitSummary(source) {
+    const parsed = state.resubmitParsed;
     elements.resubmitSummary.classList.remove("is-error");
 
-    if (!text) {
-      elements.resubmitSummary.textContent = "JSON 内容不能为空。";
+    if (!parsed) {
+      elements.resubmitSummary.textContent = "还没有可用的 JSON 内容。";
       elements.resubmitSummary.classList.add("is-error");
       elements.resubmitSubmit.disabled = true;
       return null;
+    }
+
+    const scopes = [...new Set(parsed.items.map((entry) => (
+      entry.scope === "keyboard" ? "键鼠" : "手柄"
+    )))];
+    const label = source === "new" ? "新文件已识别" : "继续使用原 JSON";
+    elements.resubmitSummary.textContent = `${label}：${parsed.presetCount} 个预设，支持 ${parsed.versionSupportLabel}，范围 ${scopes.join(" + ")}`;
+    elements.resubmitSubmit.disabled = false;
+    return parsed;
+  }
+
+  async function handleResubmitFile() {
+    elements.resubmitError.textContent = "";
+    const file = elements.resubmitFile?.files?.[0];
+
+    if (!file) {
+      try {
+        const jsonText = await store.getPresetFileText(store.getClient(), state.detail.json_path);
+        state.resubmitParsed = store.validatePresetPayload(JSON.parse(jsonText));
+        state.resubmitFileText = null;
+        updateResubmitSummary("current");
+      } catch (error) {
+        state.resubmitParsed = null;
+        state.resubmitFileText = null;
+        elements.resubmitSummary.textContent = `读取原 JSON 失败：${store.errorMessage(error)}`;
+        elements.resubmitSummary.classList.add("is-error");
+        elements.resubmitSubmit.disabled = true;
+      }
+      return;
     }
 
     try {
-      const parsed = store.validatePresetPayload(JSON.parse(text));
-      const scopes = [...new Set(parsed.items.map((entry) => (
-        entry.scope === "keyboard" ? "键鼠" : "手柄"
-      )))];
-      elements.resubmitSummary.textContent = `JSON 有效：${parsed.presetCount} 个预设，支持 ${parsed.versionSupportLabel}，范围 ${scopes.join(" + ")}`;
-      elements.resubmitSubmit.disabled = false;
-      return parsed;
+      const result = await store.readPresetFileContent(file);
+      state.resubmitParsed = result.parsed;
+      state.resubmitFileText = result.text;
+      updateResubmitSummary("new");
     } catch (error) {
+      state.resubmitParsed = null;
+      state.resubmitFileText = null;
       elements.resubmitSummary.textContent = `JSON 无效：${store.errorMessage(error)}`;
       elements.resubmitSummary.classList.add("is-error");
       elements.resubmitSubmit.disabled = true;
-      return null;
     }
+  }
+
+  function handleResubmitScreenshotFiles() {
+    const selected = Array.from(elements.resubmitFiles?.files || []);
+    if (!selected.length) {
+      return;
+    }
+
+    const removedPaths = new Set(
+      Array.from(elements.resubmitForm.querySelectorAll("[data-account-resubmit-remove]:checked"))
+        .map((input) => input.value)
+    );
+    const keptCount = state.resubmitScreenshotPaths.filter((path) => !removedPaths.has(path)).length;
+    const capacity = Math.max(0, store.MAX_SCREENSHOTS - keptCount - state.resubmitNewFiles.length);
+    const accepted = selected.slice(0, capacity);
+
+    if (accepted.length < selected.length) {
+      elements.resubmitError.textContent = `最多只能保留 ${store.MAX_SCREENSHOTS} 张截图，超出的没有添加。`;
+    }
+
+    state.resubmitNewFiles.push(...accepted);
+    elements.resubmitFiles.value = "";
+    renderResubmitScreenshots();
   }
 
   function renderResubmitScreenshots() {
@@ -713,6 +803,23 @@
         </label>
       `).join("")
       : `<p class="preset-file-list">当前没有截图。</p>`;
+
+    releaseResubmitNewUrls();
+    state.resubmitNewUrls = state.resubmitNewFiles.map((file) => URL.createObjectURL(file));
+    elements.resubmitNewShots.innerHTML = state.resubmitNewFiles.length
+      ? state.resubmitNewFiles.map((file, index) => `
+        <label class="preset-edit-screenshot" data-account-resubmit-shot-new>
+          <input type="checkbox" data-account-resubmit-new-remove value="${index}">
+          <img src="${escapeAttribute(state.resubmitNewUrls[index])}" alt="新截图 ${index + 1}">
+          <span>新增 · ${escapeHtml(file.name)}</span>
+        </label>
+      `).join("")
+      : "";
+  }
+
+  function releaseResubmitNewUrls() {
+    (state.resubmitNewUrls || []).forEach((url) => URL.revokeObjectURL(url));
+    state.resubmitNewUrls = [];
   }
 
   async function submitResubmit(event) {
@@ -725,9 +832,9 @@
       return;
     }
 
-    const parsed = updateResubmitSummary();
+    const parsed = state.resubmitParsed;
     if (!parsed) {
-      elements.resubmitError.textContent = "请先修正 JSON 内容。";
+      elements.resubmitError.textContent = "请先选择有效的预设 JSON 文件。";
       return;
     }
 
@@ -737,7 +844,11 @@
         .map((input) => input.value)
     );
     const keepScreenshotPaths = state.resubmitScreenshotPaths.filter((path) => !removedPaths.has(path));
-    const jsonText = String(elements.resubmitJson.value || "").trim();
+    const removedNewIndexes = new Set(
+      Array.from(elements.resubmitForm.querySelectorAll("[data-account-resubmit-new-remove]:checked"))
+        .map((input) => Number(input.value))
+    );
+    const newScreenshots = state.resubmitNewFiles.filter((file, index) => !removedNewIndexes.has(index));
     const original = elements.resubmitSubmit.innerHTML;
     elements.resubmitSubmit.disabled = true;
     elements.resubmitSubmit.textContent = "正在提交...";
@@ -752,14 +863,17 @@
           version: formData.get("version"),
           description: formData.get("description")
         },
-        presetContent: jsonText,
+        presetContent: state.resubmitFileText,
         parsed,
         current: item,
         keepScreenshotPaths,
-        screenshots: elements.resubmitFiles?.files || []
+        screenshots: newScreenshots
       });
 
       elements.resubmitDialog.close();
+      state.resubmitParsed = null;
+      state.resubmitFileText = null;
+      state.resubmitNewFiles = [];
       showToast("已重新提交，等待管理员审核。");
       state.page = 1;
       state.status = "";
@@ -817,12 +931,27 @@
 
   function renderDetailSkeleton() {
     return `
+      <button class="account-detail-back" type="button" data-account-detail-close>
+        <i data-lucide="arrow-left" aria-hidden="true"></i>
+        返回投稿列表
+      </button>
       <div class="account-detail-skeleton">
         <span class="ui-skeleton" style="height:200px;border-radius:12px"></span>
         <span class="ui-skeleton ui-skeleton-line"></span>
         <span class="ui-skeleton ui-skeleton-line"></span>
       </div>
     `;
+  }
+
+  function openMobileDetail() {
+    elements.detail.classList.add("is-mobile-open");
+    document.body.classList.add("is-account-detail-open");
+    elements.detail.scrollTop = 0;
+  }
+
+  function closeMobileDetail() {
+    elements.detail?.classList.remove("is-mobile-open");
+    document.body.classList.remove("is-account-detail-open");
   }
 
   function renderStatus(status) {

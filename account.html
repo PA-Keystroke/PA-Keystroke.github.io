@@ -11,15 +11,15 @@
   <link rel="preload" href="assets/fonts/LetsParty-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/styles.css?v=20261001-6">
   <link rel="stylesheet" href="assets/presets.css?v=20261002-1">
-  <link rel="stylesheet" href="assets/account.css?v=20261002-3">
+  <link rel="stylesheet" href="assets/account.css?v=20261002-4">
   <link rel="stylesheet" href="assets/auth-header.css?v=20261002-1">
   <script src="assets/vendor/lucide.min.js" defer></script>
   <script src="assets/vendor/supabase.js" defer></script>
   <script src="assets/supabase-config.js?v=20261001-4" defer></script>
-  <script src="assets/preset-store.js?v=20261002-2" defer></script>
+  <script src="assets/preset-store.js?v=20261002-3" defer></script>
   <script src="assets/auth-header.js?v=20261002-2" defer></script>
   <script src="assets/main.js?v=20261001-4" defer></script>
-  <script src="assets/account.js?v=20261002-2" defer></script>
+  <script src="assets/account.js?v=20261002-5" defer></script>
 </head>
 <body data-page="account">
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -48,16 +48,7 @@
   </header>
 
   <main id="main">
-    <section class="account-hero">
-      <div class="container account-hero-inner">
-        <div>
-          <p class="section-kicker">ACCOUNT</p>
-          <h1>个人中心</h1>
-          <p>管理你的投稿，查看审核结果和预设详情。</p>
-        </div>
-      </div>
-    </section>
-
+    <h1 class="sr-only">个人中心</h1>
     <section class="account-center">
       <div class="container">
         <div class="account-gate" data-account-gate hidden>
@@ -81,6 +72,10 @@
               </div>
             </div>
             <div class="account-card-actions">
+              <a class="button button-primary" href="presets.html?open=submit">
+                <i data-lucide="upload" aria-hidden="true"></i>
+                发布预设
+              </a>
               <a class="button button-secondary" href="presets.html">
                 <i data-lucide="arrow-left" aria-hidden="true"></i>
                 返回预设市场
@@ -90,13 +85,6 @@
                 退出登录
               </button>
             </div>
-          </div>
-
-          <div class="account-stats">
-            <div class="account-stat"><span>全部投稿</span><strong data-account-stat="all">0</strong></div>
-            <div class="account-stat"><span>待审核</span><strong data-account-stat="pending">0</strong></div>
-            <div class="account-stat"><span>已通过</span><strong data-account-stat="approved">0</strong></div>
-            <div class="account-stat"><span>已拒绝</span><strong data-account-stat="rejected">0</strong></div>
           </div>
 
           <div class="account-panel">
@@ -206,11 +194,18 @@
             <span>介绍</span>
             <textarea name="description" rows="4" maxlength="2000"></textarea>
           </label>
-          <label class="preset-field preset-field-wide">
-            <span>预设 JSON 内容 <strong>必填</strong></span>
-            <textarea class="preset-edit-json" name="presetJson" rows="14" spellcheck="false" required data-account-resubmit-json></textarea>
-            <small class="preset-field-hint">可以直接修改 JSON；保存时会校验并同步预设条目、支持版本和数量。</small>
-          </label>
+          <div class="preset-field preset-field-wide">
+            <span>更换预设 JSON 文件</span>
+            <label class="preset-file-field">
+              <input type="file" accept=".json,application/json" data-account-resubmit-file>
+              <span class="preset-file-icon"><i data-lucide="file-json" aria-hidden="true"></i></span>
+              <span>
+                <strong>选择新的预设 JSON</strong>
+                <small>不能直接修改原 JSON；请重新导出后在这里替换，最多 5 MB</small>
+              </span>
+            </label>
+            <small class="preset-field-hint">不选择新文件时，会继续使用原来的 JSON 内容。</small>
+          </div>
         </div>
 
         <div class="preset-edit-json-summary" data-account-resubmit-summary></div>
@@ -226,6 +221,7 @@
               <small>新截图会追加到保留的截图后面，每张不超过 5 MB</small>
             </span>
           </label>
+          <div class="preset-edit-screenshot-grid" data-account-resubmit-new-shots></div>
         </fieldset>
 
         <p class="preset-form-error" data-account-resubmit-error role="alert"></p>

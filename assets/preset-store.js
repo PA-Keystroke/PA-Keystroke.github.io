@@ -160,6 +160,34 @@
     return validatePresetPayload(data);
   }
 
+  async function readPresetFileContent(file) {
+    if (!file) {
+      throw new Error("请选择预设 JSON 文件。");
+    }
+
+    if (!file.name.toLowerCase().endsWith(".json")) {
+      throw new Error("预设文件必须是 JSON 格式。");
+    }
+
+    if (file.size > MAX_JSON_SIZE) {
+      throw new Error("预设 JSON 文件不能超过 5 MB。");
+    }
+
+    let text;
+    let data;
+    try {
+      text = await file.text();
+      data = JSON.parse(text);
+    } catch (error) {
+      throw new Error("JSON 文件无法解析。");
+    }
+
+    return {
+      text,
+      parsed: validatePresetPayload(data)
+    };
+  }
+
   function normalizeReleaseVersion(value) {
     return String(value || "").trim().replace(/^v/i, "");
   }
@@ -697,9 +725,6 @@
     if (!packageId) {
       throw new Error("预设记录不存在。");
     }
-    if (!presetContent) {
-      throw new Error("预设 JSON 内容不能为空。");
-    }
     if (!parsed || !parsed.presetCount) {
       throw new Error("预设文件中没有可用的预设。");
     }
@@ -712,33 +737,41 @@
       throw new Error(`每个预设最多保留 ${MAX_SCREENSHOTS} 张截图。`);
     }
 
-    const blob = new Blob([presetContent], { type: "application/json" });
-    if (blob.size > MAX_JSON_SIZE) {
-      throw new Error("预设 JSON 文件不能超过 5 MB。");
-    }
-
     const uploadedFiles = [];
     const removedFiles = [];
-    let jsonPath = "";
-    let jsonSize = blob.size;
+    let jsonPath = current?.json_path || "";
+    let jsonSize = Number(current?.json_size) || 0;
 
     try {
-      jsonPath = `${packageId}/preset-${Date.now()}.json`;
-      const jsonUpload = await supabase.storage
-        .from(PRESET_FILE_BUCKET)
-        .upload(jsonPath, blob, {
-          cacheControl: "3600",
-          contentType: "application/json",
-          upsert: false
-        });
+      if (presetContent != null) {
+        const blob = new Blob([presetContent], { type: "application/json" });
+        if (blob.size > MAX_JSON_SIZE) {
+          throw new Error("预设 JSON 文件不能超过 5 MB。");
+        }
 
-      if (jsonUpload.error) {
-        throw new Error(errorMessage(jsonUpload.error));
+        const nextJsonPath = `${packageId}/preset-${Date.now()}.json`;
+        const jsonUpload = await supabase.storage
+          .from(PRESET_FILE_BUCKET)
+          .upload(nextJsonPath, blob, {
+            cacheControl: "3600",
+            contentType: "application/json",
+            upsert: false
+          });
+
+        if (jsonUpload.error) {
+          throw new Error(errorMessage(jsonUpload.error));
+        }
+        uploadedFiles.push({ bucket: PRESET_FILE_BUCKET, path: nextJsonPath });
+
+        if (jsonPath && jsonPath !== nextJsonPath) {
+          removedFiles.push({ bucket: PRESET_FILE_BUCKET, path: jsonPath });
+        }
+        jsonPath = nextJsonPath;
+        jsonSize = blob.size;
       }
-      uploadedFiles.push({ bucket: PRESET_FILE_BUCKET, path: jsonPath });
 
-      if (current?.json_path && current.json_path !== jsonPath) {
-        removedFiles.push({ bucket: PRESET_FILE_BUCKET, path: current.json_path });
+      if (!jsonPath) {
+        throw new Error("预设 JSON 文件不存在，请重新选择 JSON 文件。");
       }
 
       const addedScreenshotPaths = [];
@@ -1148,6 +1181,7 @@
     isConfigured,
     errorMessage,
     readPresetFile,
+    readPresetFileContent,
     fetchReleaseVersions,
     validateScreenshots,
     validatePackageFields,

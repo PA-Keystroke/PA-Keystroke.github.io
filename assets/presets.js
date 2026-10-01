@@ -10,6 +10,7 @@
     user: null,
     parsedPreset: null,
     openMineHandled: false,
+    openSubmitHandled: false,
     hideId: "",
     renderToken: 0,
     currentPage: 1,
@@ -1492,6 +1493,16 @@
       cleanUrl.searchParams.delete("open");
       window.history.replaceState({}, "", cleanUrl);
       openMySubmissions();
+    }
+
+    const openSubmit = new URLSearchParams(window.location.search).get("open") === "submit";
+    if (user && openSubmit && !state.openSubmitHandled) {
+      state.openSubmitHandled = true;
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete("open");
+      window.history.replaceState({}, "", cleanUrl);
+      resetSubmitForm();
+      elements.submitDialog.showModal();
     }
   }
 
