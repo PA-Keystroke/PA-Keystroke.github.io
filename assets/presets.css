@@ -105,6 +105,7 @@ body[data-page="preset-admin"] select {
 .preset-tabs {
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 4px;
   padding: 4px;
   border: 1px solid var(--line-dark);
@@ -1539,6 +1540,136 @@ body[data-page="preset-admin"] select {
   border-radius: 0;
 }
 
+.preset-admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.preset-admin-search {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 14px;
+  border: 1px solid var(--line-dark);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--muted-dark);
+}
+
+.preset-admin-search[hidden] {
+  display: none;
+}
+
+.preset-admin-search input {
+  width: min(260px, 40vw);
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--white);
+}
+
+.preset-review-source {
+  padding: 2px 9px;
+  border: 1px solid var(--line-dark);
+  border-radius: 999px;
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.preset-edit-json {
+  min-height: 280px;
+  padding: 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+}
+
+.preset-edit-json-summary {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(252, 240, 208, 0.26);
+  border-radius: 12px;
+  background: rgba(252, 240, 208, 0.06);
+  color: var(--muted-dark);
+  font-size: 13px;
+}
+
+.preset-edit-json-summary.is-error {
+  border-color: rgba(255, 112, 120, 0.42);
+  background: rgba(255, 112, 120, 0.08);
+  color: #ff98a0;
+}
+
+.preset-edit-screenshots {
+  min-width: 0;
+  margin: 18px 0 0;
+  padding: 16px;
+  border: 1px solid var(--line-dark);
+  border-radius: 12px;
+}
+
+.preset-edit-screenshots legend {
+  padding: 0 8px;
+  color: var(--muted-dark);
+  font-size: 13px;
+}
+
+.preset-edit-screenshot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.preset-edit-screenshot {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--line-dark);
+  border-radius: 12px;
+  background: #111112;
+  cursor: pointer;
+}
+
+.preset-edit-screenshot img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.preset-edit-screenshot input {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  accent-color: #ff7078;
+}
+
+.preset-edit-screenshot span {
+  display: block;
+  padding: 8px 10px;
+  color: var(--muted-dark);
+  font-size: 12px;
+}
+
+.preset-edit-screenshot.is-removed {
+  border-color: rgba(255, 112, 120, 0.55);
+}
+
+.preset-edit-screenshot.is-removed img {
+  opacity: 0.35;
+}
+
+.preset-edit-screenshot.is-removed span {
+  color: #ff98a0;
+}
+
 @media (max-width: 960px) {
   .preset-hero-inner {
     align-items: flex-start;
@@ -1599,6 +1730,29 @@ body[data-page="preset-admin"] select {
   .preset-section-head {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .preset-tabs {
+    border-radius: 14px;
+  }
+
+  .preset-tab {
+    padding: 0 13px;
+  }
+
+  .preset-admin-actions,
+  .preset-admin-search,
+  .preset-admin-search input {
+    width: 100%;
+  }
+
+  .preset-admin-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .preset-review-actions {
+    flex-wrap: wrap;
   }
 
   .preset-filters {

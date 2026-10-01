@@ -10,11 +10,16 @@
       pending: [],
       rejected: [],
       approved: [],
-      hidden: []
+      hidden: [],
+      all: []
     },
     rejectId: "",
     deleteId: "",
-    parsedOfficialPreset: null
+    parsedOfficialPreset: null,
+    editId: "",
+    editOriginalJson: "",
+    editScreenshotPaths: [],
+    editScreenshotUrls: {}
   };
 
   const elements = {};
@@ -47,6 +52,18 @@
     elements.officialVersionSupportValue = document.querySelector("[data-version-support-value]");
     elements.toggleOfficial = document.querySelector("[data-toggle-official-form]");
     elements.refresh = document.querySelector("[data-refresh-review]");
+    elements.searchField = document.querySelector("[data-review-search-field]");
+    elements.searchInput = document.querySelector("[data-review-search]");
+    elements.editDialog = document.querySelector("[data-edit-dialog]");
+    elements.editForm = document.querySelector("[data-edit-form]");
+    elements.editError = document.querySelector("[data-edit-error]");
+    elements.editJson = document.querySelector("[data-edit-json]");
+    elements.editJsonSummary = document.querySelector("[data-edit-json-summary]");
+    elements.editVersionSupport = document.querySelector("[data-edit-version-support]");
+    elements.editScope = document.querySelector("[data-edit-scope]");
+    elements.editScreenshotList = document.querySelector("[data-edit-screenshot-list]");
+    elements.editScreenshotInput = document.querySelector("[data-edit-screenshots]");
+    elements.editSubmit = document.querySelector("[data-edit-submit]");
 
     bindEvents();
     initOfficialVersionSelect();
@@ -85,6 +102,9 @@
     elements.tabs.forEach((tab) => {
       tab.addEventListener("click", () => {
         state.activeStatus = tab.dataset.reviewTab;
+        if (elements.searchField) {
+          elements.searchField.hidden = state.activeStatus !== "all";
+        }
         elements.tabs.forEach((item) => {
           const active = item === tab;
           item.classList.toggle("is-active", active);
@@ -94,11 +114,19 @@
       });
     });
 
+    elements.searchInput?.addEventListener("input", renderReviews);
+
     elements.refresh?.addEventListener("click", () => {
       loadReviews(state.activeStatus);
     });
 
     elements.list?.addEventListener("click", (event) => {
+      const editButton = event.target.closest("[data-edit-review]");
+      if (editButton) {
+        openEditDialog(editButton.dataset.editReview);
+        return;
+      }
+
       const viewButton = event.target.closest("[data-view-review]");
       if (viewButton) {
         openReviewDetail(viewButton.dataset.viewReview);
@@ -156,6 +184,14 @@
 
     elements.rejectForm?.addEventListener("submit", rejectPackage);
     elements.confirmDelete?.addEventListener("click", deletePackage);
+    elements.editForm?.addEventListener("submit", saveEditedPackage);
+    elements.editJson?.addEventListener("input", updateEditJsonSummary);
+    elements.editScreenshotList?.addEventListener("change", (event) => {
+      const checkbox = event.target.closest("[data-edit-remove-screenshot]");
+      if (checkbox) {
+        checkbox.closest("[data-edit-screenshot]")?.classList.toggle("is-removed", checkbox.checked);
+      }
+    });
 
     elements.detailBody?.addEventListener("click", (event) => {
       const previewButton = event.target.closest("[data-preview-review-json]");
@@ -458,7 +494,7 @@
 
   async function loadAllReviews() {
     elements.list.innerHTML = renderReviewSkeleton();
-    await Promise.all(["pending", "rejected", "approved", "hidden"].map((status) => loadReviews(status)));
+    await Promise.all(["pending", "rejected", "approved", "hidden", "all"].map((status) => loadReviews(status)));
   }
 
   async function loadReviews(status) {
@@ -467,7 +503,9 @@
     }
 
     try {
-      state.packages[status] = await store.fetchReviewPackages(store.getClient(), status);
+      state.packages[status] = status === "all"
+        ? await store.fetchAllPackages(store.getClient())
+        : await store.fetchReviewPackages(store.getClient(), status);
       renderReviews();
     } catch (error) {
       showError(error);
@@ -479,7 +517,17 @@
       count.textContent = String(state.packages[count.dataset.reviewCount]?.length || 0);
     });
 
-    const packages = state.packages[state.activeStatus] || [];
+    const allPackages = state.packages[state.activeStatus] || [];
+    const query = state.activeStatus === "all"
+      ? String(elements.searchInput?.value || "").trim().toLowerCase()
+      : "";
+    const packages = query
+      ? allPackages.filter((item) => [
+        item.title,
+        item.author_name,
+        item.game
+      ].some((value) => String(value || "").toLowerCase().includes(query)))
+      : allPackages;
     elements.list.innerHTML = packages.length
       ? packages.map(renderReviewItem).join("")
       : `
@@ -487,7 +535,7 @@
           <div>
             <i data-lucide="inbox" aria-hidden="true"></i>
             <h2>这里还没有内容</h2>
-            <p>投稿进入当前状态后会显示在这里。</p>
+            <p>${state.activeStatus === "all" ? "还没有任何预设。" : "投稿进入当前状态后会显示在这里。"}</p>
           </div>
         </div>
       `;
@@ -496,25 +544,33 @@
 
   function renderReviewItem(item) {
     const canReview = item.status === "pending";
+    const canToggleVisibility = item.is_hidden || item.status === "approved";
+    const showStatus = state.activeStatus === "all";
     return `
       <article class="preset-review-item">
         <div class="preset-review-main">
           <h3>${escapeHtml(item.title)}</h3>
           <div class="preset-review-meta">
+            <span class="preset-review-source">${item.source === "official" ? "官方" : "投稿"}</span>
             <span>${escapeHtml(item.author_name)}</span>
             ${item.game ? `<span>${escapeHtml(item.game)}</span>` : ""}
             <span>${Number(item.preset_count) || 0} 个预设</span>
             <span>${formatDate(item.created_at)}</span>
+            ${showStatus ? renderStatus(item.status) : ""}
+            ${item.is_hidden ? `<span class="preset-status is-hidden">已隐藏</span>` : ""}
           </div>
           ${item.rejection_reason
             ? `<p class="preset-rejection-note">拒绝原因：${escapeHtml(item.rejection_reason)}</p>`
             : ""}
         </div>
         <div class="preset-review-actions">
+          <button type="button" data-edit-review="${escapeAttribute(item.id)}" aria-label="编辑预设">
+            <i data-lucide="pencil" aria-hidden="true"></i>
+          </button>
           <button type="button" data-view-review="${escapeAttribute(item.id)}" aria-label="查看详情">
             <i data-lucide="eye" aria-hidden="true"></i>
           </button>
-          ${item.is_hidden ? `
+          ${canToggleVisibility ? (item.is_hidden ? `
             <button class="is-approve" type="button" data-restore-review="${escapeAttribute(item.id)}" aria-label="恢复到市场">
               <i data-lucide="rotate-ccw" aria-hidden="true"></i>
             </button>
@@ -525,7 +581,7 @@
             <button type="button" data-hide-review="${escapeAttribute(item.id)}" aria-label="从市场隐藏">
               <i data-lucide="eye-off" aria-hidden="true"></i>
             </button>
-          `}
+          `) : ""}
           ${canReview ? `
             <button class="is-approve" type="button" data-approve-review="${escapeAttribute(item.id)}" aria-label="通过">
               <i data-lucide="check" aria-hidden="true"></i>
@@ -678,7 +734,7 @@
   }
 
   async function openReviewDetail(packageId) {
-    const item = Object.values(state.packages).flat().find((preset) => preset.id === packageId);
+    const item = findPackage(packageId);
     if (!item) {
       return;
     }
@@ -751,9 +807,193 @@
     }
   }
 
+  function findPackage(packageId) {
+    return Object.values(state.packages).flat().find((preset) => preset.id === packageId);
+  }
+
+  async function openEditDialog(packageId) {
+    const item = findPackage(packageId);
+    if (!item) {
+      return;
+    }
+
+    state.editId = packageId;
+    state.editOriginalJson = "";
+    state.editScreenshotPaths = [...(item.screenshot_paths || [])];
+    state.editScreenshotUrls = {};
+
+    elements.editError.textContent = "";
+    elements.editJsonSummary.textContent = "";
+    elements.editJsonSummary.classList.remove("is-error");
+    elements.editJson.value = "";
+    elements.editJson.disabled = true;
+    elements.editSubmit.disabled = true;
+    elements.editScreenshotList.innerHTML = `<p class="preset-file-list">正在读取截图...</p>`;
+    elements.editForm.reset();
+
+    const form = elements.editForm.elements;
+    form.title.value = item.title || "";
+    form.authorName.value = item.author_name || "";
+    form.game.value = item.game || "";
+    form.version.value = item.version || "";
+    form.description.value = item.description || "";
+    form.status.value = item.status || "pending";
+    form.visibility.value = item.is_hidden ? "hidden" : "visible";
+    form.rejectionReason.value = item.rejection_reason || "";
+    elements.editVersionSupport.textContent = formatVersionSupport(item.pa_version_range);
+    elements.editScope.textContent = renderScopeLabel(item);
+
+    elements.editDialog.showModal();
+    refreshIcons();
+
+    try {
+      const [jsonText, screenshotUrls] = await Promise.all([
+        store.getPresetFileText(store.getClient(), item.json_path),
+        item.screenshot_paths?.length
+          ? store.getSignedUrls(
+            store.getClient(),
+            store.SCREENSHOT_BUCKET,
+            item.screenshot_paths,
+            3600
+          )
+          : {}
+      ]);
+
+      if (state.editId !== packageId) {
+        return;
+      }
+
+      state.editOriginalJson = jsonText;
+      state.editScreenshotUrls = screenshotUrls || {};
+      elements.editJson.value = jsonText;
+      elements.editJson.disabled = false;
+      updateEditJsonSummary();
+      renderEditScreenshots();
+    } catch (error) {
+      elements.editJson.disabled = false;
+      elements.editJsonSummary.textContent = `读取原 JSON 失败：${store.errorMessage(error)}`;
+      elements.editJsonSummary.classList.add("is-error");
+      elements.editSubmit.disabled = false;
+      renderEditScreenshots();
+    }
+  }
+
+  function renderScopeLabel(item) {
+    const scopes = [];
+    if (item.scope_keyboard) {
+      scopes.push("键鼠");
+    }
+    if (item.scope_gamepad) {
+      scopes.push("手柄");
+    }
+    return scopes.length ? scopes.join(" + ") : "未标注";
+  }
+
+  function updateEditJsonSummary() {
+    const text = String(elements.editJson.value || "").trim();
+    elements.editJsonSummary.classList.remove("is-error");
+
+    if (!text) {
+      elements.editJsonSummary.textContent = "JSON 内容不能为空。";
+      elements.editJsonSummary.classList.add("is-error");
+      elements.editSubmit.disabled = true;
+      return null;
+    }
+
+    try {
+      const parsed = store.validatePresetPayload(JSON.parse(text));
+      const scopes = [...new Set(parsed.items.map((entry) => (
+        entry.scope === "keyboard" ? "键鼠" : "手柄"
+      )))];
+      elements.editJsonSummary.textContent = `JSON 有效：${parsed.presetCount} 个预设，支持 ${parsed.versionSupportLabel}，范围 ${scopes.join(" + ")}`;
+      elements.editSubmit.disabled = false;
+      return parsed;
+    } catch (error) {
+      elements.editJsonSummary.textContent = `JSON 无效：${store.errorMessage(error)}`;
+      elements.editJsonSummary.classList.add("is-error");
+      elements.editSubmit.disabled = true;
+      return null;
+    }
+  }
+
+  function renderEditScreenshots() {
+    const paths = state.editScreenshotPaths;
+    elements.editScreenshotList.innerHTML = paths.length
+      ? paths.map((path, index) => `
+        <label class="preset-edit-screenshot" data-edit-screenshot>
+          <input type="checkbox" data-edit-remove-screenshot value="${escapeAttribute(path)}">
+          <img src="${escapeAttribute(state.editScreenshotUrls[path] || "")}" alt="截图 ${index + 1}" loading="lazy">
+          <span>移除</span>
+        </label>
+      `).join("")
+      : `<p class="preset-file-list">当前没有截图。</p>`;
+  }
+
+  async function saveEditedPackage(event) {
+    event.preventDefault();
+    elements.editError.textContent = "";
+
+    const item = findPackage(state.editId);
+    if (!item) {
+      elements.editError.textContent = "预设记录不存在，请刷新后重试。";
+      return;
+    }
+
+    const formData = new FormData(elements.editForm);
+    const jsonText = String(elements.editJson.value || "").trim();
+    const parsed = updateEditJsonSummary();
+    if (!parsed) {
+      elements.editError.textContent = "请先修正 JSON 内容。";
+      return;
+    }
+
+    const removedPaths = new Set(
+      Array.from(elements.editForm.querySelectorAll("[data-edit-remove-screenshot]:checked"))
+        .map((input) => input.value)
+    );
+    const keepScreenshotPaths = state.editScreenshotPaths.filter((path) => !removedPaths.has(path));
+    const newScreenshots = elements.editScreenshotInput?.files || [];
+    const jsonChanged = jsonText !== String(state.editOriginalJson || "").trim();
+
+    const original = elements.editSubmit.innerHTML;
+    elements.editSubmit.disabled = true;
+    elements.editSubmit.textContent = "正在保存...";
+
+    try {
+      await store.updatePresetPackage(store.getClient(), {
+        packageId: state.editId,
+        fields: {
+          title: formData.get("title"),
+          authorName: formData.get("authorName"),
+          game: formData.get("game"),
+          version: formData.get("version"),
+          description: formData.get("description"),
+          status: formData.get("status"),
+          isHidden: formData.get("visibility") === "hidden",
+          rejectionReason: formData.get("rejectionReason"),
+          userId: state.user.id
+        },
+        presetContent: jsonChanged ? jsonText : null,
+        parsed: jsonChanged ? parsed : null,
+        current: item,
+        keepScreenshotPaths,
+        screenshots: newScreenshots
+      });
+
+      elements.editDialog.close();
+      showToast("预设已保存，已立即生效。");
+      await loadAllReviews();
+    } catch (error) {
+      elements.editError.textContent = store.errorMessage(error);
+    } finally {
+      elements.editSubmit.disabled = false;
+      elements.editSubmit.innerHTML = original;
+      refreshIcons();
+    }
+  }
+
   async function approvePackage(packageId, button) {
     button.disabled = true;
-    pre.innerHTML = `<span class="ui-skeleton ui-skeleton-line"></span>`;
     try {
       const result = await store.getClient()
         .from("preset_packages")
@@ -761,12 +1001,17 @@
           status: "approved",
           rejection_reason: null,
           reviewed_at: new Date().toISOString(),
-          reviewed_by: state.user.id
+          reviewed_by: state.user.id,
+          updated_at: new Date().toISOString()
         })
-        .eq("id", packageId);
+        .eq("id", packageId)
+        .select("id");
 
       if (result.error) {
         throw new Error(store.errorMessage(result.error));
+      }
+      if (!result.data?.length) {
+        throw new Error("没有找到待审核投稿，或当前账号没有修改权限。");
       }
 
       showToast("投稿已通过。");
@@ -901,7 +1146,8 @@
           status: "rejected",
           rejection_reason: reason,
           reviewed_at: new Date().toISOString(),
-          reviewed_by: state.user.id
+          reviewed_by: state.user.id,
+          updated_at: new Date().toISOString()
         })
         .eq("id", state.rejectId);
 

@@ -532,6 +532,7 @@
       .select(`
         id,
         owner_id,
+        source,
         title,
         author_name,
         game,
@@ -543,6 +544,7 @@
         status,
         rejection_reason,
         json_path,
+        json_size,
         screenshot_paths,
         preset_count,
         is_hidden,
@@ -565,6 +567,208 @@
     }
 
     return result.data || [];
+  }
+
+  async function fetchAllPackages(supabase) {
+    const result = await supabase
+      .from("preset_packages")
+      .select(`
+        id,
+        owner_id,
+        source,
+        title,
+        author_name,
+        game,
+        version,
+        pa_version_range,
+        scope_keyboard,
+        scope_gamepad,
+        description,
+        status,
+        rejection_reason,
+        json_path,
+        json_size,
+        screenshot_paths,
+        preset_count,
+        is_hidden,
+        hidden_at,
+        hidden_by,
+        created_at,
+        reviewed_at,
+        preset_items(id, scope, name, display_name, sort_order)
+      `)
+      .order("created_at", { ascending: false });
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+
+    return result.data || [];
+  }
+
+  async function updatePresetPackage(supabase, options) {
+    const {
+      packageId,
+      fields,
+      presetContent,
+      parsed,
+      current,
+      keepScreenshotPaths,
+      screenshots
+    } = options;
+
+    if (!packageId) {
+      throw new Error("预设记录不存在。");
+    }
+
+    validatePackageFields(fields);
+
+    const newScreenshots = validateScreenshots(screenshots);
+    const keptScreenshots = [...new Set((keepScreenshotPaths || []).filter(Boolean))];
+    if (keptScreenshots.length + newScreenshots.length > MAX_SCREENSHOTS) {
+      throw new Error(`每个预设最多保留 ${MAX_SCREENSHOTS} 张截图。`);
+    }
+
+    const uploadedFiles = [];
+    const removedFiles = [];
+    const now = new Date().toISOString();
+    let jsonPath = current?.json_path || "";
+    let jsonSize = null;
+    let packageUpdated = false;
+
+    try {
+      if (presetContent != null) {
+        const blob = new Blob([presetContent], { type: "application/json" });
+        if (blob.size > MAX_JSON_SIZE) {
+          throw new Error("预设 JSON 文件不能超过 5 MB。");
+        }
+
+        const nextJsonPath = `${packageId}/preset-${Date.now()}.json`;
+        const jsonUpload = await supabase.storage
+          .from(PRESET_FILE_BUCKET)
+          .upload(nextJsonPath, blob, {
+            cacheControl: "3600",
+            contentType: "application/json",
+            upsert: false
+          });
+
+        if (jsonUpload.error) {
+          throw new Error(errorMessage(jsonUpload.error));
+        }
+
+        uploadedFiles.push({ bucket: PRESET_FILE_BUCKET, path: nextJsonPath });
+        if (jsonPath && jsonPath !== nextJsonPath) {
+          removedFiles.push({ bucket: PRESET_FILE_BUCKET, path: jsonPath });
+        }
+        jsonPath = nextJsonPath;
+        jsonSize = blob.size;
+      }
+
+      const addedScreenshotPaths = [];
+      for (let index = 0; index < newScreenshots.length; index += 1) {
+        const file = newScreenshots[index];
+        const path = `${packageId}/screenshot-${Date.now()}-${index + 1}${safeExtension(file, ".png")}`;
+        const uploadResult = await supabase.storage
+          .from(SCREENSHOT_BUCKET)
+          .upload(path, file, {
+            cacheControl: "3600",
+            contentType: imageContentType(file),
+            upsert: false
+          });
+
+        if (uploadResult.error) {
+          throw new Error(errorMessage(uploadResult.error));
+        }
+
+        uploadedFiles.push({ bucket: SCREENSHOT_BUCKET, path });
+        addedScreenshotPaths.push(path);
+      }
+
+      const screenshotPaths = [...keptScreenshots, ...addedScreenshotPaths];
+      const keptSet = new Set(keptScreenshots);
+      (current?.screenshot_paths || []).forEach((path) => {
+        if (path && !keptSet.has(path)) {
+          removedFiles.push({ bucket: SCREENSHOT_BUCKET, path });
+        }
+      });
+
+      const payload = {
+        title: normalizeText(fields.title),
+        author_name: normalizeText(fields.authorName),
+        game: normalizeText(fields.game),
+        version: normalizeText(fields.version),
+        description: normalizeText(fields.description),
+        status: fields.status,
+        is_hidden: Boolean(fields.isHidden),
+        hidden_at: fields.isHidden ? now : null,
+        hidden_by: fields.isHidden ? (fields.userId || null) : null,
+        rejection_reason: fields.status === "rejected" ? normalizeText(fields.rejectionReason) : null,
+        reviewed_at: fields.status === "pending" ? null : now,
+        reviewed_by: fields.status === "pending" ? null : (fields.userId || null),
+        screenshot_paths: screenshotPaths,
+        updated_at: now
+      };
+
+      if (jsonPath) {
+        payload.json_path = jsonPath;
+      }
+      if (jsonSize != null) {
+        payload.json_size = jsonSize;
+      }
+      if (parsed) {
+        payload.pa_version_range = parsed.paVersionRange;
+        payload.scope_keyboard = parsed.scopes.includes("keyboard");
+        payload.scope_gamepad = parsed.scopes.includes("gamepad");
+        payload.preset_count = parsed.presetCount;
+      }
+
+      const updateResult = await supabase
+        .from("preset_packages")
+        .update(payload)
+        .eq("id", packageId)
+        .select("id");
+
+      if (updateResult.error) {
+        throw new Error(errorMessage(updateResult.error));
+      }
+      if (!updateResult.data?.length) {
+        throw new Error("没有找到要修改的预设，或当前账号没有修改权限。");
+      }
+      packageUpdated = true;
+
+      if (parsed) {
+        const deleteResult = await supabase
+          .from("preset_items")
+          .delete()
+          .eq("package_id", packageId);
+
+        if (deleteResult.error) {
+          throw new Error(errorMessage(deleteResult.error));
+        }
+
+        const itemResult = await supabase.from("preset_items").insert(
+          parsed.items.map((item) => ({
+            package_id: packageId,
+            scope: item.scope,
+            name: item.name,
+            display_name: item.displayName,
+            sort_order: item.sortOrder
+          }))
+        );
+
+        if (itemResult.error) {
+          throw new Error(errorMessage(itemResult.error));
+        }
+      }
+
+      await removeFiles(supabase, removedFiles, false);
+      return { packageId, jsonPath };
+    } catch (error) {
+      if (!packageUpdated) {
+        await removeFiles(supabase, uploadedFiles, false);
+      }
+      throw error;
+    }
   }
 
   async function getSignedUrls(supabase, bucket, paths, expiresIn) {
@@ -657,10 +861,13 @@
     fetchApprovedPackages,
     fetchOwnPackages,
     fetchReviewPackages,
+    fetchAllPackages,
+    updatePresetPackage,
     getSignedUrls,
     getDownloadUrl,
     getPresetFileText,
     getProfile,
-    signInWithGitHub
+    signInWithGitHub,
+    validatePresetPayload
   };
 })();

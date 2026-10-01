@@ -10,15 +10,15 @@
   <link rel="icon" type="image/png" href="assets/brand/icon.png">
   <link rel="preload" href="assets/fonts/LetsParty-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/styles.css?v=20261001-6">
-  <link rel="stylesheet" href="assets/presets.css?v=20261001-36">
+  <link rel="stylesheet" href="assets/presets.css?v=20261001-37">
   <link rel="stylesheet" href="assets/auth-header.css?v=20261001-9">
   <script src="assets/vendor/lucide.min.js" defer></script>
   <script src="assets/vendor/supabase.js" defer></script>
   <script src="assets/supabase-config.js?v=20261001-4" defer></script>
-  <script src="assets/preset-store.js?v=20261001-8" defer></script>
+  <script src="assets/preset-store.js?v=20261001-9" defer></script>
   <script src="assets/auth-header.js?v=20261001-6" defer></script>
   <script src="assets/main.js?v=20261001-4" defer></script>
-  <script src="assets/preset-admin.js?v=20261001-13" defer></script>
+  <script src="assets/preset-admin.js?v=20261001-14" defer></script>
 </head>
 <body data-page="preset-admin">
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -52,7 +52,7 @@
         <div class="preset-hero-copy">
           <p class="section-kicker">REVIEW</p>
           <h1>预设审核中心</h1>
-          <p>审核社区投稿，填写拒绝原因，并直接发布官方预设。</p>
+          <p>审核社区投稿、编辑全部预设，并直接发布官方预设。</p>
         </div>
       </div>
     </section>
@@ -89,11 +89,21 @@
                 已隐藏
                 <span data-review-count="hidden">0</span>
               </button>
+              <button class="preset-tab" type="button" role="tab" aria-selected="false" data-review-tab="all">
+                全部预设
+                <span data-review-count="all">0</span>
+              </button>
             </div>
-            <button class="button button-secondary" type="button" data-refresh-review>
-              <i data-lucide="refresh-cw" aria-hidden="true"></i>
-              刷新
-            </button>
+            <div class="preset-admin-actions">
+              <label class="preset-admin-search" data-review-search-field hidden>
+                <i data-lucide="search" aria-hidden="true"></i>
+                <input type="search" placeholder="搜索标题、作者或游戏" data-review-search>
+              </label>
+              <button class="button button-secondary" type="button" data-refresh-review>
+                <i data-lucide="refresh-cw" aria-hidden="true"></i>
+                刷新
+              </button>
+            </div>
           </div>
 
           <div class="preset-feedback" data-review-feedback role="status"></div>
@@ -195,6 +205,102 @@
     </button>
     <div class="preset-dialog-frame preset-form-frame">
       <div class="preset-dialog-body" data-review-detail></div>
+    </div>
+  </dialog>
+
+  <dialog class="preset-dialog preset-edit-dialog" data-edit-dialog>
+    <button class="preset-dialog-close" type="button" aria-label="关闭" data-close-dialog>
+      <i data-lucide="x" aria-hidden="true"></i>
+    </button>
+    <div class="preset-dialog-frame preset-form-frame">
+      <div class="preset-dialog-head">
+        <div>
+          <p class="section-kicker">EDIT PRESET</p>
+          <h2>编辑预设</h2>
+        </div>
+      </div>
+      <form class="preset-form" data-edit-form>
+        <div class="preset-form-grid">
+          <label class="preset-field">
+            <span>预设包标题 <strong>必填</strong></span>
+            <input type="text" name="title" maxlength="120" required>
+          </label>
+          <label class="preset-field">
+            <span>作者 <strong>必填</strong></span>
+            <input type="text" name="authorName" maxlength="80" required>
+          </label>
+          <label class="preset-field">
+            <span>游戏</span>
+            <input type="text" name="game" maxlength="120">
+          </label>
+          <label class="preset-field">
+            <span>投稿版本 <strong>必填</strong></span>
+            <input type="text" name="version" maxlength="40" required>
+          </label>
+          <label class="preset-field">
+            <span>审核状态</span>
+            <select name="status">
+              <option value="pending">待审核</option>
+              <option value="approved">已通过</option>
+              <option value="rejected">已拒绝</option>
+            </select>
+          </label>
+          <label class="preset-field">
+            <span>市场可见性</span>
+            <select name="visibility">
+              <option value="visible">上架，用户可见</option>
+              <option value="hidden">隐藏，用户不可见</option>
+            </select>
+          </label>
+          <div class="preset-field preset-field-wide">
+            <span>PA Keystroke 支持版本</span>
+            <output class="preset-version-support-value" data-edit-version-support></output>
+            <small class="preset-field-hint">由 JSON 中的 version 自动识别，修改 JSON 后会同步更新。</small>
+          </div>
+          <div class="preset-field preset-field-wide">
+            <span>适用范围</span>
+            <output class="preset-version-support-value" data-edit-scope></output>
+            <small class="preset-field-hint">由 JSON 中每个预设的 scope 自动识别。</small>
+          </div>
+          <label class="preset-field preset-field-wide">
+            <span>拒绝原因</span>
+            <textarea name="rejectionReason" rows="2" maxlength="1000" placeholder="仅在审核状态为“已拒绝”时需要填写"></textarea>
+          </label>
+          <label class="preset-field preset-field-wide">
+            <span>介绍</span>
+            <textarea name="description" rows="4" maxlength="2000"></textarea>
+          </label>
+          <label class="preset-field preset-field-wide">
+            <span>预设 JSON 内容 <strong>必填</strong></span>
+            <textarea class="preset-edit-json" name="presetJson" rows="14" spellcheck="false" required data-edit-json></textarea>
+            <small class="preset-field-hint">可以直接修改 JSON 内容。保存时会先校验，再自动同步预设条目、支持版本、适用范围和预设数量。</small>
+          </label>
+        </div>
+
+        <div class="preset-edit-json-summary" data-edit-json-summary></div>
+
+        <fieldset class="preset-edit-screenshots">
+          <legend>截图（最多保留 5 张）</legend>
+          <div class="preset-edit-screenshot-grid" data-edit-screenshot-list></div>
+          <label class="preset-file-field">
+            <input type="file" accept=".png,.jpg,.jpeg,.webp,.gif,.avif,.bmp,image/png,image/jpeg,image/webp,image/gif,image/avif,image/bmp" multiple data-edit-screenshots>
+            <span class="preset-file-icon"><i data-lucide="images" aria-hidden="true"></i></span>
+            <span>
+              <strong>添加新截图</strong>
+              <small>新截图会追加到保留的截图后面，每张不超过 5 MB</small>
+            </span>
+          </label>
+        </fieldset>
+
+        <p class="preset-form-error" data-edit-error role="alert"></p>
+        <div class="preset-form-actions">
+          <button class="button button-secondary" type="button" data-close-dialog>取消</button>
+          <button class="button button-primary" type="submit" data-edit-submit>
+            <i data-lucide="save" aria-hidden="true"></i>
+            保存并立即生效
+          </button>
+        </div>
+      </form>
     </div>
   </dialog>
 
