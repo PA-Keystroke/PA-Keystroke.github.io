@@ -70,6 +70,45 @@
   border-radius: 0;
 }
 
+.header-account-avatar-wrap {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.header-account-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #1c1c1e;
+  border-radius: 50%;
+  background: #ff5560;
+  box-sizing: content-box;
+}
+
+.header-account-dot[hidden],
+.header-account-badge[hidden] {
+  display: none;
+}
+
+.header-account-badge {
+  min-width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #ff5560;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .header-account-name {
   max-width: 130px;
   overflow: hidden;

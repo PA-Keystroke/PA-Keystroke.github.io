@@ -1441,39 +1441,81 @@
 
     try {
       const submissions = await store.fetchOwnPackages(store.getClient(), state.user.id);
-      const rows = submissions.filter((item) => !item.is_hidden).map((item) => `
-        <div class="preset-submission-row">
-          <div>
-            <strong>${escapeHtml(item.title)}</strong>
-            <span>${formatDate(item.created_at)} · ${Number(item.preset_count) || 0} 个预设</span>
-            ${item.status === "rejected" && item.rejection_reason
-              ? `<p class="preset-rejection-note">拒绝原因：${escapeHtml(item.rejection_reason)}</p>`
-              : ""}
-          </div>
-          <div class="preset-submission-actions">
-            <div class="preset-submission-statuses">
-              ${renderStatus(item.status)}
+      const seenAt = state.user?.user_metadata?.preset_reviews_seen_at || "";
+      const seenTime = seenAt ? new Date(seenAt).getTime() : 0;
+      const visibleSubmissions = submissions.filter((item) => !item.is_hidden);
+      const newIds = new Set(
+        visibleSubmissions
+          .filter((item) => isUnreadReviewResult(item, seenTime))
+          .map((item) => item.id)
+      );
+      const rows = visibleSubmissions.map((item) => {
+        const isNew = newIds.has(item.id);
+        return `
+          <div class="preset-submission-row${isNew ? " is-new" : ""}">
+            <div>
+              <strong>${escapeHtml(item.title)}</strong>
+              <span>${formatDate(item.created_at)} · ${Number(item.preset_count) || 0} 个预设</span>
+              ${item.status === "rejected" && item.rejection_reason
+                ? `<p class="preset-rejection-note">拒绝原因：${escapeHtml(item.rejection_reason)}</p>`
+                : ""}
             </div>
-            <button class="preset-submission-hide" type="button" data-hide-submission="${escapeAttribute(item.id)}" data-hide-title="${escapeAttribute(item.title)}">
-              <i data-lucide="trash-2" aria-hidden="true"></i>
-              删除
-            </button>
+            <div class="preset-submission-actions">
+              <div class="preset-submission-statuses">
+                ${isNew ? `<span class="preset-submission-new">新</span>` : ""}
+                ${renderStatus(item.status)}
+              </div>
+              <button class="preset-submission-hide" type="button" data-hide-submission="${escapeAttribute(item.id)}" data-hide-title="${escapeAttribute(item.title)}">
+                <i data-lucide="trash-2" aria-hidden="true"></i>
+                删除
+              </button>
+            </div>
           </div>
-        </div>
-      `).join("");
+        `;
+      }).join("");
 
       elements.mySubmissions.innerHTML = `
         <div class="preset-form-actions">
           <button class="button button-secondary" type="button" data-sign-out>退出 GitHub 登录</button>
         </div>
+        ${newIds.size ? `<p class="preset-submission-summary">有 ${newIds.size} 条新的审核结果</p>` : ""}
         <div class="preset-submission-list">
           ${rows || `<div class="preset-empty"><div><i data-lucide="inbox" aria-hidden="true"></i><h2>还没有投稿</h2><p>发布预设后可以在这里查看审核状态。</p></div></div>`}
         </div>
       `;
       refreshIcons();
+
+      if (newIds.size) {
+        const markedAt = new Date().toISOString();
+        store.markPresetReviewsSeen(store.getClient(), markedAt).catch(() => {});
+        state.user = {
+          ...state.user,
+          user_metadata: {
+            ...(state.user.user_metadata || {}),
+            preset_reviews_seen_at: markedAt
+          }
+        };
+      }
+
+      window.dispatchEvent(new CustomEvent("pa-review-notifications-seen"));
     } catch (error) {
       elements.mySubmissions.innerHTML = `<p class="preset-feedback is-error">${escapeHtml(error.message)}</p>`;
     }
+  }
+
+  function isUnreadReviewResult(item, seenTime) {
+    if (item.is_hidden) {
+      return false;
+    }
+    if (item.status !== "approved" && item.status !== "rejected") {
+      return false;
+    }
+    if (!item.reviewed_at) {
+      return false;
+    }
+
+    const reviewedTime = new Date(item.reviewed_at).getTime();
+    return Number.isFinite(reviewedTime) && reviewedTime > seenTime;
   }
 
   async function hideOwnSubmission() {

@@ -703,11 +703,17 @@
         hidden_at: fields.isHidden ? now : null,
         hidden_by: fields.isHidden ? (fields.userId || null) : null,
         rejection_reason: fields.status === "rejected" ? normalizeText(fields.rejectionReason) : null,
-        reviewed_at: fields.status === "pending" ? null : now,
-        reviewed_by: fields.status === "pending" ? null : (fields.userId || null),
         screenshot_paths: screenshotPaths,
         updated_at: now
       };
+
+      if (fields.status === "pending") {
+        payload.reviewed_at = null;
+        payload.reviewed_by = null;
+      } else if (fields.status !== current?.status) {
+        payload.reviewed_at = now;
+        payload.reviewed_by = fields.userId || null;
+      }
 
       if (jsonPath) {
         payload.json_path = jsonPath;
@@ -829,6 +835,21 @@
     return result.data;
   }
 
+  async function markPresetReviewsSeen(supabase, seenAt) {
+    const value = seenAt || new Date().toISOString();
+    const result = await supabase.auth.updateUser({
+      data: {
+        preset_reviews_seen_at: value
+      }
+    });
+
+    if (result.error) {
+      throw new Error(errorMessage(result.error));
+    }
+
+    return value;
+  }
+
   async function signInWithGitHub(supabase, returnPath) {
     const redirectTo = new URL(returnPath || window.location.pathname, window.location.href).href;
     const result = await supabase.auth.signInWithOAuth({
@@ -867,6 +888,7 @@
     getDownloadUrl,
     getPresetFileText,
     getProfile,
+    markPresetReviewsSeen,
     signInWithGitHub,
     validatePresetPayload
   };

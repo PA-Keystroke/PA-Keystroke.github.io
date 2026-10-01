@@ -11,6 +11,9 @@
   let user = null;
   let root = null;
   let loading = true;
+  let reviewNotificationCount = 0;
+  let reviewNotificationsCleared = false;
+  let reviewRequestToken = 0;
 
   function init() {
     client = store.getClient();
@@ -38,6 +41,8 @@
         closeMenu();
       }
     });
+
+    window.addEventListener("pa-review-notifications-seen", clearReviewNotifications);
   }
 
   function mount() {
@@ -70,9 +75,18 @@
   }
 
   function setUser(nextUser) {
+    const changedUser = nextUser?.id !== user?.id;
     user = nextUser;
     loading = false;
+    if (changedUser) {
+      reviewNotificationCount = 0;
+      reviewNotificationsCleared = false;
+      reviewRequestToken += 1;
+    }
     render();
+    if (user) {
+      loadReviewNotifications();
+    }
   }
 
   function render() {
@@ -107,10 +121,13 @@
 
     root.innerHTML = `
       <button class="header-account-button" type="button" aria-haspopup="menu" aria-expanded="false" data-header-account-toggle>
-        <span class="header-account-avatar">
-          ${avatarUrl
-            ? `<img src="${escapeAttribute(avatarUrl)}" alt="">`
-            : escapeHtml(fallback)}
+        <span class="header-account-avatar-wrap">
+          <span class="header-account-avatar">
+            ${avatarUrl
+              ? `<img src="${escapeAttribute(avatarUrl)}" alt="">`
+              : escapeHtml(fallback)}
+          </span>
+          <span class="header-account-dot" data-header-account-dot hidden></span>
         </span>
         <span class="header-account-name">@${escapeHtml(username)}</span>
         <i data-lucide="chevron-down" aria-hidden="true"></i>
@@ -119,6 +136,7 @@
         <button type="button" role="menuitem" data-header-my-submissions>
           <i data-lucide="folder-clock" aria-hidden="true"></i>
           我的投稿
+          <span class="header-account-badge" data-header-my-submissions-count hidden>0</span>
         </button>
         <button class="is-danger" type="button" role="menuitem" data-header-sign-out>
           <i data-lucide="log-out" aria-hidden="true"></i>
@@ -126,6 +144,16 @@
         </button>
       </div>
     `;
+
+    const dot = root.querySelector("[data-header-account-dot]");
+    const badge = root.querySelector("[data-header-my-submissions-count]");
+    if (dot) {
+      dot.hidden = reviewNotificationCount <= 0;
+    }
+    if (badge) {
+      badge.hidden = reviewNotificationCount <= 0;
+      badge.textContent = String(reviewNotificationCount);
+    }
 
     root.querySelector("[data-header-account-toggle]").addEventListener("click", toggleMenu);
     root.querySelector("[data-header-my-submissions]").addEventListener("click", openMySubmissions);
@@ -161,12 +189,63 @@
 
   function openMySubmissions() {
     closeMenu();
+    clearReviewNotifications();
     if (window.location.pathname.endsWith("/presets.html")) {
       window.dispatchEvent(new CustomEvent("pa-open-my-submissions"));
       return;
     }
 
     window.location.href = "presets.html?open=mine";
+  }
+
+  async function loadReviewNotifications() {
+    if (!user || reviewNotificationsCleared) {
+      return;
+    }
+
+    const requestToken = ++reviewRequestToken;
+    const userId = user.id;
+
+    try {
+      const submissions = await store.fetchOwnPackages(client, userId);
+      if (requestToken !== reviewRequestToken || !user || user.id !== userId || reviewNotificationsCleared) {
+        return;
+      }
+
+      reviewNotificationCount = countUnreadReviewResults(submissions, getReviewSeenAt());
+      render();
+    } catch (error) {
+      // The header should stay usable even if the notification request fails.
+    }
+  }
+
+  function countUnreadReviewResults(submissions, seenAt) {
+    const seenTime = seenAt ? new Date(seenAt).getTime() : 0;
+
+    return (submissions || []).filter((item) => {
+      if (item.is_hidden) {
+        return false;
+      }
+      if (item.status !== "approved" && item.status !== "rejected") {
+        return false;
+      }
+      if (!item.reviewed_at) {
+        return false;
+      }
+
+      const reviewedTime = new Date(item.reviewed_at).getTime();
+      return Number.isFinite(reviewedTime) && reviewedTime > seenTime;
+    }).length;
+  }
+
+  function getReviewSeenAt() {
+    return user?.user_metadata?.preset_reviews_seen_at || "";
+  }
+
+  function clearReviewNotifications() {
+    reviewNotificationsCleared = true;
+    reviewNotificationCount = 0;
+    render();
   }
 
   function getUsername(currentUser) {
