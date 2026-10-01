@@ -30,6 +30,12 @@
   background: var(--surface);
 }
 
+.account-gate[hidden],
+.account-content[hidden],
+.account-gate [hidden] {
+  display: none !important;
+}
+
 .account-gate > svg {
   width: 34px;
   height: 34px;
