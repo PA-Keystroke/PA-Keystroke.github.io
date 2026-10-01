@@ -28,6 +28,7 @@
     elements.filters = document.querySelector("[data-preset-filters]");
     elements.versionSelect = document.querySelector("[data-preset-version]");
     elements.versionMultiSelect = document.querySelector("[data-preset-multi-select='version-support']");
+    elements.versionSupportValue = document.querySelector("[data-version-support-value]");
     elements.grid = document.querySelector("[data-preset-grid]");
     elements.pagination = Array.from(document.querySelectorAll("[data-preset-pagination]"));
     elements.feedback = document.querySelector("[data-preset-feedback]");
@@ -583,6 +584,7 @@
       state.parsedPreset = null;
       elements.jsonSummary.hidden = true;
       elements.submitError.textContent = "";
+      setVersionSupportDisplay(null);
 
       if (!file) {
         return;
@@ -963,7 +965,7 @@
     }
 
     if (support.versions.length === 1) {
-      return support.versions[0];
+      return /[+]|以上|起/.test(String(value)) ? `${support.versions[0]} 及以上` : support.versions[0];
     }
 
     return `${support.versions[0]} - ${support.versions[support.versions.length - 1]}`;
@@ -986,6 +988,10 @@
 
     if (support.exact.length === 1) {
       return escapeHtml(support.exact[0]);
+    }
+
+    if (/[+]|以上|起/.test(String(value))) {
+      return escapeHtml(`${support.versions[0]} 及以上`);
     }
 
     return escapeHtml(`${support.versions[0]} - ${support.versions[support.versions.length - 1]}`);
@@ -1356,7 +1362,6 @@
         title: formData.get("title"),
         authorName: getUsername(state.user),
         version: formData.get("version"),
-        paVersionRange: formData.get("paVersionRange"),
         description: formData.get("description")
       };
 
@@ -1398,9 +1403,11 @@
     elements.submitError.textContent = "";
     elements.jsonSummary.hidden = true;
     elements.screenshotList.textContent = "";
+    setVersionSupportDisplay(null);
   }
 
   function renderJsonSummary(parsed) {
+    setVersionSupportDisplay(parsed);
     elements.jsonSummary.hidden = false;
     elements.jsonSummary.innerHTML = `
       <strong>已识别 ${parsed.presetCount} 个预设</strong>
@@ -1410,6 +1417,17 @@
         `).join("")}
       </ul>
     `;
+  }
+
+  function setVersionSupportDisplay(parsed) {
+    if (!elements.versionSupportValue) {
+      return;
+    }
+
+    elements.versionSupportValue.textContent = parsed
+      ? parsed.versionSupportLabel
+      : "上传 JSON 后自动识别";
+    elements.versionSupportValue.classList.toggle("is-pending", !parsed);
   }
 
   async function openMySubmissions() {

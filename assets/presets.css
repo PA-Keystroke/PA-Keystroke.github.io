@@ -390,6 +390,21 @@ body[data-page="preset-admin"] select {
   font-size: 12px;
 }
 
+.preset-version-support-value {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  padding: 0 13px;
+  border: 1px solid var(--line-dark);
+  border-radius: 12px;
+  background: #0e0e0f;
+  color: var(--white);
+}
+
+.preset-version-support-value.is-pending {
+  color: #66666b;
+}
+
 .preset-field textarea {
   min-height: 132px;
   padding-block: 12px;

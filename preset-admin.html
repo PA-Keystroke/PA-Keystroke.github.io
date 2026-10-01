@@ -10,15 +10,15 @@
   <link rel="icon" type="image/png" href="assets/brand/icon.png">
   <link rel="preload" href="assets/fonts/LetsParty-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/styles.css?v=20261001-6">
-  <link rel="stylesheet" href="assets/presets.css?v=20261001-34">
+  <link rel="stylesheet" href="assets/presets.css?v=20261001-36">
   <link rel="stylesheet" href="assets/auth-header.css?v=20261001-9">
   <script src="assets/vendor/lucide.min.js" defer></script>
   <script src="assets/vendor/supabase.js" defer></script>
   <script src="assets/supabase-config.js?v=20261001-4" defer></script>
-  <script src="assets/preset-store.js?v=20261001-7" defer></script>
+  <script src="assets/preset-store.js?v=20261001-8" defer></script>
   <script src="assets/auth-header.js?v=20261001-6" defer></script>
   <script src="assets/main.js?v=20261001-4" defer></script>
-  <script src="assets/preset-admin.js?v=20261001-12" defer></script>
+  <script src="assets/preset-admin.js?v=20261001-13" defer></script>
 </head>
 <body data-page="preset-admin">
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -120,24 +120,10 @@
                   <span>版本号 <strong>必填</strong></span>
                   <input type="text" name="version" maxlength="40" required>
                 </label>
-                <div class="preset-field preset-field-wide preset-multi-select" data-preset-multi-select="version-support">
+                <div class="preset-field preset-field-wide">
                   <span>PA Keystroke 支持版本</span>
-                  <input type="hidden" name="paVersionRange" value="" data-preset-multi-value>
-                  <div class="preset-multi-control">
-                    <button class="preset-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" data-preset-multi-trigger>
-                      <span class="preset-select-prefix" aria-hidden="true">支持版本：</span>
-                      <span class="preset-select-value" data-preset-multi-label>不限</span>
-                      <i data-lucide="chevron-down" aria-hidden="true"></i>
-                    </button>
-                    <div class="preset-select-menu preset-multi-menu" role="listbox" aria-multiselectable="true" hidden data-preset-multi-menu>
-                      <div class="preset-select-loading" aria-hidden="true">
-                        <span class="preset-skeleton-line"></span>
-                        <span class="preset-skeleton-line"></span>
-                        <span class="preset-skeleton-line"></span>
-                      </div>
-                    </div>
-                  </div>
-                  <small class="preset-field-hint">不选表示支持所有已发布版本</small>
+                  <output class="preset-version-support-value is-pending" aria-live="polite" data-version-support-value>上传 JSON 后自动识别</output>
+                  <small class="preset-field-hint">由 JSON 中的 version 自动读取。version 为 1 时支持全部版本</small>
                 </div>
               </div>
 

@@ -87,6 +87,7 @@
             <a href="#add-keyboard">添加按键</a>
             <a href="#add-mouse">添加鼠标</a>
             <a href="#add-movement">位移指示器</a>
+            <a href="#add-wheel">滚轮指示器</a>
             <a href="#add-text">添加文本</a>
             <a href="#add-gamepad">手柄控件</a>
             <a href="#edit-controls">编辑控件</a>
@@ -204,8 +205,20 @@
           <p>位移指示器会显示鼠标移动方向，并在停止移动后逐渐回到中心。</p>
         </section>
 
-        <section class="wiki-section" id="add-text">
+        <section class="wiki-section" id="add-wheel">
           <p class="section-kicker">07</p>
+          <h2>添加滚轮指示器</h2>
+          <ol class="step-list compact">
+            <li><span>1</span><div><strong>添加控件</strong><p>在键盘布局中点击“＋ 添加”，然后选择“滚轮指示器”。</p></div></li>
+            <li><span>2</span><div><strong>调整参数</strong><p>设置滑条宽度、滚动敏感度和回中速度。</p></div></li>
+            <li><span>3</span><div><strong>调整位置和尺寸</strong><p>滚轮指示器默认是竖向长条，可在预览区拖动控件或拖动边缘调整范围。</p></div></li>
+            <li><span>4</span><div><strong>保存并应用</strong><p>先点击弹窗中的“保存”，再点击主窗口的“保存并应用”。</p></div></li>
+          </ol>
+          <p>鼠标滚轮向上时滑条向上偏移，向下时向下偏移。连续滚动越快，偏移越大；停止滚动后，滑条会逐渐回到中间。</p>
+        </section>
+
+        <section class="wiki-section" id="add-text">
+          <p class="section-kicker">08</p>
           <h2>添加文本</h2>
           <ol class="step-list compact">
             <li><span>1</span><div><strong>选择“文本”</strong><p>输入需要显示的文字内容。</p></div></li>
@@ -217,7 +230,7 @@
         </section>
 
         <section class="wiki-section" id="add-gamepad">
-          <p class="section-kicker">08</p>
+          <p class="section-kicker">09</p>
           <h2>添加手柄控件</h2>
           <h3>添加整只手柄</h3>
           <ol class="step-list compact">
@@ -238,7 +251,7 @@
         </section>
 
         <section class="wiki-section" id="edit-controls">
-          <p class="section-kicker">09</p>
+          <p class="section-kicker">10</p>
           <h2>编辑已有控件</h2>
           <div class="shortcut-table" role="table" aria-label="预览区操作">
             <div role="row"><strong role="cell">左键拖动</strong><span role="cell">移动控件</span></div>
@@ -254,14 +267,13 @@
         </section>
 
         <section class="wiki-section" id="presets">
-          <p class="section-kicker">10</p>
+          <p class="section-kicker">11</p>
           <h2>管理预设</h2>
           <p>预设用于保存多套布局。键盘预设和手柄预设互相独立，切换设备模式时不会互相覆盖。</p>
           <ol class="step-list compact">
             <li><span>1</span><div><strong>切换预设</strong><p>在预览窗下方打开预设选择器，选择已有预设即可切换。</p></div></li>
             <li><span>2</span><div><strong>创建预设</strong><p>点击“＋ 添加预设”，新建后可直接输入名称。</p></div></li>
             <li><span>3</span><div><strong>重命名或删除</strong><p>自定义预设支持重命名和删除。只有未被选中的自定义预设可以被删除。</p></div></li>
-            <li><span>4</span><div><strong>恢复布局</strong><p>内置预设不能删除，但可以修改显示名称，布局也可以恢复到初始状态。</p></div></li>
           </ol>
 
           <figure class="wiki-media wiki-media-small">
@@ -292,7 +304,7 @@
         </section>
 
         <section class="wiki-section" id="overlay">
-          <p class="section-kicker">11</p>
+          <p class="section-kicker">12</p>
           <h2>覆盖层设置</h2>
           <h3>按键背景</h3>
           <p>勾选“显示按键背景”后，可以修改背景颜色和背景不透明度。</p>
@@ -325,7 +337,7 @@
         </section>
 
         <section class="wiki-section" id="obs">
-          <p class="section-kicker">12</p>
+          <p class="section-kicker">13</p>
           <h2>在 OBS 中使用</h2>
           <ol class="step-list compact">
             <li><span>1</span><div><strong>添加来源</strong><p>在 OBS 的来源面板点击“＋”，选择“窗口捕获”。</p></div></li>
@@ -346,7 +358,7 @@
         </section>
 
         <section class="wiki-section" id="updates">
-          <p class="section-kicker">13</p>
+          <p class="section-kicker">14</p>
           <h2>自动检查更新</h2>
           <p>程序每次启动时都会检查公开 Release 仓库。检查期间标题栏会显示加载动画；如果没有新版本，动画会自动隐藏。</p>
           <p>发现新版本时，可以从更新提示中查看更新日志、打开发布页面、下载更新，并自动替换和重启。更新日志支持保留原文换行和显示 GitHub Release 正文中的远程图片。</p>
@@ -354,7 +366,7 @@
         </section>
 
         <section class="wiki-section" id="data-directory">
-          <p class="section-kicker">14</p>
+          <p class="section-kicker">15</p>
           <h2>数据目录</h2>
           <p>配置默认保存在：</p>
           <pre><code>%APPDATA%\PA Keystroke</code></pre>
@@ -369,7 +381,7 @@
         </section>
 
         <section class="wiki-section" id="faq">
-          <p class="section-kicker">15</p>
+          <p class="section-kicker">16</p>
           <h2>常见问题</h2>
           <div class="faq-list">
             <details>
@@ -396,7 +408,7 @@
         </section>
 
         <section class="wiki-section" id="feedback">
-          <p class="section-kicker">16</p>
+          <p class="section-kicker">17</p>
           <h2>反馈</h2>
           <p>欢迎在 GitHub Issues 中提交问题和建议，或加入社区 QQ 群交流。</p>
           <div class="feedback-actions">

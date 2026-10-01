@@ -44,6 +44,7 @@
     elements.officialScreenshotInput = elements.officialForm?.elements.screenshots;
     elements.officialSubmit = document.querySelector("[data-official-submit]");
     elements.officialVersionMultiSelect = document.querySelector("[data-preset-multi-select='version-support']");
+    elements.officialVersionSupportValue = document.querySelector("[data-version-support-value]");
     elements.toggleOfficial = document.querySelector("[data-toggle-official-form]");
     elements.refresh = document.querySelector("[data-refresh-review]");
 
@@ -184,6 +185,7 @@
       state.parsedOfficialPreset = null;
       elements.officialJsonSummary.hidden = true;
       elements.officialError.textContent = "";
+      setOfficialVersionSupportDisplay(null);
 
       if (!file) {
         return;
@@ -936,7 +938,6 @@
         title: formData.get("title"),
         authorName: "PA Keystroke",
         version: formData.get("version"),
-        paVersionRange: formData.get("paVersionRange"),
         description: formData.get("description")
       };
 
@@ -956,6 +957,7 @@
 
       elements.officialForm.reset();
       updateOfficialVersionValue();
+      setOfficialVersionSupportDisplay(null);
       state.parsedOfficialPreset = null;
       elements.officialJsonSummary.hidden = true;
       elements.officialForm.hidden = true;
@@ -973,6 +975,7 @@
   }
 
   function renderOfficialSummary(parsed) {
+    setOfficialVersionSupportDisplay(parsed);
     elements.officialJsonSummary.hidden = false;
     elements.officialJsonSummary.innerHTML = `
       <strong>已识别 ${parsed.presetCount} 个预设</strong>
@@ -982,6 +985,17 @@
         `).join("")}
       </ul>
     `;
+  }
+
+  function setOfficialVersionSupportDisplay(parsed) {
+    if (!elements.officialVersionSupportValue) {
+      return;
+    }
+
+    elements.officialVersionSupportValue.textContent = parsed
+      ? parsed.versionSupportLabel
+      : "上传 JSON 后自动识别";
+    elements.officialVersionSupportValue.classList.toggle("is-pending", !parsed);
   }
 
   function renderStatus(status) {

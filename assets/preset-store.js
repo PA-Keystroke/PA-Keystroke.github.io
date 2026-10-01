@@ -59,14 +59,37 @@
     return String(value || "").trim();
   }
 
+  function parsePresetVersion(value) {
+    if (value === 1 || normalizeText(value) === "1") {
+      return {
+        version: 1,
+        paVersionRange: "",
+        versionSupportLabel: "全部版本"
+      };
+    }
+
+    const normalized = normalizeReleaseVersion(value);
+    if (!/^\d+(?:\.\d+){2,3}$/.test(normalized)) {
+      throw new Error("预设文件的 version 缺失或格式不正确。version 为 1 时表示支持全部版本，其他情况请填写类似 1.0.00 的版本号。");
+    }
+
+    return {
+      version: normalized,
+      paVersionRange: `${normalized} 以上`,
+      versionSupportLabel: `${normalized} 及以上`
+    };
+  }
+
   function validatePresetPayload(data) {
     if (!data || typeof data !== "object") {
       throw new Error("JSON 内容不是有效的预设对象。");
     }
 
-    if (data.format !== "pa-keystroke-presets" || Number(data.version) !== 1) {
+    if (data.format !== "pa-keystroke-presets") {
       throw new Error("这不是 PA Keystroke 支持的预设文件。");
     }
+
+    const versionSupport = parsePresetVersion(data.version);
 
     if (!Array.isArray(data.presets) || !data.presets.length) {
       throw new Error("预设文件中没有可用的预设。");
@@ -109,7 +132,8 @@
     return {
       items,
       presetCount: items.length,
-      scopes: [...new Set(items.map((item) => item.scope))]
+      scopes: [...new Set(items.map((item) => item.scope))],
+      ...versionSupport
     };
   }
 
@@ -325,7 +349,7 @@
       author_name: normalizeText(fields.authorName),
       game: "",
       version: normalizeText(fields.version),
-      pa_version_range: normalizeText(fields.paVersionRange),
+      pa_version_range: parsed.paVersionRange,
       scope_keyboard: parsed.scopes.includes("keyboard"),
       scope_gamepad: parsed.scopes.includes("gamepad"),
       description: normalizeText(fields.description),
