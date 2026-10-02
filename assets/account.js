@@ -30,7 +30,8 @@
     resubmitScreenshotUrls: {},
     resubmitNewFiles: [],
     resubmitNewUrls: [],
-    deleteId: ""
+    deleteId: "",
+    mobileDetailHistory: false
   };
 
   const elements = {};
@@ -194,6 +195,13 @@
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && elements.detail?.classList.contains("is-mobile-open")) {
         closeMobileDetail();
+      }
+    });
+
+    window.addEventListener("popstate", () => {
+      if (state.mobileDetailHistory) {
+        state.mobileDetailHistory = false;
+        closeMobileDetail({ fromHistory: true });
       }
     });
 
@@ -966,6 +974,9 @@
       elements.deleteDialog.close();
       state.deleteId = "";
       state.selectedId = "";
+      state.detail = null;
+      renderDetailEmpty();
+      closeMobileDetail();
       showToast("投稿已删除。");
       await loadAll();
     } catch (error) {
@@ -980,9 +991,16 @@
   function renderListSkeleton() {
     return Array.from({ length: 5 }, () => `
       <div class="account-item-row">
-        <div class="account-item">
-          <span class="ui-skeleton ui-skeleton-line"></span>
-          <span class="ui-skeleton ui-skeleton-line"></span>
+        <div class="account-item account-item-skeleton" aria-hidden="true">
+          <span class="account-item-head">
+            <span class="ui-skeleton account-skeleton-title"></span>
+            <span class="ui-skeleton account-skeleton-status"></span>
+          </span>
+          <span class="account-item-meta">
+            <span class="ui-skeleton account-skeleton-meta-line"></span>
+            <span class="ui-skeleton account-skeleton-meta-line is-wide"></span>
+            <span class="ui-skeleton account-skeleton-meta-line"></span>
+          </span>
         </div>
       </div>
     `).join("");
@@ -994,23 +1012,53 @@
         <i data-lucide="arrow-left" aria-hidden="true"></i>
         返回投稿列表
       </button>
-      <div class="account-detail-skeleton">
-        <span class="ui-skeleton" style="height:200px;border-radius:12px"></span>
-        <span class="ui-skeleton ui-skeleton-line"></span>
-        <span class="ui-skeleton ui-skeleton-line"></span>
+      <div class="account-detail-skeleton" aria-hidden="true">
+        <span class="ui-skeleton account-detail-skeleton-stage"></span>
+        <div class="account-detail-badges">
+          <span class="ui-skeleton ui-skeleton-chip"></span>
+          <span class="ui-skeleton ui-skeleton-chip"></span>
+        </div>
+        <span class="ui-skeleton account-detail-skeleton-title"></span>
+        <span class="ui-skeleton account-detail-skeleton-author"></span>
+        <div class="account-detail-skeleton-facts">
+          ${Array.from({ length: 4 }, () => `
+            <span class="account-detail-skeleton-fact">
+              <span class="ui-skeleton account-skeleton-meta-line"></span>
+              <span class="ui-skeleton account-detail-skeleton-value"></span>
+            </span>
+          `).join("")}
+        </div>
+        <div class="account-detail-skeleton-lines">
+          <span class="ui-skeleton ui-skeleton-line"></span>
+          <span class="ui-skeleton ui-skeleton-line"></span>
+          <span class="ui-skeleton ui-skeleton-line"></span>
+        </div>
+        <div class="account-detail-actions">
+          <span class="ui-skeleton account-detail-skeleton-button"></span>
+          <span class="ui-skeleton account-detail-skeleton-button is-short"></span>
+        </div>
       </div>
     `;
   }
 
   function openMobileDetail() {
+    if (!state.mobileDetailHistory) {
+      state.mobileDetailHistory = true;
+      window.history.pushState({ accountDetail: true }, "", window.location.href);
+    }
     elements.detail.classList.add("is-mobile-open");
     document.body.classList.add("is-account-detail-open");
     elements.detail.scrollTop = 0;
   }
 
-  function closeMobileDetail() {
+  function closeMobileDetail(options = {}) {
+    const shouldReturnInHistory = state.mobileDetailHistory && !options.fromHistory;
+    state.mobileDetailHistory = false;
     elements.detail?.classList.remove("is-mobile-open");
     document.body.classList.remove("is-account-detail-open");
+    if (shouldReturnInHistory) {
+      window.history.back();
+    }
   }
 
   function renderStatus(status) {

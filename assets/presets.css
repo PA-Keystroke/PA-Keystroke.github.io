@@ -386,6 +386,42 @@ body[data-page="preset-admin"] select {
   width: 82px;
 }
 
+.preset-loading-title {
+  width: 72%;
+  height: 30px;
+  margin-top: 2px;
+}
+
+.preset-loading-author {
+  width: 42%;
+  height: 14px;
+}
+
+.preset-loading-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 14px 0;
+  border-top: 1px solid var(--line-dark);
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.preset-loading-fact {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+  padding: 0 20px;
+}
+
+.preset-loading-fact .preset-skeleton-line:nth-child(1) {
+  width: 56px;
+  height: 11px;
+}
+
+.preset-loading-fact .preset-skeleton-line:nth-child(2) {
+  width: 80%;
+  height: 16px;
+}
+
 .preset-field-hint {
   color: var(--muted-dark);
   font-size: 12px;
@@ -1844,6 +1880,16 @@ body[data-page="preset-admin"] select {
 
   .preset-detail-facts::-webkit-scrollbar {
     display: none;
+  }
+
+  .preset-loading-facts {
+    display: flex;
+    gap: 12px;
+    overflow: hidden;
+  }
+
+  .preset-loading-fact {
+    flex: 0 0 clamp(180px, 64%, 240px);
   }
 }
 

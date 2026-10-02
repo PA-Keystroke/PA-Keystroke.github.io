@@ -245,7 +245,7 @@
   width: 100%;
   display: grid;
   gap: 8px;
-  padding: 15px 0;
+  padding: 15px 16px;
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -264,6 +264,31 @@
 
 .account-item.is-active {
   background: rgba(252, 240, 208, 0.08);
+}
+
+.account-item-skeleton {
+  pointer-events: none;
+}
+
+.account-skeleton-title {
+  width: min(68%, 360px);
+  height: 18px;
+}
+
+.account-skeleton-status {
+  width: 64px;
+  height: 26px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+}
+
+.account-skeleton-meta-line {
+  width: 72px;
+  height: 12px;
+}
+
+.account-skeleton-meta-line.is-wide {
+  width: 96px;
 }
 
 .account-detail-actions .is-danger {
@@ -462,6 +487,65 @@
 .account-detail-skeleton {
   display: grid;
   gap: 12px;
+}
+
+.account-detail-skeleton-stage {
+  width: 100%;
+  height: clamp(190px, 32vh, 300px);
+  border-radius: 14px;
+}
+
+.account-detail-skeleton-title {
+  width: 72%;
+  height: 28px;
+}
+
+.account-detail-skeleton-author {
+  width: 42%;
+  height: 14px;
+}
+
+.account-detail-skeleton-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line-dark);
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.account-detail-skeleton-fact {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.account-detail-skeleton-value {
+  width: 82%;
+  height: 16px;
+}
+
+.account-detail-skeleton-lines {
+  display: grid;
+  gap: 8px;
+}
+
+.account-detail-skeleton-lines .ui-skeleton-line:nth-child(2) {
+  width: 86%;
+}
+
+.account-detail-skeleton-lines .ui-skeleton-line:nth-child(3) {
+  width: 58%;
+}
+
+.account-detail-skeleton-button {
+  width: 124px;
+  height: 42px;
+  border-radius: 999px;
+}
+
+.account-detail-skeleton-button.is-short {
+  width: 96px;
 }
 
 .account-detail-back {

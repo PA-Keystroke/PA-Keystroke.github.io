@@ -1182,8 +1182,26 @@
           <span class="ui-skeleton ui-skeleton-chip"></span>
           <span class="ui-skeleton ui-skeleton-chip"></span>
         </div>
+        <span class="ui-skeleton preset-loading-title"></span>
+        <span class="ui-skeleton preset-loading-author"></span>
+        <div class="preset-loading-facts">
+          ${Array.from({ length: 4 }, () => `
+            <span class="preset-loading-fact">
+              <span class="preset-skeleton-line"></span>
+              <span class="preset-skeleton-line"></span>
+            </span>
+          `).join("")}
+        </div>
         <span class="ui-skeleton ui-skeleton-line"></span>
         <span class="ui-skeleton ui-skeleton-line"></span>
+        <div class="preset-loading-list">
+          ${Array.from({ length: 3 }, () => `
+            <div class="preset-loading-row">
+              <span class="preset-skeleton-line"></span>
+              <span class="preset-skeleton-line"></span>
+            </div>
+          `).join("")}
+        </div>
       </div>
     `;
   }
