@@ -317,12 +317,13 @@
 
       state.items = result.items;
       state.total = result.total;
-      renderList();
-
-      if (!state.items.some((item) => item.id === state.selectedId)) {
-        state.selectedId = state.items[0]?.id || "";
+      const selectedStillVisible = state.items.some((item) => item.id === state.selectedId);
+      if (!selectedStillVisible) {
+        state.selectedId = "";
         state.detail = null;
+        state.detailUrls = {};
       }
+      renderList();
 
       if (state.selectedId) {
         openDetail(state.selectedId, true, false);
