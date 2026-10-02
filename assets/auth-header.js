@@ -26,6 +26,7 @@
     COMPACT_ACCOUNT_QUERY.addEventListener("change", () => {
       closeMenu();
       placeAccountRoot();
+      updateNavNotificationDot();
     });
 
     client.auth.getSession().then(({ data }) => {
@@ -90,6 +91,8 @@
   }
 
   function render() {
+    updateNavNotificationDot();
+
     if (!root) {
       return;
     }
@@ -246,6 +249,24 @@
     reviewNotificationsCleared = true;
     reviewNotificationCount = 0;
     render();
+  }
+
+  function updateNavNotificationDot() {
+    const toggle = document.querySelector("[data-nav-toggle]");
+    if (!toggle) {
+      return;
+    }
+
+    let dot = toggle.querySelector("[data-nav-notification-dot]");
+    if (!dot) {
+      dot = document.createElement("span");
+      dot.className = "nav-toggle-dot";
+      dot.dataset.navNotificationDot = "";
+      dot.setAttribute("aria-hidden", "true");
+      toggle.append(dot);
+    }
+
+    dot.hidden = !(COMPACT_ACCOUNT_QUERY.matches && reviewNotificationCount > 0);
   }
 
   function getUsername(currentUser) {

@@ -219,7 +219,7 @@
   grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
   align-items: start;
   gap: 18px;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .account-list-col {
@@ -228,7 +228,19 @@
 
 .account-list {
   display: grid;
-  gap: 10px;
+  gap: 0;
+}
+
+.account-item-row {
+  min-width: 0;
+  padding: 5px 8px;
+  margin-right: -8px;
+  margin-left: -8px;
+  border-radius: 18px;
+}
+
+.account-item-row.is-new {
+  animation: account-review-row-highlight 3s ease-out forwards;
 }
 
 .account-item {
@@ -251,10 +263,6 @@
 .account-item.is-active {
   border-color: rgba(252, 240, 208, 0.72);
   background: rgba(252, 240, 208, 0.08);
-}
-
-.account-item.is-new {
-  animation: preset-review-highlight 7s ease forwards;
 }
 
 .account-detail-actions .is-danger {
@@ -468,6 +476,17 @@
   background: transparent;
   color: var(--white);
   cursor: pointer;
+}
+
+@keyframes account-review-row-highlight {
+  0%,
+  10% {
+    background: rgba(252, 240, 208, 0.3);
+  }
+
+  100% {
+    background: transparent;
+  }
 }
 
 @media (max-width: 960px) {

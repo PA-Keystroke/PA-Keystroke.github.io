@@ -1821,34 +1821,29 @@ body[data-page="preset-admin"] select {
   }
 
   .preset-detail-facts {
+    display: flex;
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(170px, 68%);
-    gap: 0;
+    gap: 12px;
     overflow-x: auto;
-    padding: 0 0 10px;
+    padding: 0;
     scroll-snap-type: x proximity;
     scroll-padding-inline: 1px;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   .preset-detail-facts > div {
+    min-width: 0;
+    flex: 0 0 clamp(180px, 64%, 240px);
     scroll-snap-align: start;
   }
 
   .preset-detail-facts::-webkit-scrollbar {
-    height: 6px;
-  }
-
-  .preset-detail-facts::-webkit-scrollbar-thumb {
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.32);
+    display: none;
   }
 }
 

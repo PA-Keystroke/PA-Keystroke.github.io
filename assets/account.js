@@ -337,9 +337,7 @@
   }
 
   function renderList() {
-    elements.feedback.innerHTML = state.newIds.size
-      ? `<p class="preset-submission-summary">有 ${state.newIds.size} 条新的审核结果，已用高亮标出。</p>`
-      : "";
+    elements.feedback.textContent = "";
     elements.feedback.classList.remove("is-error");
 
     elements.list.innerHTML = state.items.length
@@ -361,21 +359,23 @@
     const isNew = state.newIds.has(item.id);
     const isActive = item.id === state.selectedId;
     return `
-      <button class="account-item${isActive ? " is-active" : ""}${isNew ? " is-new" : ""}" type="button" data-account-open="${escapeAttribute(item.id)}">
-        <span class="account-item-head">
-          <strong>${escapeHtml(item.title)}</strong>
-          <span class="account-item-badges">
-            ${isNew ? `<span class="preset-submission-new">新</span>` : ""}
-            ${renderStatus(item.status)}
+      <div class="account-item-row${isNew ? " is-new" : ""}">
+        <button class="account-item${isActive ? " is-active" : ""}" type="button" data-account-open="${escapeAttribute(item.id)}">
+          <span class="account-item-head">
+            <strong>${escapeHtml(item.title)}</strong>
+            <span class="account-item-badges">
+              ${isNew ? `<span class="preset-submission-new">新</span>` : ""}
+              ${renderStatus(item.status)}
+            </span>
           </span>
-        </span>
-        <span class="account-item-meta">
-          <span>${item.source === "official" ? "官方" : "社区投稿"}</span>
-          <span>${Number(item.preset_count) || 0} 个预设</span>
-          <span>${formatDate(item.created_at)}</span>
-          ${item.reviewed_at ? `<span>审核于 ${formatDate(item.reviewed_at)}</span>` : ""}
-        </span>
-      </button>
+          <span class="account-item-meta">
+            <span>${item.source === "official" ? "官方" : "社区投稿"}</span>
+            <span>${Number(item.preset_count) || 0} 个预设</span>
+            <span>${formatDate(item.created_at)}</span>
+            ${item.reviewed_at ? `<span>审核于 ${formatDate(item.reviewed_at)}</span>` : ""}
+          </span>
+        </button>
+      </div>
     `;
   }
 
@@ -950,9 +950,11 @@
 
   function renderListSkeleton() {
     return Array.from({ length: 5 }, () => `
-      <div class="account-item">
-        <span class="ui-skeleton ui-skeleton-line"></span>
-        <span class="ui-skeleton ui-skeleton-line"></span>
+      <div class="account-item-row">
+        <div class="account-item">
+          <span class="ui-skeleton ui-skeleton-line"></span>
+          <span class="ui-skeleton ui-skeleton-line"></span>
+        </div>
       </div>
     `).join("");
   }

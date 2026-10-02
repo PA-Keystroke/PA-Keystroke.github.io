@@ -93,6 +93,23 @@
   display: none;
 }
 
+.nav-toggle-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #1c1c1e;
+  border-radius: 50%;
+  background: #ff5560;
+  box-sizing: content-box;
+  pointer-events: none;
+}
+
+.nav-toggle-dot[hidden] {
+  display: none;
+}
+
 .header-account-badge {
   min-width: 20px;
   height: 20px;
