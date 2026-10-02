@@ -21,6 +21,8 @@
     detail: null,
     detailUrls: {},
     newIds: new Set(),
+    unseenLoaded: false,
+    newIdsClearTimer: 0,
     resubmitId: "",
     resubmitParsed: null,
     resubmitFileText: null,
@@ -203,19 +205,33 @@
   }
 
   function setUser(user) {
+    const changedUser = (user?.id || "") !== (state.user?.id || "");
+    const shouldLoad = changedUser || elements.content.hidden;
     state.user = user;
 
     if (!user) {
+      window.clearTimeout(state.newIdsClearTimer);
+      state.newIdsClearTimer = 0;
       state.items = [];
       state.detail = null;
       state.newIds = new Set();
+      state.unseenLoaded = false;
       setView("signed-out");
       return;
     }
 
+    if (changedUser) {
+      window.clearTimeout(state.newIdsClearTimer);
+      state.newIdsClearTimer = 0;
+      state.newIds = new Set();
+      state.unseenLoaded = false;
+    }
+
     setView("account");
     renderAccount(user);
-    loadAll();
+    if (shouldLoad) {
+      loadAll();
+    }
   }
 
   function setView(view) {
@@ -267,6 +283,11 @@
   }
 
   async function loadUnseen() {
+    if (state.unseenLoaded) {
+      return;
+    }
+
+    state.unseenLoaded = true;
     const seenAt = state.user?.user_metadata?.preset_reviews_seen_at || "";
 
     try {
@@ -274,6 +295,12 @@
       state.newIds = new Set((results || []).map((item) => item.id));
 
       if (state.newIds.size) {
+        window.clearTimeout(state.newIdsClearTimer);
+        state.newIdsClearTimer = window.setTimeout(() => {
+          state.newIds = new Set();
+          state.newIdsClearTimer = 0;
+        }, 3000);
+
         const markedAt = new Date().toISOString();
         store.markPresetReviewsSeen(store.getClient(), markedAt).catch(() => {});
         state.user = {
@@ -292,6 +319,7 @@
       window.dispatchEvent(new CustomEvent("pa-review-notifications-seen"));
     } catch (error) {
       // Notifications are optional; the rest of the page still works.
+      state.unseenLoaded = false;
     }
   }
 
