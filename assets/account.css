@@ -45,10 +45,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 24px;
-  border: 1px solid var(--line-dark);
-  border-radius: var(--radius);
-  background: var(--surface);
+  padding: 0 0 24px;
+  border: 0;
+  border-bottom: 1px solid var(--line-dark);
+  border-radius: 0;
+  background: transparent;
 }
 
 .account-card-profile {
@@ -110,11 +111,11 @@
 }
 
 .account-panel {
-  margin-top: 22px;
-  padding: 20px;
-  border: 1px solid var(--line-dark);
-  border-radius: var(--radius);
-  background: var(--surface);
+  margin-top: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .account-panel-head {
@@ -123,6 +124,8 @@
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line-dark);
 }
 
 .account-tabs {
@@ -132,7 +135,7 @@
   gap: 4px;
   padding: 4px;
   border: 1px solid var(--line-dark);
-  border-radius: 999px;
+  border-radius: 12px;
   background: var(--surface-soft);
 }
 
@@ -143,7 +146,7 @@
   gap: 8px;
   padding: 0 15px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 9px;
   background: transparent;
   color: var(--muted-dark);
   cursor: pointer;
@@ -206,7 +209,7 @@
   grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
   align-items: start;
   gap: 18px;
-  margin-top: 8px;
+  margin-top: 18px;
 }
 
 .account-list-col {
@@ -319,10 +322,11 @@
   position: sticky;
   top: 96px;
   min-width: 0;
-  padding: 18px;
-  border: 1px solid var(--line-dark);
-  border-radius: var(--radius);
-  background: #101011;
+  padding: 0 0 0 18px;
+  border: 0;
+  border-left: 1px solid var(--line-dark);
+  border-radius: 0;
+  background: transparent;
 }
 
 .account-detail-empty {
@@ -409,10 +413,15 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 11px 12px;
-  border: 1px solid var(--line-dark);
-  border-radius: 10px;
-  background: #151517;
+  padding: 11px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line-dark);
+  border-radius: 0;
+  background: transparent;
+}
+
+.account-detail-item:last-child {
+  border-bottom: 0;
 }
 
 .account-detail-item span {
@@ -501,7 +510,7 @@
   }
 
   .account-panel {
-    padding: 14px;
+    padding: 0;
   }
 
   .account-panel-head {
@@ -510,11 +519,12 @@
   }
 
   .account-tabs {
-    border-radius: 14px;
+    border-radius: 12px;
   }
 
   .account-tab {
     padding: 0 12px;
+    border-radius: 9px;
   }
 
   .account-search,

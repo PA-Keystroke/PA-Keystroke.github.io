@@ -166,18 +166,8 @@
     elements.resubmitForm?.addEventListener("submit", submitResubmit);
     elements.resubmitFile?.addEventListener("change", handleResubmitFile);
     elements.resubmitFiles?.addEventListener("change", handleResubmitScreenshotFiles);
-    elements.resubmitScreenshots?.addEventListener("change", (event) => {
-      const checkbox = event.target.closest("[data-account-resubmit-remove]");
-      if (checkbox) {
-        checkbox.closest("[data-account-resubmit-shot]")?.classList.toggle("is-removed", checkbox.checked);
-      }
-    });
-    elements.resubmitNewShots?.addEventListener("change", (event) => {
-      const checkbox = event.target.closest("[data-account-resubmit-new-remove]");
-      if (checkbox) {
-        checkbox.closest("[data-account-resubmit-shot-new]")?.classList.toggle("is-removed", checkbox.checked);
-      }
-    });
+    elements.resubmitScreenshots?.addEventListener("click", handleResubmitScreenshotRemove);
+    elements.resubmitNewShots?.addEventListener("click", handleResubmitNewScreenshotRemove);
 
     elements.resubmitDialog?.addEventListener("close", () => {
       releaseResubmitNewUrls();
@@ -775,20 +765,59 @@
       return;
     }
 
-    const removedPaths = new Set(
-      Array.from(elements.resubmitForm.querySelectorAll("[data-account-resubmit-remove]:checked"))
-        .map((input) => input.value)
+    elements.resubmitError.textContent = "";
+    const validFiles = [];
+    let validationMessage = "";
+    selected.forEach((file) => {
+      try {
+        store.validateScreenshots([file]);
+        validFiles.push(file);
+      } catch (error) {
+        validationMessage = error.message;
+      }
+    });
+
+    const capacity = Math.max(
+      0,
+      store.MAX_SCREENSHOTS - state.resubmitScreenshotPaths.length - state.resubmitNewFiles.length
     );
-    const keptCount = state.resubmitScreenshotPaths.filter((path) => !removedPaths.has(path)).length;
-    const capacity = Math.max(0, store.MAX_SCREENSHOTS - keptCount - state.resubmitNewFiles.length);
-    const accepted = selected.slice(0, capacity);
-
-    if (accepted.length < selected.length) {
-      elements.resubmitError.textContent = `最多只能保留 ${store.MAX_SCREENSHOTS} 张截图，超出的没有添加。`;
-    }
-
+    const accepted = validFiles.slice(0, capacity);
     state.resubmitNewFiles.push(...accepted);
     elements.resubmitFiles.value = "";
+    renderResubmitScreenshots();
+
+    if (validationMessage) {
+      elements.resubmitError.textContent = validationMessage;
+    } else if (accepted.length < selected.length) {
+      elements.resubmitError.textContent = `最多只能保留 ${store.MAX_SCREENSHOTS} 张截图，超出的没有添加。`;
+    }
+  }
+
+  function handleResubmitScreenshotRemove(event) {
+    const button = event.target.closest("[data-account-resubmit-remove-path]");
+    if (!button) {
+      return;
+    }
+
+    const path = button.dataset.accountResubmitRemovePath || "";
+    state.resubmitScreenshotPaths = state.resubmitScreenshotPaths.filter((item) => item !== path);
+    elements.resubmitError.textContent = "";
+    renderResubmitScreenshots();
+  }
+
+  function handleResubmitNewScreenshotRemove(event) {
+    const button = event.target.closest("[data-account-resubmit-new-remove]");
+    if (!button) {
+      return;
+    }
+
+    const index = Number(button.dataset.accountResubmitNewRemove);
+    if (!Number.isInteger(index) || index < 0 || index >= state.resubmitNewFiles.length) {
+      return;
+    }
+
+    state.resubmitNewFiles.splice(index, 1);
+    elements.resubmitError.textContent = "";
     renderResubmitScreenshots();
   }
 
@@ -796,25 +825,32 @@
     const paths = state.resubmitScreenshotPaths;
     elements.resubmitScreenshots.innerHTML = paths.length
       ? paths.map((path, index) => `
-        <label class="preset-edit-screenshot" data-account-resubmit-shot>
-          <input type="checkbox" data-account-resubmit-remove value="${escapeAttribute(path)}">
+        <div class="preset-edit-screenshot" data-account-resubmit-shot>
           <img src="${escapeAttribute(state.resubmitScreenshotUrls[path] || "")}" alt="截图 ${index + 1}" loading="lazy">
-          <span>移除</span>
-        </label>
+          <button class="preset-edit-screenshot-remove" type="button" aria-label="删除截图 ${index + 1}" data-account-resubmit-remove-path="${escapeAttribute(path)}">
+            <i data-lucide="trash-2" aria-hidden="true"></i>
+          </button>
+          <span>已有截图 ${index + 1}</span>
+        </div>
       `).join("")
       : `<p class="preset-file-list">当前没有截图。</p>`;
 
     releaseResubmitNewUrls();
     state.resubmitNewUrls = state.resubmitNewFiles.map((file) => URL.createObjectURL(file));
-    elements.resubmitNewShots.innerHTML = state.resubmitNewFiles.length
-      ? state.resubmitNewFiles.map((file, index) => `
-        <label class="preset-edit-screenshot" data-account-resubmit-shot-new>
-          <input type="checkbox" data-account-resubmit-new-remove value="${index}">
+    if (elements.resubmitNewShots) {
+      elements.resubmitNewShots.innerHTML = state.resubmitNewFiles.length
+        ? state.resubmitNewFiles.map((file, index) => `
+        <div class="preset-edit-screenshot" data-account-resubmit-shot-new>
           <img src="${escapeAttribute(state.resubmitNewUrls[index])}" alt="新截图 ${index + 1}">
-          <span>新增 · ${escapeHtml(file.name)}</span>
-        </label>
+          <button class="preset-edit-screenshot-remove" type="button" aria-label="删除新增截图 ${escapeAttribute(file.name)}" data-account-resubmit-new-remove="${index}">
+            <i data-lucide="trash-2" aria-hidden="true"></i>
+          </button>
+          <span title="${escapeAttribute(file.name)}">新增 · ${escapeHtml(file.name)}</span>
+        </div>
       `).join("")
-      : "";
+        : "";
+    }
+    refreshIcons();
   }
 
   function releaseResubmitNewUrls() {
@@ -839,16 +875,8 @@
     }
 
     const formData = new FormData(elements.resubmitForm);
-    const removedPaths = new Set(
-      Array.from(elements.resubmitForm.querySelectorAll("[data-account-resubmit-remove]:checked"))
-        .map((input) => input.value)
-    );
-    const keepScreenshotPaths = state.resubmitScreenshotPaths.filter((path) => !removedPaths.has(path));
-    const removedNewIndexes = new Set(
-      Array.from(elements.resubmitForm.querySelectorAll("[data-account-resubmit-new-remove]:checked"))
-        .map((input) => Number(input.value))
-    );
-    const newScreenshots = state.resubmitNewFiles.filter((file, index) => !removedNewIndexes.has(index));
+    const keepScreenshotPaths = state.resubmitScreenshotPaths.slice();
+    const newScreenshots = state.resubmitNewFiles.slice();
     const original = elements.resubmitSubmit.innerHTML;
     elements.resubmitSubmit.disabled = true;
     elements.resubmitSubmit.textContent = "正在提交...";

@@ -9,6 +9,8 @@
     },
     user: null,
     parsedPreset: null,
+    submitScreenshotFiles: [],
+    submitScreenshotUrls: [],
     openMineHandled: false,
     openSubmitHandled: false,
     hideId: "",
@@ -599,20 +601,79 @@
       }
     });
 
-    elements.screenshotInput?.addEventListener("change", () => {
+    elements.screenshotInput?.addEventListener("change", handleSubmitScreenshotFiles);
+    elements.screenshotList?.addEventListener("click", handleSubmitScreenshotRemove);
+    elements.submitDialog?.addEventListener("close", releaseSubmitScreenshotUrls);
+
+    elements.submitForm?.addEventListener("submit", submitPreset);
+  }
+
+  function handleSubmitScreenshotFiles() {
+    const selected = Array.from(elements.screenshotInput?.files || []);
+    if (!selected.length) {
+      return;
+    }
+
+    elements.submitError.textContent = "";
+    const validFiles = [];
+    let validationMessage = "";
+
+    selected.forEach((file) => {
       try {
-        const files = store.validateScreenshots(elements.screenshotInput.files);
-        elements.screenshotList.textContent = files.length
-          ? `已选择 ${files.length} 张截图：${files.map((file) => file.name).join("、")}`
-          : "";
-        elements.submitError.textContent = "";
+        store.validateScreenshots([file]);
+        validFiles.push(file);
       } catch (error) {
-        elements.screenshotList.textContent = "";
-        elements.submitError.textContent = error.message;
+        validationMessage = error.message;
       }
     });
 
-    elements.submitForm?.addEventListener("submit", submitPreset);
+    const capacity = Math.max(0, store.MAX_SCREENSHOTS - state.submitScreenshotFiles.length);
+    const accepted = validFiles.slice(0, capacity);
+    state.submitScreenshotFiles.push(...accepted);
+    elements.screenshotInput.value = "";
+    renderSubmitScreenshots();
+
+    if (validationMessage) {
+      elements.submitError.textContent = validationMessage;
+    } else if (accepted.length < selected.length) {
+      elements.submitError.textContent = `最多只能添加 ${store.MAX_SCREENSHOTS} 张截图，超出的没有添加。`;
+    }
+  }
+
+  function handleSubmitScreenshotRemove(event) {
+    const button = event.target.closest("[data-remove-submit-screenshot]");
+    if (!button) {
+      return;
+    }
+
+    const index = Number(button.dataset.removeSubmitScreenshot);
+    if (!Number.isInteger(index) || index < 0 || index >= state.submitScreenshotFiles.length) {
+      return;
+    }
+
+    state.submitScreenshotFiles.splice(index, 1);
+    elements.submitError.textContent = "";
+    renderSubmitScreenshots();
+  }
+
+  function renderSubmitScreenshots() {
+    releaseSubmitScreenshotUrls();
+    state.submitScreenshotUrls = state.submitScreenshotFiles.map((file) => URL.createObjectURL(file));
+    elements.screenshotList.innerHTML = state.submitScreenshotFiles.map((file, index) => `
+      <div class="preset-edit-screenshot">
+        <img src="${escapeAttribute(state.submitScreenshotUrls[index])}" alt="截图 ${index + 1}" loading="lazy">
+        <button class="preset-edit-screenshot-remove" type="button" aria-label="删除截图 ${escapeAttribute(file.name)}" data-remove-submit-screenshot="${index}">
+          <i data-lucide="trash-2" aria-hidden="true"></i>
+        </button>
+        <span title="${escapeAttribute(file.name)}">${escapeHtml(file.name)}</span>
+      </div>
+    `).join("");
+    refreshIcons();
+  }
+
+  function releaseSubmitScreenshotUrls() {
+    state.submitScreenshotUrls.forEach((url) => URL.revokeObjectURL(url));
+    state.submitScreenshotUrls = [];
   }
 
   async function loadPackages() {
@@ -1352,7 +1413,7 @@
 
     const formData = new FormData(elements.submitForm);
     const jsonFile = elements.presetFileInput.files?.[0];
-    const screenshots = elements.screenshotInput.files || [];
+    const screenshots = state.submitScreenshotFiles.slice();
 
     try {
       if (!state.parsedPreset) {
@@ -1401,9 +1462,11 @@
     elements.submitForm.reset();
     updatePresetMultiSelectValue(elements.versionMultiSelect);
     state.parsedPreset = null;
+    releaseSubmitScreenshotUrls();
+    state.submitScreenshotFiles = [];
     elements.submitError.textContent = "";
     elements.jsonSummary.hidden = true;
-    elements.screenshotList.textContent = "";
+    renderSubmitScreenshots();
     setVersionSupportDisplay(null);
   }
 

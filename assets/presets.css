@@ -1727,8 +1727,47 @@ body[data-page="preset-admin"] select {
 .preset-edit-screenshot span {
   display: block;
   padding: 8px 10px;
+  overflow: hidden;
   color: var(--muted-dark);
   font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preset-edit-screenshot-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background: rgba(10, 10, 11, 0.88);
+  color: var(--white);
+  cursor: pointer;
+}
+
+.preset-edit-screenshot-remove:hover {
+  border-color: #ff7078;
+  background: #ff7078;
+  color: #17080a;
+}
+
+.preset-edit-screenshot-remove svg {
+  width: 16px;
+  height: 16px;
+}
+
+.preset-screenshot-list:empty {
+  display: none;
+}
+
+.preset-screenshot-list {
+  margin-top: 12px;
 }
 
 .preset-edit-screenshot.is-removed {
@@ -1779,6 +1818,37 @@ body[data-page="preset-admin"] select {
     height: 38px;
     padding-inline: 10px;
     font-size: 13px;
+  }
+
+  .preset-detail-facts {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(170px, 68%);
+    gap: 0;
+    overflow-x: auto;
+    padding: 0 0 10px;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 1px;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+  }
+
+  .preset-detail-facts > div {
+    scroll-snap-align: start;
+  }
+
+  .preset-detail-facts::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .preset-detail-facts::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.32);
   }
 }
 
@@ -1841,28 +1911,6 @@ body[data-page="preset-admin"] select {
   .preset-grid,
   .preset-form-grid {
     grid-template-columns: 1fr;
-  }
-
-  .preset-detail-facts {
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(150px, 62%);
-    gap: 0;
-    overflow-x: auto;
-    padding: 0;
-    scroll-snap-type: x proximity;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .preset-detail-facts > div {
-    scroll-snap-align: start;
-  }
-
-  .preset-detail-facts::-webkit-scrollbar {
-    display: none;
   }
 
   .preset-select-trigger {

@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" href="assets/brand/icon.png">
   <link rel="preload" href="assets/fonts/LetsParty-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/styles.css?v=20261001-6">
-  <link rel="stylesheet" href="assets/presets.css?v=20261002-1">
+  <link rel="stylesheet" href="assets/presets.css?v=20261002-2">
   <link rel="stylesheet" href="assets/auth-header.css?v=20261002-1">
   <script src="assets/vendor/lucide.min.js" defer></script>
   <script src="assets/vendor/supabase.js" defer></script>
@@ -23,7 +23,7 @@
   <script src="assets/preset-store.js?v=20261002-2" defer></script>
   <script src="assets/auth-header.js?v=20261002-2" defer></script>
   <script src="assets/main.js?v=20261001-4" defer></script>
-  <script src="assets/presets.js?v=20261002-3" defer></script>
+  <script src="assets/presets.js?v=20261002-4" defer></script>
 </head>
 <body data-page="presets">
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -218,7 +218,7 @@
             <small>最多 5 张，每张不超过 5 MB</small>
           </span>
         </label>
-        <p class="preset-file-list" data-screenshot-list></p>
+        <div class="preset-file-list preset-screenshot-list" data-screenshot-list aria-live="polite"></div>
 
         <p class="preset-form-error" data-submit-error role="alert"></p>
         <div class="preset-form-actions">
