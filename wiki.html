@@ -92,7 +92,7 @@
             <a href="#add-gamepad">手柄控件</a>
             <a href="#edit-controls">编辑控件</a>
             <a href="#presets">管理预设</a>
-            <a href="#global-style">全局样式</a>
+            <a href="#global-style">覆盖层与个性化</a>
             <a href="#overlay">覆盖层设置</a>
             <a href="#obs">在 OBS 中使用</a>
             <a href="#updates">自动更新</a>
@@ -112,16 +112,16 @@
             <li><span>1</span><div><strong>下载程序</strong><p>从官网或最新 Release 页面下载 <code>PA-Keystroke.exe</code>。</p></div></li>
             <li><span>2</span><div><strong>运行程序</strong><p>双击运行，并按 Windows 提示允许管理员权限。程序会打开设置窗口和透明覆盖层。</p></div></li>
             <li><span>3</span><div><strong>选择输入模式</strong><p>根据场景选择键盘、手柄或自动识别模式。</p></div></li>
-            <li><span>4</span><div><strong>调整布局与样式</strong><p>在预览区调整控件，并按需设置全局样式、整体缩放和覆盖层不透明度。</p></div></li>
+            <li><span>4</span><div><strong>调整布局与样式</strong><p>在预览区调整控件，并在底部 Dock 的“覆盖层”和“个性化”卡片中调整外观与界面主题。</p></div></li>
             <li><span>5</span><div><strong>保存并应用</strong><p>完成修改后必须点击“保存并应用”，覆盖层才会使用新布局。</p></div></li>
             <li><span>6</span><div><strong>在 OBS 中添加窗口捕获</strong><p>选择 <code>PA Keystroke Overlay</code>，采集方式选择 <code>Windows 10（1903 或更新版本）</code>。</p></div></li>
           </ol>
 
-          <figure class="wiki-media wiki-media-portrait">
+          <figure class="wiki-media">
             <button class="image-zoom" type="button" data-zoom="assets/screenshots/01-main-window.png" aria-label="放大查看设置主窗口">
-              <img src="assets/screenshots/01-main-window.png" alt="PA Keystroke 设置主窗口" width="1000" height="1187" loading="eager">
+              <img src="assets/screenshots/01-main-window.png" alt="PA Keystroke 设置主窗口" width="1180" height="760" loading="eager">
             </button>
-            <figcaption>设置主窗口集成了预览、控件编辑和覆盖层设置。</figcaption>
+            <figcaption>设置主窗口以预览区为主，覆盖层、个性化和应用设置通过底部 Dock 展开。</figcaption>
           </figure>
         </section>
 
@@ -162,8 +162,6 @@
           </div>
           <p>鼠标操作不会触发自动识别模式切换，只有键盘按键和手柄操作会参与判断。</p>
           <p>自动识别模式下，预览区和预设栏会锁定为只读，避免误改布局。</p>
-          <p>鼠标操作不会触发自动识别模式切换，只有键盘按键和手柄操作会参与判断。</p>
-          <p>自动识别模式下，预览区和预设栏会锁定为只读，避免误改布局。</p>
           <figure class="wiki-media wiki-media-small">
             <button class="image-zoom" type="button" data-zoom="assets/screenshots/04-auto-mode.png" aria-label="放大查看自动识别模式">
               <img src="assets/screenshots/04-auto-mode.png" alt="PA Keystroke 自动识别模式" width="401" height="274" loading="lazy">
@@ -190,11 +188,18 @@
           <h2>添加鼠标</h2>
           <ol class="step-list compact">
             <li><span>1</span><div><strong>选择“鼠标”</strong><p>点击“＋ 添加”，然后选择“鼠标”。</p></div></li>
-            <li><span>2</span><div><strong>设置显示区域</strong><p>选择是否显示侧键和中键。</p></div></li>
+            <li><span>2</span><div><strong>设置显示区域</strong><p>选择是否显示侧键、中键、滚轮指示和位移指示。</p></div></li>
             <li><span>3</span><div><strong>调整预览控件</strong><p>移动鼠标控件并拖动边缘改变尺寸。</p></div></li>
             <li><span>4</span><div><strong>保存并应用</strong><p>先点击弹窗中的“保存”，再点击主窗口的“保存并应用”。</p></div></li>
           </ol>
           <p>鼠标控件支持左键、右键、中键、侧键 1 和侧键 2。</p>
+          <p>鼠标主体内部的位移点会跟随鼠标移动，停止后逐渐回到中心。滚轮指示和位移指示可以在编辑页分别开启或关闭。</p>
+          <figure class="wiki-media wiki-media-small">
+            <button class="image-zoom" type="button" data-zoom="assets/screenshots/05-mouse-control.png" aria-label="放大查看鼠标编辑页">
+              <img src="assets/screenshots/05-mouse-control.png" alt="PA Keystroke 鼠标编辑页" width="533" height="614" loading="lazy">
+            </button>
+            <figcaption>鼠标编辑页可以分别控制侧键、中键、滚轮指示和位移指示。</figcaption>
+          </figure>
         </section>
 
         <section class="wiki-section" id="add-movement">
@@ -207,6 +212,7 @@
             <li><span>4</span><div><strong>保存并应用</strong><p>完成修改后应用布局。</p></div></li>
           </ol>
           <p>位移指示器会显示鼠标移动方向，并在停止移动后逐渐回到中心。</p>
+          <p>这是独立的位移指示器控件；如果只需要在鼠标主体内部显示位移点，直接在鼠标控件的编辑页开启“显示位移指示”即可。</p>
         </section>
 
         <section class="wiki-section" id="add-wheel">
@@ -320,16 +326,23 @@
 
         <section class="wiki-section" id="global-style">
           <p class="section-kicker">12</p>
-          <h2>全局样式</h2>
-          <p>“全局样式”用于统一设置普通按键、鼠标、指示器和手柄控件的外观。展开后可以调整以下颜色：</p>
+          <h2>覆盖层与个性化</h2>
+          <p>“覆盖层”卡片用于统一设置普通按键、鼠标、指示器和手柄控件的外观：</p>
           <ul class="plain-list">
             <li><strong>背景颜色</strong>：控制控件背景显示，可通过左侧勾选框开启或关闭。</li>
             <li><strong>外框颜色</strong>：控制控件外框显示，可通过左侧勾选框开启或关闭。</li>
-            <li><strong>触发颜色</strong>：控制按下或触发时的高亮颜色。</li>
-            <li><strong>文字颜色</strong>：控制按键文字的显示颜色，文本控件不受影响。</li>
+            <li><strong>文字显示比例</strong>：整体放大或缩小键帽文字。</li>
+            <li><strong>文字阴影</strong>：控制键帽文字是否显示投影。</li>
+            <li><strong>阴影浓度</strong>：调整文字阴影的明显程度。</li>
           </ul>
           <p>颜色支持 Alpha，可直接输入 <code>#RRGGBBAA</code>，也可以打开选色器后通过透明度滑条调整。</p>
-          <p>外框颜色关闭时，普通按键不显示外框；鼠标、指示器和手柄控件会恢复各自默认外框，避免控件不可见。</p>
+          <p>键帽文字颜色、触发颜色和阴影颜色会根据当前背景色自动推导，设置中不再单独提供手选。外框颜色关闭时，普通按键不显示外框；鼠标、指示器和手柄控件会恢复各自默认外框，避免控件不可见。</p>
+          <p>“个性化”卡片用于调整软件界面本身：</p>
+          <ul class="plain-list">
+            <li><strong>主题</strong>：深色、浅色、自动跟随系统。</li>
+            <li><strong>主题色</strong>：使用普通选色器选择强调色，并自动校正与界面的对比度。</li>
+          </ul>
+          <p>主题只影响设置界面和预览区外观，不会改变覆盖层中按键、鼠标和手柄控件的实际样式。</p>
         </section>
 
         <section class="wiki-section" id="overlay">
@@ -366,13 +379,16 @@
           <p>开启后覆盖层会移出所有屏幕，用户当前屏幕和直播画面中不会看到它，但窗口仍保持运行，可通过 OBS 的窗口捕获继续获取画面。</p>
           <p>关闭隐藏后，覆盖层会恢复到隐藏前的位置。切换锁定、调整缩放或保存设置不会把隐藏中的覆盖层拉回屏幕。</p>
 
+          <h3>应用设置</h3>
+          <p>“应用”卡片可以控制开机自启动、启动时是否显示设置窗口、启动时检查更新，以及关闭设置窗口时是否退出程序。</p>
+
           <h3>系统托盘</h3>
           <p>系统托盘菜单提供设置、锁定覆盖层、隐藏覆盖层、开机自启动、关于和退出。</p>
           <p>“隐藏覆盖层”与设置窗口中的同名开关双向同步，修改后会立即保存。</p>
 
           <h3>开机自启动</h3>
-          <p>勾选托盘菜单中的“开机自启动”后，程序会在 Windows 登录时启动。</p>
-          <p>开机启动只运行覆盖层并保留系统托盘图标，不显示设置主窗口。需要调整设置时，可以从托盘菜单点击“设置”或双击图标。</p>
+          <p>勾选托盘菜单或“应用”卡片中的“开机自启动”后，程序会在 Windows 登录时启动。</p>
+          <p>开机启动时是否显示设置窗口，由“应用”卡片中的“启动时显示设置”决定。关闭后只运行覆盖层并保留系统托盘图标；需要调整设置时，可以从托盘菜单点击“设置”或双击图标。</p>
         </section>
 
         <section class="wiki-section" id="obs">
@@ -400,9 +416,9 @@
         <section class="wiki-section" id="updates">
           <p class="section-kicker">15</p>
           <h2>自动检查更新</h2>
-          <p>程序每次启动时都会检查公开 Release 仓库。检查期间标题栏会显示加载动画；如果没有新版本，动画会自动隐藏。</p>
+          <p>程序默认在启动时检查公开 Release 仓库，可以在“应用”卡片中关闭“启动时检查更新”。检查期间标题栏会显示加载动画；如果没有新版本，动画会自动隐藏。</p>
           <p>发现新版本时，可以从更新提示中查看更新日志、打开发布页面、下载更新，并自动替换和重启。更新日志支持保留原文换行和显示 GitHub Release 正文中的远程图片。</p>
-          <p>也可以在关于页手动检查更新。</p>
+          <p>也可以在关于页手动检查更新；关闭自动检查后，仍可通过关于页检查。</p>
         </section>
 
         <section class="wiki-section" id="data-directory">
@@ -415,7 +431,7 @@
             <div><code>keystroke_presets.json</code><span>键盘预设</span></div>
             <div><code>keystroke_gamepad.json</code><span>当前手柄布局</span></div>
             <div><code>keystroke_gamepad_presets.json</code><span>手柄预设</span></div>
-            <div><code>user_settings.json</code><span>用户设置、覆盖层和运行设置</span></div>
+            <div><code>user_settings.json</code><span>用户设置、主题、覆盖层和运行设置</span></div>
           </div>
           <p>备份或迁移数据时，请先退出 PA Keystroke，再复制整个数据目录。</p>
         </section>
