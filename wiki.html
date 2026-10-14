@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111214">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="PA Keystroke Wiki：安装、输入模式、按键与手柄布局、预设、OBS 捕获、自动更新和常见问题。">
+  <meta name="description" content="PA Keystroke Wiki：安装、输入模式、按键与手柄布局、控件编辑与对齐、快捷键、预设、OBS 捕获、自动更新和常见问题。">
   <meta property="og:type" content="article">
   <meta property="og:title" content="PA Keystroke Wiki">
-  <meta property="og:description" content="从首次启动到 OBS 捕获，完整了解 PA Keystroke 的使用方法。">
+  <meta property="og:description" content="从首次启动、控件编辑与对齐到 OBS 捕获，完整了解 PA Keystroke 的使用方法。">
   <meta property="og:url" content="https://pa-keystroke.github.io/PA-Keystroke-Web/wiki.html">
   <meta property="og:image" content="https://pa-keystroke.github.io/PA-Keystroke-Web/assets/screenshots/01-main-window.png">
   <title>PA Keystroke Wiki</title>
@@ -91,8 +91,10 @@
             <a href="#add-text">添加文本</a>
             <a href="#add-gamepad">手柄控件</a>
             <a href="#edit-controls">编辑控件</a>
+            <a href="#align-controls">对齐控件</a>
+            <a href="#shortcuts">快捷键</a>
             <a href="#presets">管理预设</a>
-            <a href="#global-style">覆盖层与个性化</a>
+            <a href="#global-style">覆盖层、个性化与布局</a>
             <a href="#overlay">覆盖层设置</a>
             <a href="#obs">在 OBS 中使用</a>
             <a href="#updates">自动更新</a>
@@ -112,7 +114,7 @@
             <li><span>1</span><div><strong>下载程序</strong><p>从官网或最新 Release 页面下载 <code>PA-Keystroke.exe</code>。</p></div></li>
             <li><span>2</span><div><strong>运行程序</strong><p>双击运行，并按 Windows 提示允许管理员权限。程序会打开设置窗口和透明覆盖层。</p></div></li>
             <li><span>3</span><div><strong>选择输入模式</strong><p>根据场景选择键盘、手柄或自动识别模式。</p></div></li>
-            <li><span>4</span><div><strong>调整布局与样式</strong><p>在预览区调整控件，并在底部 Dock 的“覆盖层”和“个性化”卡片中调整外观与界面主题。</p></div></li>
+            <li><span>4</span><div><strong>调整布局与样式</strong><p>在预览区调整控件，并在 Dock 的“覆盖层”“个性化”“布局”“应用”“热键”卡片中调整外观、界面主题、界面布局和快捷键。</p></div></li>
             <li><span>5</span><div><strong>保存并应用</strong><p>完成修改后必须点击“保存并应用”，覆盖层才会使用新布局。</p></div></li>
             <li><span>6</span><div><strong>在 OBS 中添加窗口捕获</strong><p>选择 <code>PA Keystroke Overlay</code>，采集方式选择 <code>Windows 10（1903 或更新版本）</code>。</p></div></li>
           </ol>
@@ -121,7 +123,7 @@
             <button class="image-zoom" type="button" data-zoom="assets/screenshots/01-main-window.png" aria-label="放大查看设置主窗口">
               <img src="assets/screenshots/01-main-window.png" alt="PA Keystroke 设置主窗口" width="1180" height="760" loading="eager">
             </button>
-            <figcaption>设置主窗口以预览区为主，覆盖层、个性化和应用设置通过底部 Dock 展开。</figcaption>
+            <figcaption>设置主窗口以预览区为主，覆盖层、个性化、布局、应用和热键设置都通过 Dock 展开。</figcaption>
           </figure>
         </section>
 
@@ -156,7 +158,6 @@
             <article>
               <i data-lucide="repeat-2" aria-hidden="true"></i>
               <h3>自动识别</h3>
-              <p>根据最近操作的设备，自动切换键盘或手柄布局。</p>
               <p>根据最近操作的设备，自动切换键盘或手柄布局。</p>
             </article>
           </div>
@@ -252,7 +253,15 @@
 
           <h3>添加独立手柄控件</h3>
           <p>在手柄模式的“＋ 添加”菜单中，可以分别选择“手柄按键”“摇杆”“扳机”和“文本”。添加后可以单独调整位置、尺寸和显示名称。</p>
-          <p>在手柄模式的“＋ 添加”菜单中，可以分别选择“手柄按键”“摇杆”“扳机”和“文本”。添加后可以单独调整位置、尺寸和显示名称。</p>
+
+          <h3>手柄布局与显示名称</h3>
+          <p>手柄模式（以及自动识别模式）下，模式切换和预设选择器旁边会出现“手柄布局”选择器，可切换 Xbox、PS、Switch 三种排布。</p>
+          <ul class="plain-list">
+            <li><strong>跟随布局</strong>：面键符号、肩键和扳机文字会随布局变化。例如 PS 布局显示 △ □ ○ × 与 L1 / R1 / L2 / R2，Switch 布局显示 A / B / X / Y 与 L / R / ZL / ZR。</li>
+            <li><strong>自定义名称</strong>：会显示文字的手柄控件（面键、LB/RB、LT/RT、十字键、L3/R3）可以自定义显示名称；一旦改过名字，就以自定义文字为准，不再随布局自动变化。</li>
+            <li><strong>恢复自动</strong>：重新编辑该控件，把名称改回它当前的默认文字再保存，就会重新跟随布局。</li>
+            <li><strong>不能改名</strong>：只画图标的 View、Xbox、Menu 和左右摇杆，编辑窗口里不会显示名称输入框。</li>
+          </ul>
           <figure class="wiki-media">
             <button class="image-zoom" type="button" data-zoom="assets/screenshots/03-overlay-gamepad.png" aria-label="放大查看手柄覆盖层">
               <img src="assets/screenshots/03-overlay-gamepad.png" alt="PA Keystroke 手柄覆盖层" width="735" height="560" loading="lazy">
@@ -265,15 +274,22 @@
           <p class="section-kicker">10</p>
           <h2>编辑已有控件</h2>
           <div class="shortcut-table" role="table" aria-label="预览区操作">
-            <div role="row"><strong role="cell">左键拖动</strong><span role="cell">自由移动控件，不触发对齐吸附</span></div>
-            <div role="row"><strong role="cell">Shift + 左键拖动</strong><span role="cell">拖动控件并触发对齐吸附</span></div>
+            <div role="row"><strong role="cell">左键拖动</strong><span role="cell">自由移动控件，默认开启对齐吸附</span></div>
+            <div role="row"><strong role="cell">Shift + 左键拖动</strong><span role="cell">拖动时临时关闭对齐吸附</span></div>
             <div role="row"><strong role="cell">Shift + 左键拖动空白区域</strong><span role="cell">矩形框选多个控件</span></div>
-            <div role="row"><strong role="cell">拖动已选控件</strong><span role="cell">整体移动全部选中项</span></div>
+            <div role="row"><strong role="cell">Ctrl+Shift+M</strong><span role="cell">开关多选模式，开启后左键点击控件即可追加或取消选中，不用按 Shift</span></div>
+            <div role="row"><strong role="cell">拖动已选控件</strong><span role="cell">整组一起移动，并按整组包围框吸附</span></div>
             <div role="row"><strong role="cell">拖动边缘</strong><span role="cell">调整尺寸</span></div>
+            <div role="row"><strong role="cell">拖动时的参照线</strong><span role="cell">表示与其它控件的边或中线对齐；出现等距标记时表示间距与已有的一致</span></div>
+            <div role="row"><strong role="cell">顶部工具栏</strong><span role="cell">撤回、重做、多选模式、对齐、全选、反选、取消选择</span></div>
+            <div role="row"><strong role="cell">悬停小工具栏</strong><span role="cell">鼠标移到选中控件附近会弹出：← ↑ ↓ → 微调、创建副本、删除</span></div>
+            <div role="row"><strong role="cell">微调按钮</strong><span role="cell">每按一次移动 1px；按住不放会持续移动，越按越快，最快每次 10px</span></div>
             <div role="row"><strong role="cell">方向键</strong><span role="cell">以 1px 为步长微调选中控件</span></div>
             <div role="row"><strong role="cell">Shift + 方向键</strong><span role="cell">以 10px 为步长微调选中控件</span></div>
+            <div role="row"><strong role="cell">Ctrl+Z / Ctrl+Y</strong><span role="cell">撤回 / 重做；一次长按连发只记一条撤回</span></div>
             <div role="row"><strong role="cell">Ctrl+C / Ctrl+X / Ctrl+V</strong><span role="cell">复制、剪切、粘贴选中控件</span></div>
-            <div role="row"><strong role="cell">右键</strong><span role="cell">复制、剪切、粘贴、编辑、创建副本或删除</span></div>
+            <div role="row"><strong role="cell">Ctrl+D / Delete</strong><span role="cell">创建副本 / 删除选中</span></div>
+            <div role="row"><strong role="cell">右键</strong><span role="cell">撤回、重做、复制、剪切、粘贴、编辑、创建副本或删除</span></div>
             <div role="row"><strong role="cell">右键空白位置后粘贴</strong><span role="cell">将粘贴内容左上角放到点击位置</span></div>
             <div role="row"><strong role="cell">左键单击空白位置</strong><span role="cell">取消选择</span></div>
             <div role="row"><strong role="cell">中键拖动</strong><span role="cell">平移预览区域</span></div>
@@ -285,8 +301,96 @@
           </div>
         </section>
 
-        <section class="wiki-section" id="presets">
+        <section class="wiki-section" id="align-controls">
           <p class="section-kicker">11</p>
+          <h2>对齐多个控件</h2>
+          <p>多选两个以上控件后，可以把它们按同一个参照物摆齐。</p>
+          <ol class="step-list compact">
+            <li><span>1</span><div><strong>选中控件</strong><p>按住 Shift 框选，或开启多选模式后逐个点选，至少选中两个控件。</p></div></li>
+            <li><span>2</span><div><strong>进入对齐</strong><p>点击工具栏上的“对齐”按钮，或按 <code>Ctrl+Shift+A</code>。</p></div></li>
+            <li><span>3</span><div><strong>选择参照物</strong><p>按提示“请选择参照物...”，在预览中点击一个参照控件。</p></div></li>
+            <li><span>4</span><div><strong>选择对齐方式</strong><p>水平中线对齐、垂直中线对齐、左对齐、右对齐、顶对齐、底对齐或尺寸对齐。</p></div></li>
+          </ol>
+          <div class="wiki-note">
+            <i data-lucide="info" aria-hidden="true"></i>
+            <p>对齐对普通按键、鼠标、指示器、文本和手柄控件都有效，操作同样会记入撤回历史，可以用 <code>Ctrl+Z</code> 撤销。</p>
+          </div>
+        </section>
+
+        <section class="wiki-section" id="shortcuts">
+          <p class="section-kicker">12</p>
+          <h2>快捷键</h2>
+          <p>所有快捷键都可以在 Dock 的“热键”卡片中修改：点击某项右侧的按钮即可录制新的组合，与其它操作冲突时会有提示，底部的“恢复默认快捷键”可以一键还原。下面是默认值。</p>
+
+          <h3>编辑</h3>
+          <div class="shortcut-table" role="table" aria-label="编辑快捷键">
+            <div role="row"><strong role="cell">撤回</strong><span role="cell"><code>Ctrl+Z</code></span></div>
+            <div role="row"><strong role="cell">重做</strong><span role="cell"><code>Ctrl+Y</code></span></div>
+            <div role="row"><strong role="cell">复制</strong><span role="cell"><code>Ctrl+C</code></span></div>
+            <div role="row"><strong role="cell">剪切</strong><span role="cell"><code>Ctrl+X</code></span></div>
+            <div role="row"><strong role="cell">粘贴</strong><span role="cell"><code>Ctrl+V</code></span></div>
+            <div role="row"><strong role="cell">创建副本</strong><span role="cell"><code>Ctrl+D</code></span></div>
+            <div role="row"><strong role="cell">删除选中</strong><span role="cell"><code>Delete</code></span></div>
+            <div role="row"><strong role="cell">添加控件</strong><span role="cell"><code>Ctrl+N</code></span></div>
+            <div role="row"><strong role="cell">保存并应用</strong><span role="cell"><code>Ctrl+S</code></span></div>
+          </div>
+
+          <h3>选择</h3>
+          <div class="shortcut-table" role="table" aria-label="选择快捷键">
+            <div role="row"><strong role="cell">全选</strong><span role="cell"><code>Ctrl+A</code></span></div>
+            <div role="row"><strong role="cell">反选</strong><span role="cell"><code>Ctrl+I</code></span></div>
+            <div role="row"><strong role="cell">取消选择</strong><span role="cell"><code>Ctrl+Shift+D</code></span></div>
+            <div role="row"><strong role="cell">多选模式</strong><span role="cell"><code>Ctrl+Shift+M</code></span></div>
+          </div>
+
+          <h3>对齐</h3>
+          <div class="shortcut-table" role="table" aria-label="对齐快捷键">
+            <div role="row"><strong role="cell">进入/退出对齐</strong><span role="cell"><code>Ctrl+Shift+A</code></span></div>
+            <div role="row"><strong role="cell">水平中线对齐</strong><span role="cell"><code>Ctrl+Alt+1</code></span></div>
+            <div role="row"><strong role="cell">垂直中线对齐</strong><span role="cell"><code>Ctrl+Alt+2</code></span></div>
+            <div role="row"><strong role="cell">左对齐</strong><span role="cell"><code>Ctrl+Alt+3</code></span></div>
+            <div role="row"><strong role="cell">右对齐</strong><span role="cell"><code>Ctrl+Alt+4</code></span></div>
+            <div role="row"><strong role="cell">顶对齐</strong><span role="cell"><code>Ctrl+Alt+5</code></span></div>
+            <div role="row"><strong role="cell">底对齐</strong><span role="cell"><code>Ctrl+Alt+6</code></span></div>
+            <div role="row"><strong role="cell">尺寸对齐</strong><span role="cell"><code>Ctrl+Alt+7</code></span></div>
+          </div>
+
+          <h3>视图</h3>
+          <div class="shortcut-table" role="table" aria-label="视图快捷键">
+            <div role="row"><strong role="cell">复位视图</strong><span role="cell"><code>Ctrl+0</code></span></div>
+            <div role="row"><strong role="cell">放大</strong><span role="cell"><code>Ctrl+=</code></span></div>
+            <div role="row"><strong role="cell">缩小</strong><span role="cell"><code>Ctrl+-</code></span></div>
+          </div>
+
+          <h3>覆盖层</h3>
+          <div class="shortcut-table" role="table" aria-label="覆盖层快捷键">
+            <div role="row"><strong role="cell">显示/隐藏覆盖层</strong><span role="cell"><code>Ctrl+Shift+O</code></span></div>
+          </div>
+
+          <h3>输入模式</h3>
+          <div class="shortcut-table" role="table" aria-label="输入模式快捷键">
+            <div role="row"><strong role="cell">键盘输入</strong><span role="cell"><code>F1</code></span></div>
+            <div role="row"><strong role="cell">手柄输入</strong><span role="cell"><code>F2</code></span></div>
+            <div role="row"><strong role="cell">自动识别</strong><span role="cell"><code>F3</code></span></div>
+          </div>
+
+          <h3>Dock 卡片</h3>
+          <div class="shortcut-table" role="table" aria-label="Dock 卡片快捷键">
+            <div role="row"><strong role="cell">打开覆盖层卡片</strong><span role="cell"><code>Ctrl+1</code></span></div>
+            <div role="row"><strong role="cell">打开个性化卡片</strong><span role="cell"><code>Ctrl+2</code></span></div>
+            <div role="row"><strong role="cell">打开布局卡片</strong><span role="cell"><code>Ctrl+3</code></span></div>
+            <div role="row"><strong role="cell">打开应用卡片</strong><span role="cell"><code>Ctrl+4</code></span></div>
+            <div role="row"><strong role="cell">打开热键卡片</strong><span role="cell"><code>Ctrl+5</code></span></div>
+          </div>
+
+          <div class="wiki-note">
+            <i data-lucide="info" aria-hidden="true"></i>
+            <p><code>Esc</code> 用于取消当前操作（例如取消参照物选择、停止录制），<code>Enter</code> 用于确认。</p>
+          </div>
+        </section>
+
+        <section class="wiki-section" id="presets">
+          <p class="section-kicker">13</p>
           <h2>管理预设</h2>
           <p>预设用于保存多套布局。键盘预设和手柄预设互相独立，切换设备模式时不会互相覆盖。</p>
           <ol class="step-list compact">
@@ -325,8 +429,8 @@
         </section>
 
         <section class="wiki-section" id="global-style">
-          <p class="section-kicker">12</p>
-          <h2>覆盖层与个性化</h2>
+          <p class="section-kicker">14</p>
+          <h2>覆盖层、个性化与布局</h2>
           <p>“覆盖层”卡片用于统一设置普通按键、鼠标、指示器和手柄控件的外观：</p>
           <ul class="plain-list">
             <li><strong>背景颜色</strong>：控制控件背景显示，可通过左侧勾选框开启或关闭。</li>
@@ -343,10 +447,18 @@
             <li><strong>主题色</strong>：使用普通选色器选择强调色，并自动校正与界面的对比度。</li>
           </ul>
           <p>主题只影响设置界面和预览区外观，不会改变覆盖层中按键、鼠标和手柄控件的实际样式。</p>
+
+          <h3>布局卡片</h3>
+          <p>“布局”卡片用于调整界面上几个固定元素的停靠位置，改完立即生效并自动保存：</p>
+          <ul class="plain-list">
+            <li><strong>模式与预设位置</strong>：模式切换与预设切换的停靠位置，可选左上或左下。</li>
+            <li><strong>Dock 栏位置</strong>：Dock 栏的停靠位置，可选底部、左侧或右侧。</li>
+          </ul>
+          <p>Dock 栏一共有五个入口：覆盖层、个性化、布局、应用和热键。切换位置时会有平滑过渡动画，不会影响控件布局和覆盖层。</p>
         </section>
 
         <section class="wiki-section" id="overlay">
-          <p class="section-kicker">13</p>
+          <p class="section-kicker">15</p>
           <h2>覆盖层设置</h2>
 
           <h3>整体不透明度</h3>
@@ -392,7 +504,7 @@
         </section>
 
         <section class="wiki-section" id="obs">
-          <p class="section-kicker">14</p>
+          <p class="section-kicker">16</p>
           <h2>在 OBS 中使用</h2>
           <ol class="step-list compact">
             <li><span>1</span><div><strong>添加来源</strong><p>在 OBS 的来源面板点击“＋”，选择“窗口捕获”。</p></div></li>
@@ -414,7 +526,7 @@
         </section>
 
         <section class="wiki-section" id="updates">
-          <p class="section-kicker">15</p>
+          <p class="section-kicker">17</p>
           <h2>自动检查更新</h2>
           <p>程序默认在启动时检查公开 Release 仓库，可以在“应用”卡片中关闭“启动时检查更新”。检查期间标题栏会显示加载动画；如果没有新版本，动画会自动隐藏。</p>
           <p>发现新版本时，可以从更新提示中查看更新日志、打开发布页面、下载更新，并自动替换和重启。更新日志支持保留原文换行和显示 GitHub Release 正文中的远程图片。</p>
@@ -422,7 +534,7 @@
         </section>
 
         <section class="wiki-section" id="data-directory">
-          <p class="section-kicker">16</p>
+          <p class="section-kicker">18</p>
           <h2>数据目录</h2>
           <p>配置默认保存在：</p>
           <pre><code>%APPDATA%\PA Keystroke</code></pre>
@@ -437,7 +549,7 @@
         </section>
 
         <section class="wiki-section" id="faq">
-          <p class="section-kicker">17</p>
+          <p class="section-kicker">19</p>
           <h2>常见问题</h2>
           <div class="faq-list">
             <details>
@@ -464,7 +576,7 @@
         </section>
 
         <section class="wiki-section" id="feedback">
-          <p class="section-kicker">18</p>
+          <p class="section-kicker">20</p>
           <h2>反馈</h2>
           <p>欢迎在 GitHub Issues 中提交问题和建议，或加入社区 QQ 群交流。</p>
           <div class="feedback-actions">
