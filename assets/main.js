@@ -19,20 +19,21 @@ const VIDEO_PRESETS = {
 };
 
 const releaseFallback = {
-  version: "v1.1.00",
-  size: "48.3 MB",
-  date: "2026-10-13",
+  version: "v1.1.02",
+  size: "41.5 MB",
+  date: "2026-10-17",
   notes: `### Changelog
 **功能新增**
-- 新增深色、浅色、自动跟随系统三套主题。
-- 设置窗改为预览区铺满，使用 Dock 卡片管理覆盖层、个性化和应用。
-- 鼠标控件新增内置位移点，滚轮指示和位移指示可分别显示。
-- 新增开机自启动、启动时显示设置、启动时检查更新和关闭设置窗口时退出。
+- 新增“动效”卡片，可分别设置键内效果和键外效果，并提供独立预览。
+- 新增“序列式监听”控件，按顺序记录组合键。
+- 新增“瀑布流”控件，把按键按住记录沿指定方向输出为流动方块。
+- 设置窗口补齐 Windows 原生窗口行为：拖动、贴边、双击最大化/还原、边缘缩放和系统菜单。
+- 重新整理“覆盖层”和“个性化”卡片，外观与键帽样式集中到个性化。
 
-**问题修复**
-- 修复 ESC 录制、键帽自动配色和背景触发过渡等问题。
-- 修复卡片图标、主题下拉框、浅色模式配色和卡片展开避让问题。
-- 修复保存并应用按钮错位、鼠标移动控件未触发保存和右键菜单堆叠问题。`
+**改进与修复**
+- 瀑布流预览新增接入轨道，接入和取消接入时会播放生长/缩回动画。
+- 修复 Dock 卡片通过边缘索引拖拽召回时阴影丢失的问题。
+- 更新界面字体和多个图标，修复预览、卡片阴影和动画细节。`
 };
 
 function formatBytes(bytes) {
@@ -521,7 +522,7 @@ async function setupLatestRelease() {
     return;
   }
 
-  const cacheKey = "pa-keystroke-release-v2";
+  const cacheKey = "pa-keystroke-release-v3";
   const cached = sessionStorage.getItem(cacheKey);
   if (cached) {
     try {

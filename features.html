@@ -20,7 +20,7 @@
   <script src="assets/supabase-config.js?v=20261001-4" defer></script>
   <script src="assets/preset-store.js?v=20261002-2" defer></script>
   <script src="assets/auth-header.js?v=20261002-3" defer></script>
-  <script src="assets/main.js?v=20261001-4" defer></script>
+  <script src="assets/main.js?v=20261017-1" defer></script>
 </head>
 <body data-page="features">
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -62,9 +62,11 @@
           <div class="feature-copy">
             <p class="section-label reveal">键盘与鼠标</p>
             <h3 class="reveal">按键和移动方向，实时反馈。</h3>
-            <p class="reveal">按键按下时立即高亮。鼠标支持左键、右键、中键、侧键，主体内部也可以显示位移点和滚轮反馈。</p>
+            <p class="reveal">按键按下时会按“动效”设置反馈。鼠标支持左键、右键、中键、侧键，主体内部也可以显示位移点和滚轮反馈。</p>
             <ul class="feature-list reveal">
               <li>键盘布局按实际位置显示</li>
+              <li>序列式监听按顺序记录组合键</li>
+              <li>瀑布流把按住时长输出为流动方块</li>
               <li>鼠标按键状态和高亮反馈</li>
               <li>鼠标内置位移点跟随移动方向</li>
               <li>滚轮提示和位移提示可分别开关</li>
@@ -93,12 +95,13 @@
 
         <article class="feature-block reverse" data-reveal-group>
           <div class="feature-copy">
-            <p class="section-label reveal">界面主题</p>
-            <h3 class="reveal">深色、浅色，自动跟随系统。</h3>
-            <p class="reveal">设置窗口以预览区为主，通过底部 Dock 展开覆盖层、个性化和应用设置。主题色可以自由选择，并自动校正与界面的对比度。</p>
+            <p class="section-label reveal">界面与动效</p>
+            <h3 class="reveal">主题、动效和窗口行为统一管理。</h3>
+            <p class="reveal">设置窗口以预览区为主，Dock 提供覆盖层、个性化、动效、布局、应用和热键。主题色自动校正对比度，键帽触发动画可选，窗口行为接近 Windows 原生应用。</p>
             <ul class="feature-list reveal">
               <li>深色、浅色、自动跟随系统</li>
-              <li>主题色自动校正可见度</li>
+              <li>键内效果与键外效果可同时生效</li>
+              <li>窗口支持拖动、贴边、双击最大化和边缘缩放</li>
               <li>应用页管理启动和关闭行为</li>
             </ul>
           </div>

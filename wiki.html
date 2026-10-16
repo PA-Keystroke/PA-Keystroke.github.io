@@ -23,7 +23,7 @@
   <script src="assets/supabase-config.js?v=20261001-4" defer></script>
   <script src="assets/preset-store.js?v=20261002-2" defer></script>
   <script src="assets/auth-header.js?v=20261002-3" defer></script>
-  <script src="assets/main.js?v=20261001-4" defer></script>
+  <script src="assets/main.js?v=20261017-1" defer></script>
 </head>
 <body data-page="wiki">
   <a class="skip-link" href="#wiki-content">跳到 Wiki 正文</a>
@@ -85,16 +85,18 @@
             <a href="#requirements">系统要求</a>
             <a href="#input-modes">输入模式</a>
             <a href="#add-keyboard">添加按键</a>
+            <a href="#add-sequence">序列式监听</a>
             <a href="#add-mouse">添加鼠标</a>
             <a href="#add-movement">位移指示器</a>
             <a href="#add-wheel">滚轮指示器</a>
+            <a href="#add-waterfall">瀑布流</a>
             <a href="#add-text">添加文本</a>
             <a href="#add-gamepad">手柄控件</a>
             <a href="#edit-controls">编辑控件</a>
             <a href="#align-controls">对齐控件</a>
             <a href="#shortcuts">快捷键</a>
             <a href="#presets">管理预设</a>
-            <a href="#global-style">覆盖层、个性化与布局</a>
+            <a href="#global-style">覆盖层、个性化与动效</a>
             <a href="#overlay">覆盖层设置</a>
             <a href="#obs">在 OBS 中使用</a>
             <a href="#updates">自动更新</a>
@@ -114,7 +116,7 @@
             <li><span>1</span><div><strong>下载程序</strong><p>从官网或最新 Release 页面下载 <code>PA-Keystroke.exe</code>。</p></div></li>
             <li><span>2</span><div><strong>运行程序</strong><p>双击运行，并按 Windows 提示允许管理员权限。程序会打开设置窗口和透明覆盖层。</p></div></li>
             <li><span>3</span><div><strong>选择输入模式</strong><p>根据场景选择键盘、手柄或自动识别模式。</p></div></li>
-            <li><span>4</span><div><strong>调整布局与样式</strong><p>在预览区调整控件，并在 Dock 的“覆盖层”“个性化”“布局”“应用”“热键”卡片中调整外观、界面主题、界面布局和快捷键。</p></div></li>
+            <li><span>4</span><div><strong>调整布局与样式</strong><p>在预览区调整控件，并在 Dock 的“覆盖层”“个性化”“动效”“布局”“应用”“热键”卡片中调整覆盖层、外观、触发动画、界面布局和快捷键。</p></div></li>
             <li><span>5</span><div><strong>保存并应用</strong><p>完成修改后必须点击“保存并应用”，覆盖层才会使用新布局。</p></div></li>
             <li><span>6</span><div><strong>在 OBS 中添加窗口捕获</strong><p>选择 <code>PA Keystroke Overlay</code>，采集方式选择 <code>Windows 10（1903 或更新版本）</code>。</p></div></li>
           </ol>
@@ -123,7 +125,7 @@
             <button class="image-zoom" type="button" data-zoom="assets/screenshots/01-main-window.png" aria-label="放大查看设置主窗口">
               <img src="assets/screenshots/01-main-window.png" alt="PA Keystroke 设置主窗口" width="1180" height="760" loading="eager">
             </button>
-            <figcaption>设置主窗口以预览区为主，覆盖层、个性化、布局、应用和热键设置都通过 Dock 展开。</figcaption>
+            <figcaption>设置主窗口以预览区为主，覆盖层、个性化、动效、布局、应用和热键设置都通过 Dock 展开。</figcaption>
           </figure>
         </section>
 
@@ -181,11 +183,24 @@
             <li><span>4</span><div><strong>调整位置和尺寸</strong><p>在上方预览区拖动控件；编辑完成后点击“保存”。</p></div></li>
             <li><span>5</span><div><strong>保存并应用</strong><p>回到主窗口点击“保存并应用”，覆盖层才会更新。</p></div></li>
           </ol>
-          <p>按键按下时，对应控件会高亮显示。</p>
+          <p>按键按下时，控件会按“动效”卡片中选择的效果反馈。</p>
+        </section>
+
+        <section class="wiki-section" id="add-sequence">
+          <p class="section-kicker">05</p>
+          <h2>添加序列式监听</h2>
+          <ol class="step-list compact">
+            <li><span>1</span><div><strong>选择“序列式监听”</strong><p>点击“＋ 添加”，然后选择“序列式监听”。</p></div></li>
+            <li><span>2</span><div><strong>设置排列与尺寸</strong><p>选择横向、横向反转、纵向或纵向反转，并设置键帽大小和键间距。</p></div></li>
+            <li><span>3</span><div><strong>选择监听范围</strong><p>可选择全部按键、仅快捷键（修饰键组合）或自定义筛选。</p></div></li>
+            <li><span>4</span><div><strong>设置停留与历史</strong><p>“停留时长”控制组合结束后保留多久；开启“保留历史记录”后，历史组合会占用控件长度，放不下时优先淘汰最旧的组合。</p></div></li>
+            <li><span>5</span><div><strong>保存并应用</strong><p>选择“自定义筛选”时，在“自定义按键”中填写例如 <code>ctrl_l, shift, alt_l, a</code>。</p></div></li>
+          </ol>
+          <p>序列式监听会按按键按下的顺序记录组合键，每组组合在控件中依次排列。</p>
         </section>
 
         <section class="wiki-section" id="add-mouse">
-          <p class="section-kicker">05</p>
+          <p class="section-kicker">06</p>
           <h2>添加鼠标</h2>
           <ol class="step-list compact">
             <li><span>1</span><div><strong>选择“鼠标”</strong><p>点击“＋ 添加”，然后选择“鼠标”。</p></div></li>
@@ -204,7 +219,7 @@
         </section>
 
         <section class="wiki-section" id="add-movement">
-          <p class="section-kicker">06</p>
+          <p class="section-kicker">07</p>
           <h2>添加位移指示器</h2>
           <ol class="step-list compact">
             <li><span>1</span><div><strong>添加控件</strong><p>选择“位移指示器”。</p></div></li>
@@ -217,7 +232,7 @@
         </section>
 
         <section class="wiki-section" id="add-wheel">
-          <p class="section-kicker">07</p>
+          <p class="section-kicker">08</p>
           <h2>添加滚轮指示器</h2>
           <ol class="step-list compact">
             <li><span>1</span><div><strong>添加控件</strong><p>在键盘布局中点击“＋ 添加”，然后选择“滚轮指示器”。</p></div></li>
@@ -228,8 +243,28 @@
           <p>鼠标滚轮向上时滑条向上偏移，向下时向下偏移。连续滚动越快，偏移越大；停止滚动后，滑条会逐渐回到中间。</p>
         </section>
 
+        <section class="wiki-section" id="add-waterfall">
+          <p class="section-kicker">09</p>
+          <h2>添加瀑布流</h2>
+          <ol class="step-list compact">
+            <li><span>1</span><div><strong>选择“瀑布流”</strong><p>点击“＋ 添加”，然后选择“瀑布流”。</p></div></li>
+            <li><span>2</span><div><strong>设置输出方向</strong><p>可选向上、向下、向左或向右；切换方向时控件宽高会自动对调。</p></div></li>
+            <li><span>3</span><div><strong>设置流动速度</strong><p>速度范围 20–1200 px/s。</p></div></li>
+            <li><span>4</span><div><strong>调整位置和尺寸</strong><p>输出方向的长度决定方块能显示的范围；读取侧的长度决定能容纳多少个按键。</p></div></li>
+            <li><span>5</span><div><strong>保存并应用</strong><p>覆盖层会使用新的瀑布流设置。</p></div></li>
+          </ol>
+          <p>瀑布流不是普通按键，而是一个附加渲染控件：</p>
+          <ul class="plain-list">
+            <li>它只会读取整段宽度都处于读取侧范围内、并且贴住读取侧的普通键盘按键。</li>
+            <li>读取侧与输出方向相反；例如向上输出时，读取侧在下方。</li>
+            <li>按住按键时，会持续输出对应宽度的圆角方块；松手后方块继续流动并渐隐。</li>
+            <li>每条通道的宽度等于对应按键宽度。</li>
+            <li>预览区会显示输出方向、读取侧和每个已接入按键的轨道，接入和取消接入时有生长/缩回动画。轨道只在编辑预览显示，覆盖层中不显示。</li>
+          </ul>
+        </section>
+
         <section class="wiki-section" id="add-text">
-          <p class="section-kicker">08</p>
+          <p class="section-kicker">10</p>
           <h2>添加文本</h2>
           <ol class="step-list compact">
             <li><span>1</span><div><strong>选择“文本”</strong><p>输入需要显示的文字内容。</p></div></li>
@@ -241,7 +276,7 @@
         </section>
 
         <section class="wiki-section" id="add-gamepad">
-          <p class="section-kicker">09</p>
+          <p class="section-kicker">11</p>
           <h2>添加手柄控件</h2>
           <h3>添加整只手柄</h3>
           <ol class="step-list compact">
@@ -271,7 +306,7 @@
         </section>
 
         <section class="wiki-section" id="edit-controls">
-          <p class="section-kicker">10</p>
+          <p class="section-kicker">12</p>
           <h2>编辑已有控件</h2>
           <div class="shortcut-table" role="table" aria-label="预览区操作">
             <div role="row"><strong role="cell">左键拖动</strong><span role="cell">自由移动控件，默认开启对齐吸附</span></div>
@@ -302,7 +337,7 @@
         </section>
 
         <section class="wiki-section" id="align-controls">
-          <p class="section-kicker">11</p>
+          <p class="section-kicker">13</p>
           <h2>对齐多个控件</h2>
           <p>多选两个以上控件后，可以把它们按同一个参照物摆齐。</p>
           <ol class="step-list compact">
@@ -313,12 +348,12 @@
           </ol>
           <div class="wiki-note">
             <i data-lucide="info" aria-hidden="true"></i>
-            <p>对齐对普通按键、鼠标、指示器、文本和手柄控件都有效，操作同样会记入撤回历史，可以用 <code>Ctrl+Z</code> 撤销。</p>
+            <p>对齐对普通按键、鼠标、指示器、文本、序列式监听、瀑布流和手柄控件都有效，操作同样会记入撤回历史，可以用 <code>Ctrl+Z</code> 撤销。</p>
           </div>
         </section>
 
         <section class="wiki-section" id="shortcuts">
-          <p class="section-kicker">12</p>
+          <p class="section-kicker">14</p>
           <h2>快捷键</h2>
           <p>所有快捷键都可以在 Dock 的“热键”卡片中修改：点击某项右侧的按钮即可录制新的组合，与其它操作冲突时会有提示，底部的“恢复默认快捷键”可以一键还原。下面是默认值。</p>
 
@@ -390,7 +425,7 @@
         </section>
 
         <section class="wiki-section" id="presets">
-          <p class="section-kicker">13</p>
+          <p class="section-kicker">15</p>
           <h2>管理预设</h2>
           <p>预设用于保存多套布局。键盘预设和手柄预设互相独立，切换设备模式时不会互相覆盖。</p>
           <ol class="step-list compact">
@@ -429,10 +464,19 @@
         </section>
 
         <section class="wiki-section" id="global-style">
-          <p class="section-kicker">14</p>
-          <h2>覆盖层、个性化与布局</h2>
-          <p>“覆盖层”卡片用于统一设置普通按键、鼠标、指示器和手柄控件的外观：</p>
+          <p class="section-kicker">16</p>
+          <h2>覆盖层、个性化与动效</h2>
+          <p>“覆盖层”卡片只保留覆盖层本身的控制项：</p>
           <ul class="plain-list">
+            <li><strong>覆盖层交互</strong>：锁定时鼠标点击穿透，解锁后可以拖动覆盖层。</li>
+            <li><strong>覆盖层显示</strong>：隐藏覆盖层，但仍可通过 OBS 窗口捕获。</li>
+            <li><strong>整体缩放</strong>：按比例调整覆盖层中所有控件的大小。</li>
+          </ul>
+          <p>“个性化”卡片用于统一设置普通按键、鼠标、指示器和手柄控件的外观，以及软件界面样式：</p>
+          <ul class="plain-list">
+            <li><strong>外观色</strong>：深色、浅色或自动跟随系统。</li>
+            <li><strong>主题色</strong>：用于界面强调、选中和开关状态，并自动校正对比度。</li>
+            <li><strong>不透明度</strong>：调整覆盖层整体透明程度。</li>
             <li><strong>背景颜色</strong>：控制控件背景显示，可通过左侧勾选框开启或关闭。</li>
             <li><strong>外框颜色</strong>：控制控件外框显示，可通过左侧勾选框开启或关闭。</li>
             <li><strong>文字显示比例</strong>：整体放大或缩小键帽文字。</li>
@@ -441,12 +485,19 @@
           </ul>
           <p>颜色支持 Alpha，可直接输入 <code>#RRGGBBAA</code>，也可以打开选色器后通过透明度滑条调整。</p>
           <p>键帽文字颜色、触发颜色和阴影颜色会根据当前背景色自动推导，设置中不再单独提供手选。外框颜色关闭时，普通按键不显示外框；鼠标、指示器和手柄控件会恢复各自默认外框，避免控件不可见。</p>
-          <p>“个性化”卡片用于调整软件界面本身：</p>
+          <p>外观色和主题色只影响设置界面和预览区外观，不会改变覆盖层中按键、鼠标和手柄控件的实际样式。</p>
+
+          <h3>动效卡片</h3>
+          <p>“动效”卡片用于设置键帽触发时的按下动画，并提供独立预览键帽：</p>
           <ul class="plain-list">
-            <li><strong>主题</strong>：深色、浅色、自动跟随系统。</li>
-            <li><strong>主题色</strong>：使用普通选色器选择强调色，并自动校正与界面的对比度。</li>
+            <li><strong>键内效果</strong>：单选，包含简化（变色）、内缩、脉冲、回弹和果冻。</li>
+            <li><strong>键外效果</strong>：单选，包含无、光晕、涟漪和火花。</li>
+            <li>键内效果和键外效果可以各选一个并同时生效。</li>
+            <li>预览键帽会自动循环播放，也可以点击预览立即触发。</li>
+            <li>动效作用于键盘按键、鼠标按键、手柄按键等会触发状态的键帽控件。</li>
+            <li>动效设置保存在用户设置中，修改后立即同步到覆盖层。</li>
+            <li>默认是“简化（变色）+ 无键外效果”，与旧版本行为一致。</li>
           </ul>
-          <p>主题只影响设置界面和预览区外观，不会改变覆盖层中按键、鼠标和手柄控件的实际样式。</p>
 
           <h3>布局卡片</h3>
           <p>“布局”卡片用于调整界面上几个固定元素的停靠位置，改完立即生效并自动保存：</p>
@@ -454,15 +505,25 @@
             <li><strong>模式与预设位置</strong>：模式切换与预设切换的停靠位置，可选左上或左下。</li>
             <li><strong>Dock 栏位置</strong>：Dock 栏的停靠位置，可选底部、左侧或右侧。</li>
           </ul>
-          <p>Dock 栏一共有五个入口：覆盖层、个性化、布局、应用和热键。切换位置时会有平滑过渡动画，不会影响控件布局和覆盖层。</p>
+          <p>Dock 栏一共有六个入口：覆盖层、个性化、动效、布局、应用和热键。切换位置时会有平滑过渡动画，不会影响控件布局和覆盖层。</p>
+
+          <h3>窗口行为</h3>
+          <p>设置窗口采用接近 Windows 原生应用的行为：</p>
+          <ul class="plain-list">
+            <li>拖动标题栏移动窗口，拖到屏幕边缘会吸附到对应位置。</li>
+            <li>双击标题栏可以最大化或还原窗口。</li>
+            <li>拖动窗口边缘或四角可以调整大小。</li>
+            <li>右键标题栏可以打开 Windows 系统菜单。</li>
+            <li>最小化、还原、最大化和贴边吸附都带有过渡动画。</li>
+          </ul>
         </section>
 
         <section class="wiki-section" id="overlay">
-          <p class="section-kicker">15</p>
+          <p class="section-kicker">17</p>
           <h2>覆盖层设置</h2>
 
           <h3>整体不透明度</h3>
-          <p>“覆盖层不透明度”会统一改变所有控件和背景的整体透明程度。</p>
+          <p>不透明度设置位于“个性化”卡片中，会统一改变所有控件和背景的整体透明程度。</p>
 
           <h3>整体缩放</h3>
           <p>“整体缩放”会改变覆盖层中控件的整体大小，适合适配不同分辨率的直播画面。</p>
@@ -504,7 +565,7 @@
         </section>
 
         <section class="wiki-section" id="obs">
-          <p class="section-kicker">16</p>
+          <p class="section-kicker">18</p>
           <h2>在 OBS 中使用</h2>
           <ol class="step-list compact">
             <li><span>1</span><div><strong>添加来源</strong><p>在 OBS 的来源面板点击“＋”，选择“窗口捕获”。</p></div></li>
@@ -526,7 +587,7 @@
         </section>
 
         <section class="wiki-section" id="updates">
-          <p class="section-kicker">17</p>
+          <p class="section-kicker">19</p>
           <h2>自动检查更新</h2>
           <p>程序默认在启动时检查公开 Release 仓库，可以在“应用”卡片中关闭“启动时检查更新”。检查期间标题栏会显示加载动画；如果没有新版本，动画会自动隐藏。</p>
           <p>发现新版本时，可以从更新提示中查看更新日志、打开发布页面、下载更新，并自动替换和重启。更新日志支持保留原文换行和显示 GitHub Release 正文中的远程图片。</p>
@@ -534,7 +595,7 @@
         </section>
 
         <section class="wiki-section" id="data-directory">
-          <p class="section-kicker">18</p>
+          <p class="section-kicker">20</p>
           <h2>数据目录</h2>
           <p>配置默认保存在：</p>
           <pre><code>%APPDATA%\PA Keystroke</code></pre>
@@ -549,7 +610,7 @@
         </section>
 
         <section class="wiki-section" id="faq">
-          <p class="section-kicker">19</p>
+          <p class="section-kicker">21</p>
           <h2>常见问题</h2>
           <div class="faq-list">
             <details>
@@ -576,7 +637,7 @@
         </section>
 
         <section class="wiki-section" id="feedback">
-          <p class="section-kicker">20</p>
+          <p class="section-kicker">22</p>
           <h2>反馈</h2>
           <p>欢迎在 GitHub Issues 中提交问题和建议，或加入社区 QQ 群交流。</p>
           <div class="feedback-actions">
