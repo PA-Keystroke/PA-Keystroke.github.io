@@ -19,21 +19,16 @@ const VIDEO_PRESETS = {
 };
 
 const releaseFallback = {
-  version: "v1.1.02",
+  version: "v1.1.03",
   size: "41.5 MB",
   date: "2026-10-17",
   notes: `### Changelog
 **功能新增**
-- 新增“动效”卡片，可分别设置键内效果和键外效果，并提供独立预览。
-- 新增“序列式监听”控件，按顺序记录组合键。
-- 新增“瀑布流”控件，把按键按住记录沿指定方向输出为流动方块。
-- 设置窗口补齐 Windows 原生窗口行为：拖动、贴边、双击最大化/还原、边缘缩放和系统菜单。
-- 重新整理“覆盖层”和“个性化”卡片，外观与键帽样式集中到个性化。
-
-**改进与修复**
-- 瀑布流预览新增接入轨道，接入和取消接入时会播放生长/缩回动画。
-- 修复 Dock 卡片通过边缘索引拖拽召回时阴影丢失的问题。
-- 更新界面字体和多个图标，修复预览、卡片阴影和动画细节。`
+- 新增“控件形状”，矩形控件可在圆角和直角之间切换。
+- 鼠标左键、右键、中键和两侧键支持独立的键内与键外动效反馈。
+- 瀑布流支持最多四层嵌套通道，并可在预览中切换查看各层级。
+- 拖动控件时，编辑卡片会同步跟随控件移动。
+- 新建按键未绑定实际按键时，关闭编辑卡片或切换控件会自动撤销。`
 };
 
 function formatBytes(bytes) {
@@ -522,7 +517,7 @@ async function setupLatestRelease() {
     return;
   }
 
-  const cacheKey = "pa-keystroke-release-v3";
+  const cacheKey = "pa-keystroke-release-v4";
   const cached = sessionStorage.getItem(cacheKey);
   if (cached) {
     try {

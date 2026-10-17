@@ -13,14 +13,14 @@
   <link rel="canonical" href="https://pa-keystroke.github.io/PA-Keystroke-Web/download.html">
   <link rel="icon" type="image/png" href="assets/brand/icon.png">
   <link rel="preload" href="assets/fonts/LetsParty-Bold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/styles.css?v=20261001-6">
+  <link rel="stylesheet" href="assets/styles.css?v=20261017-1">
   <link rel="stylesheet" href="assets/auth-header.css?v=20261002-5">
   <script src="assets/vendor/lucide.min.js" defer></script>
   <script src="assets/vendor/supabase.js?v=20261001-3" defer></script>
   <script src="assets/supabase-config.js?v=20261001-4" defer></script>
   <script src="assets/preset-store.js?v=20261002-2" defer></script>
   <script src="assets/auth-header.js?v=20261002-3" defer></script>
-  <script src="assets/main.js?v=20261017-1" defer></script>
+  <script src="assets/main.js?v=20261017-2" defer></script>
 </head>
 <body data-page="download">
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -59,7 +59,7 @@
           下载 PA-Keystroke.exe
         </a>
         <div class="release-facts" aria-live="polite" data-release-facts>
-          <span>版本 <strong data-release-version>v1.1.02</strong></span>
+          <span>版本 <strong data-release-version>v1.1.03</strong></span>
           <span>大小 <strong data-release-size>41.5 MB</strong></span>
           <span>更新 <strong data-release-date>2026-10-17</strong></span>
         </div>
@@ -69,24 +69,18 @@
         <details class="release-notes" data-release-notes-panel>
           <summary>
             <span>更新日志</span>
-            <span data-release-notes-version>v1.1.02</span>
+            <span data-release-notes-version>v1.1.03</span>
             <i data-lucide="chevron-down" aria-hidden="true"></i>
           </summary>
           <div class="release-notes-body" data-release-notes>
             <h4>Changelog</h4>
             <p><strong>功能新增</strong></p>
             <ul>
-              <li>新增“动效”卡片，可分别设置键内效果和键外效果，并提供独立预览。</li>
-              <li>新增“序列式监听”控件，按顺序记录组合键。</li>
-              <li>新增“瀑布流”控件，把按键按住记录沿指定方向输出为流动方块。</li>
-              <li>设置窗口补齐 Windows 原生窗口行为：拖动、贴边、双击最大化/还原、边缘缩放和系统菜单。</li>
-              <li>重新整理“覆盖层”和“个性化”卡片，外观与键帽样式集中到个性化。</li>
-            </ul>
-            <p><strong>改进与修复</strong></p>
-            <ul>
-              <li>瀑布流预览新增接入轨道，接入和取消接入时会播放生长/缩回动画。</li>
-              <li>修复 Dock 卡片通过边缘索引拖拽召回时阴影丢失的问题。</li>
-              <li>更新界面字体和多个图标，修复预览、卡片阴影和动画细节。</li>
+              <li>新增“控件形状”，矩形控件可在圆角和直角之间切换。</li>
+              <li>鼠标左键、右键、中键和两侧键支持独立的键内与键外动效反馈。</li>
+              <li>瀑布流支持最多四层嵌套通道，并可在预览中切换查看各层级。</li>
+              <li>拖动控件时，编辑卡片会同步跟随控件移动。</li>
+              <li>新建按键未绑定实际按键时，关闭编辑卡片或切换控件会自动撤销。</li>
             </ul>
           </div>
         </details>
