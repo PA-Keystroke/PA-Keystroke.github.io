@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#000000">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="PA Keystroke 功能：键盘、鼠标、手柄实时反馈，多层瀑布流、鼠标分键动效、自动识别输入设备，并支持 OBS 窗口捕获。">
+  <meta name="description" content="PA Keystroke 功能：键盘、鼠标、手柄和 Hitbox 实时反馈，KPS 计数器、多层瀑布流、分键动效与自动识别，并支持 OBS 窗口捕获。">
   <meta property="og:title" content="PA Keystroke 功能">
   <meta property="og:description" content="实时显示键盘、鼠标和 Xbox 兼容手柄操作。">
   <meta property="og:url" content="https://pa-keystroke.github.io/PA-Keystroke-Web/features.html">
@@ -13,14 +13,14 @@
   <link rel="canonical" href="https://pa-keystroke.github.io/PA-Keystroke-Web/features.html">
   <link rel="icon" type="image/png" href="assets/brand/icon.png">
   <link rel="preload" href="assets/fonts/LetsParty-Bold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/styles.css?v=20261017-1">
+  <link rel="stylesheet" href="assets/styles.css?v=20261104-2">
   <link rel="stylesheet" href="assets/auth-header.css?v=20261002-5">
   <script src="assets/vendor/lucide.min.js" defer></script>
   <script src="assets/vendor/supabase.js?v=20261001-3" defer></script>
   <script src="assets/supabase-config.js?v=20261001-4" defer></script>
   <script src="assets/preset-store.js?v=20261002-2" defer></script>
   <script src="assets/auth-header.js?v=20261002-3" defer></script>
-  <script src="assets/main.js?v=20261017-2" defer></script>
+  <script src="assets/main.js?v=20261104-2" defer></script>
 </head>
 <body data-page="features">
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -68,8 +68,11 @@
               <li>序列式监听按顺序记录组合键</li>
               <li>瀑布流支持最多四层嵌套通道</li>
               <li>鼠标各按键独立播放键内和键外动效</li>
+              <li>KPS 计数器支持仅键盘、仅鼠标或两者统计</li>
+              <li>KPS 显示模板支持预设与自定义格式</li>
               <li>鼠标内置位移点跟随移动方向</li>
               <li>滚轮提示和位移提示可分别开关</li>
+              <li>鼠标位移点与独立位移指示器支持拖尾</li>
             </ul>
           </div>
           <div class="feature-media portrait-media reveal">
@@ -98,11 +101,14 @@
           <div class="feature-copy">
             <p class="section-label reveal">手柄</p>
             <h3 class="reveal">整只手柄，或单独放下一个按钮。</h3>
-            <p class="reveal">支持 Xbox 兼容手柄。可以显示完整手柄，也可以只放置按钮、摇杆、扳机和方向键。</p>
+            <p class="reveal">支持 Xbox 兼容手柄和 Hitbox。可以显示完整手柄或 Hitbox 面板，也可以只放置按钮、摇杆、扳机和方向键。</p>
             <ul class="feature-list reveal">
               <li>A、B、X、Y 与肩键</li>
               <li>LT、RT 扳机进度</li>
               <li>左右摇杆与十字方向键</li>
+              <li>Hitbox 支持十二键和摇杆 + 八键面板</li>
+              <li>Hitbox 可读取键盘或 XInput 手柄</li>
+              <li>方向输入自动合成八向结果</li>
             </ul>
           </div>
           <div class="feature-media compact-media reveal">
@@ -117,7 +123,9 @@
             <p class="reveal">设置窗口以预览区为主，Dock 提供覆盖层、个性化、动效、布局、应用和热键。主题色自动校正对比度，矩形控件可以切换形状，编辑卡片会跟随控件移动。</p>
             <ul class="feature-list reveal">
               <li>深色、浅色、自动跟随系统</li>
-              <li>键内效果与键外效果可同时生效</li>
+              <li>十种键内效果与八种键外效果可自由组合</li>
+              <li>按住期间波动持续流动，余烬受重力下坠</li>
+              <li>预览窗黑色背景，播放结束平滑循环</li>
               <li>矩形控件可切换圆角和直角</li>
               <li>拖动控件时编辑卡片同步跟随</li>
               <li>未绑定的新建按键自动撤销</li>
@@ -134,11 +142,13 @@
           <div class="feature-copy">
             <p class="section-label reveal">输入模式</p>
             <h3 class="reveal">按设备自动切换布局。</h3>
-            <p class="reveal">可选择固定键盘模式、固定手柄模式，或根据最近操作的设备自动切换。</p>
+            <p class="reveal">可选择固定键盘、固定手柄、Hitbox 模式，或根据最近操作的设备在键盘与手柄之间自动切换。</p>
             <ul class="feature-list reveal">
               <li>鼠标操作不会触发模式切换</li>
               <li>自动识别期间锁定布局编辑</li>
-              <li>键盘预设与手柄预设互相独立</li>
+              <li>键盘、手柄和 Hitbox 预设互相独立</li>
+              <li>Hitbox 面板支持切换样式与输出类型</li>
+              <li>启动和删除控件后不会自动选中其它控件</li>
             </ul>
           </div>
           <div class="feature-media compact-media reveal">

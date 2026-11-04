@@ -13,14 +13,14 @@
   <link rel="canonical" href="https://pa-keystroke.github.io/PA-Keystroke-Web/download.html">
   <link rel="icon" type="image/png" href="assets/brand/icon.png">
   <link rel="preload" href="assets/fonts/LetsParty-Bold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/styles.css?v=20261017-1">
+  <link rel="stylesheet" href="assets/styles.css?v=20261104-2">
   <link rel="stylesheet" href="assets/auth-header.css?v=20261002-5">
   <script src="assets/vendor/lucide.min.js" defer></script>
   <script src="assets/vendor/supabase.js?v=20261001-3" defer></script>
   <script src="assets/supabase-config.js?v=20261001-4" defer></script>
   <script src="assets/preset-store.js?v=20261002-2" defer></script>
   <script src="assets/auth-header.js?v=20261002-3" defer></script>
-  <script src="assets/main.js?v=20261017-2" defer></script>
+  <script src="assets/main.js?v=20261104-2" defer></script>
 </head>
 <body data-page="download">
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -59,9 +59,9 @@
           下载 PA-Keystroke.exe
         </a>
         <div class="release-facts" aria-live="polite" data-release-facts>
-          <span>版本 <strong data-release-version>v1.1.03</strong></span>
-          <span>大小 <strong data-release-size>41.5 MB</strong></span>
-          <span>更新 <strong data-release-date>2026-10-17</strong></span>
+          <span>版本 <strong data-release-version>v1.1.04</strong></span>
+          <span>大小 <strong data-release-size>41.6 MB</strong></span>
+          <span>更新 <strong data-release-date>2026-11-04</strong></span>
         </div>
         <a class="text-link" href="https://github.com/PA-Keystroke/PA-Keystroke-Releases/releases" target="_blank" rel="noreferrer">
           查看全部版本 <i data-lucide="arrow-right" aria-hidden="true"></i>
@@ -69,18 +69,20 @@
         <details class="release-notes" data-release-notes-panel>
           <summary>
             <span>更新日志</span>
-            <span data-release-notes-version>v1.1.03</span>
+            <span data-release-notes-version>v1.1.04</span>
             <i data-lucide="chevron-down" aria-hidden="true"></i>
           </summary>
           <div class="release-notes-body" data-release-notes>
             <h4>Changelog</h4>
             <p><strong>功能新增</strong></p>
             <ul>
-              <li>新增“控件形状”，矩形控件可在圆角和直角之间切换。</li>
-              <li>鼠标左键、右键、中键和两侧键支持独立的键内与键外动效反馈。</li>
-              <li>瀑布流支持最多四层嵌套通道，并可在预览中切换查看各层级。</li>
-              <li>拖动控件时，编辑卡片会同步跟随控件移动。</li>
-              <li>新建按键未绑定实际按键时，关闭编辑卡片或切换控件会自动撤销。</li>
+              <li>新增 KPS 计数器，可按键盘、鼠标或两者统计，并自定义显示模板和对齐方式。</li>
+              <li>新增 Hitbox 输入模式，支持十二键与摇杆 + 八键面板、键盘输出型和手柄输出型。</li>
+              <li>键内动效新增扫描、霓虹、蓄能、裂纹和波动；键外动效新增光环、电弧、余烬和流星。</li>
+              <li>鼠标位移点与独立位移指示器支持拖尾。</li>
+              <li>修复启动时默认选中控件、删除后自动选中其它控件，以及鼠标侧键背景不显示的问题。</li>
+              <li>修复个性化提示裁切和颜色选择器消失，关闭背景与外框后不再显示低可读性提示。</li>
+              <li>优化大量控件预设的打开、切换与重绘性能，减少卡顿。</li>
             </ul>
           </div>
         </details>

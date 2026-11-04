@@ -1113,7 +1113,7 @@ code {
 
 .spec-row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 0;
   border-top: 1px solid var(--line-light);
   border-bottom: 1px solid var(--line-light);

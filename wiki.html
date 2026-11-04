@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111214">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="PA Keystroke Wiki：安装、输入模式、按键与手柄布局、控件编辑与对齐、快捷键、预设、OBS 捕获、自动更新和常见问题。">
+  <meta name="description" content="PA Keystroke Wiki：安装、键盘 / 手柄 / Hitbox 输入、KPS 计数器、控件编辑与对齐、快捷键、预设、OBS 捕获和常见问题。">
   <meta property="og:type" content="article">
   <meta property="og:title" content="PA Keystroke Wiki">
   <meta property="og:description" content="从首次启动、控件编辑与对齐到 OBS 捕获，完整了解 PA Keystroke 的使用方法。">
@@ -16,14 +16,14 @@
   <link rel="icon" type="image/png" href="assets/brand/icon.png">
   <link rel="preload" as="image" href="assets/brand/text.png">
   <link rel="preload" href="assets/fonts/LetsParty-Bold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/styles.css?v=20261017-1">
+  <link rel="stylesheet" href="assets/styles.css?v=20261104-2">
   <link rel="stylesheet" href="assets/auth-header.css?v=20261002-5">
   <script src="assets/vendor/lucide.min.js" defer></script>
   <script src="assets/vendor/supabase.js?v=20261001-3" defer></script>
   <script src="assets/supabase-config.js?v=20261001-4" defer></script>
   <script src="assets/preset-store.js?v=20261002-2" defer></script>
   <script src="assets/auth-header.js?v=20261002-3" defer></script>
-  <script src="assets/main.js?v=20261017-2" defer></script>
+  <script src="assets/main.js?v=20261104-2" defer></script>
 </head>
 <body data-page="wiki">
   <a class="skip-link" href="#wiki-content">跳到 Wiki 正文</a>
@@ -91,7 +91,9 @@
             <a href="#add-wheel">滚轮指示器</a>
             <a href="#add-waterfall">瀑布流</a>
             <a href="#add-text">添加文本</a>
+            <a href="#add-kps">KPS 计数器</a>
             <a href="#add-gamepad">手柄控件</a>
+            <a href="#add-hitbox">Hitbox 控件</a>
             <a href="#edit-controls">编辑控件</a>
             <a href="#align-controls">对齐控件</a>
             <a href="#shortcuts">快捷键</a>
@@ -152,12 +154,18 @@
               <p>始终显示手柄布局。</p>
             </article>
             <article>
+              <i data-lucide="crosshair" aria-hidden="true"></i>
+              <h3>Hitbox 输入</h3>
+              <p>显示 Hitbox 面板，适合格斗游戏的方向输入展示。</p>
+            </article>
+            <article>
               <i data-lucide="repeat-2" aria-hidden="true"></i>
               <h3>自动识别</h3>
               <p>根据最近操作的设备，自动切换键盘或手柄布局。</p>
             </article>
           </div>
           <p>鼠标操作不会触发自动识别模式切换，只有键盘按键和手柄操作会参与判断。</p>
+          <p>Hitbox 不参与自动识别，需要手动切换到 Hitbox 输入。键盘、手柄和 Hitbox 预设互相独立。</p>
           <p>自动识别模式下，预览区和预设栏会锁定为只读，避免误改布局。</p>
         </section>
 
@@ -198,7 +206,7 @@
             <li><span>4</span><div><strong>保存并应用</strong><p>先点击弹窗中的“保存”，再点击主窗口的“保存并应用”。</p></div></li>
           </ol>
           <p>鼠标控件支持左键、右键、中键、侧键 1 和侧键 2。</p>
-          <p>鼠标主体内部的位移点会跟随鼠标移动，停止后逐渐回到中心。滚轮指示和位移指示可以在编辑页分别开启或关闭。</p>
+          <p>鼠标主体内部的位移点会跟随鼠标移动，停止后逐渐回到中心。滚轮指示和位移指示可以在编辑页分别开启或关闭，位移点还可以开启拖尾。</p>
           <p>在“动效”中选择的键内和键外效果会分别作用于左键、右键、中键和两侧键。例如使用光晕时，只有实际按下的鼠标区域会产生光晕。</p>
         </section>
 
@@ -211,7 +219,7 @@
             <li><span>3</span><div><strong>调整位置和尺寸</strong><p>在预览区拖动控件或拖动边缘调整显示范围。</p></div></li>
             <li><span>4</span><div><strong>保存并应用</strong><p>完成修改后应用布局。</p></div></li>
           </ol>
-          <p>位移指示器会显示鼠标移动方向，并在停止移动后逐渐回到中心。</p>
+          <p>位移指示器会显示鼠标移动方向，并在停止移动后逐渐回到中心。编辑时可以开启拖尾，让移动轨迹更明显。</p>
           <p>这是独立的位移指示器控件；如果只需要在鼠标主体内部显示位移点，直接在鼠标控件的编辑页开启“显示位移指示”即可。</p>
         </section>
 
@@ -261,8 +269,21 @@
           </ol>
         </section>
 
-        <section class="wiki-section" id="add-gamepad">
+        <section class="wiki-section" id="add-kps">
           <p class="section-kicker">11</p>
+          <h2>添加 KPS 计数器</h2>
+          <ol class="step-list compact">
+            <li><span>1</span><div><strong>选择“KPS 计数器”</strong><p>点击“＋ 添加”，然后选择“KPS 计数器”。</p></div></li>
+            <li><span>2</span><div><strong>选择统计范围</strong><p>可以只统计键盘、只统计鼠标，或同时统计两者。</p></div></li>
+            <li><span>3</span><div><strong>设置显示模板</strong><p>选择内置模板，或选择“自定义”后填写自己的格式。</p></div></li>
+            <li><span>4</span><div><strong>选择文字对齐</strong><p>支持左对齐、居中和右对齐，默认左对齐。</p></div></li>
+          </ol>
+          <p>KPS 表示最近一秒内平均每秒的按键次数，长按产生的自动连发不会重复计数。</p>
+          <p>显示模板使用 <code>{value}</code> 代表实时数值。内置模板包括 <code>KPS {value}</code>、<code>[KPS] {value}</code>、<code>{value} KPS</code>、<code>{value} 次/秒</code> 和 <code>KPS: {value}</code>，也可以输入任意文字，例如 <code>APM {value}</code>。</p>
+        </section>
+
+        <section class="wiki-section" id="add-gamepad">
+          <p class="section-kicker">12</p>
           <h2>添加手柄控件</h2>
           <h3>添加整只手柄</h3>
           <ol class="step-list compact">
@@ -285,8 +306,26 @@
           </ul>
         </section>
 
+        <section class="wiki-section" id="add-hitbox">
+          <p class="section-kicker">13</p>
+          <h2>添加 Hitbox 控件</h2>
+          <ol class="step-list compact">
+            <li><span>1</span><div><strong>切换 Hitbox 输入</strong><p>在输入模式选择器中选择“Hitbox 输入”，或按 <code>F4</code>。</p></div></li>
+            <li><span>2</span><div><strong>添加面板或独立控件</strong><p>点击“＋ 添加”，选择 Hitbox 面板、Hitbox 按键、Hitbox 摇杆或文本。</p></div></li>
+            <li><span>3</span><div><strong>选择输出类型</strong><p>键盘输出型读取键盘按键，手柄输出型读取 XInput 手柄，并分别使用对应的绑定。</p></div></li>
+            <li><span>4</span><div><strong>调整并应用</strong><p>在预览区完成布局调整，再点击“保存并应用”。</p></div></li>
+          </ol>
+          <ul class="plain-list">
+            <li><strong>十二键</strong>：四个方向键加八个动作键。</li>
+            <li><strong>摇杆 + 八键</strong>：方向键以摇杆形式显示，右侧保留八个动作键。</li>
+            <li><strong>八向合成</strong>：方向键会按当前按下的方向自动合成八向结果，同时按下相反方向时会互相抵消。</li>
+            <li><strong>按键名</strong>：可显示在按钮上方或下方，也可以整体关闭；单独添加的 Hitbox 按键可以修改绑定和显示名称。</li>
+            <li><strong>独立预设</strong>：Hitbox 拥有独立布局和独立预设，不会影响键盘和手柄布局。</li>
+          </ul>
+        </section>
+
         <section class="wiki-section" id="edit-controls">
-          <p class="section-kicker">12</p>
+          <p class="section-kicker">14</p>
           <h2>编辑已有控件</h2>
           <div class="shortcut-table" role="table" aria-label="预览区操作">
             <div role="row"><strong role="cell">左键拖动</strong><span role="cell">自由移动控件，默认开启对齐吸附</span></div>
@@ -307,6 +346,7 @@
             <div role="row"><strong role="cell">左键单击空白位置</strong><span role="cell">取消选择</span></div>
             <div role="row"><strong role="cell">中键拖动</strong><span role="cell">平移预览区域</span></div>
             <div role="row"><strong role="cell">左键拖动空白区域</strong><span role="cell">平移预览区域</span></div>
+            <div role="row"><strong role="cell">选中状态</strong><span role="cell">启动时不会默认选中控件；删除选中的控件后，也不会自动选中其它控件</span></div>
           </div>
           <div class="wiki-note">
             <i data-lucide="info" aria-hidden="true"></i>
@@ -315,7 +355,7 @@
         </section>
 
         <section class="wiki-section" id="align-controls">
-          <p class="section-kicker">13</p>
+          <p class="section-kicker">15</p>
           <h2>对齐多个控件</h2>
           <p>多选两个以上控件后，可以把它们按同一个参照物摆齐。</p>
           <ol class="step-list compact">
@@ -326,12 +366,12 @@
           </ol>
           <div class="wiki-note">
             <i data-lucide="info" aria-hidden="true"></i>
-            <p>对齐对普通按键、鼠标、指示器、文本、序列式监听、瀑布流和手柄控件都有效，操作同样会记入撤回历史。</p>
+            <p>对齐对普通按键、鼠标、指示器、文本、序列式监听、瀑布流、KPS 计数器、手柄控件和 Hitbox 控件都有效，操作同样会记入撤回历史。</p>
           </div>
         </section>
 
         <section class="wiki-section" id="shortcuts">
-          <p class="section-kicker">14</p>
+          <p class="section-kicker">16</p>
           <h2>快捷键</h2>
           <p>“热键”卡片集中管理可自定义快捷键：点击某项右侧的按钮即可录制新的组合，与其它操作冲突时会有提示，底部的“恢复默认快捷键”可以一键还原。下表是默认值。</p>
 
@@ -385,6 +425,7 @@
             <div role="row"><strong role="cell">键盘输入</strong><span role="cell"><code>F1</code></span></div>
             <div role="row"><strong role="cell">手柄输入</strong><span role="cell"><code>F2</code></span></div>
             <div role="row"><strong role="cell">自动识别</strong><span role="cell"><code>F3</code></span></div>
+            <div role="row"><strong role="cell">Hitbox 输入</strong><span role="cell"><code>F4</code></span></div>
           </div>
 
           <h3>Dock 卡片</h3>
@@ -403,9 +444,9 @@
         </section>
 
         <section class="wiki-section" id="presets">
-          <p class="section-kicker">15</p>
+          <p class="section-kicker">17</p>
           <h2>管理预设</h2>
-          <p>预设用于保存多套布局。键盘预设和手柄预设互相独立，切换设备模式时不会互相覆盖。</p>
+          <p>预设用于保存多套布局。键盘、手柄和 Hitbox 预设互相独立，切换设备模式时不会互相覆盖。</p>
           <ol class="step-list compact">
             <li><span>1</span><div><strong>切换预设</strong><p>在预览窗下方打开预设选择器，选择已有预设即可切换。</p></div></li>
             <li><span>2</span><div><strong>创建预设</strong><p>点击“＋ 添加预设”，新建后可直接输入名称。</p></div></li>
@@ -415,7 +456,7 @@
           <h3>导出预设</h3>
           <ol class="plain-steps">
             <li>在预设选择器中点击“导出预设”。</li>
-            <li>勾选需要导出的键盘预设和手柄预设，可以同时选择多套。</li>
+            <li>勾选需要导出的键盘、手柄和 Hitbox 预设，可以同时选择多套。</li>
             <li>点击“导出”，选择保存位置。文件格式为 <code>.json</code>。</li>
             <li>导出文件会写入当前软件版本，作为该预设支持的最低兼容版本。</li>
           </ol>
@@ -435,7 +476,7 @@
         </section>
 
         <section class="wiki-section" id="global-style">
-          <p class="section-kicker">16</p>
+          <p class="section-kicker">18</p>
           <h2>覆盖层、个性化与动效</h2>
           <p>“覆盖层”卡片只保留覆盖层本身的控制项：</p>
           <ul class="plain-list">
@@ -443,7 +484,7 @@
             <li><strong>覆盖层显示</strong>：隐藏覆盖层，但仍可通过 OBS 窗口捕获。</li>
             <li><strong>整体缩放</strong>：按比例调整覆盖层中所有控件的大小。</li>
           </ul>
-          <p>“个性化”卡片用于统一设置普通按键、鼠标、指示器和手柄控件的外观，以及软件界面样式：</p>
+          <p>“个性化”卡片用于统一设置普通按键、鼠标、指示器、KPS 计数器、手柄和 Hitbox 控件的外观，以及软件界面样式：</p>
           <ul class="plain-list">
             <li><strong>外观色</strong>：深色、浅色或自动跟随系统。</li>
             <li><strong>主题色</strong>：用于界面强调、选中和开关状态，并自动校正对比度。</li>
@@ -457,15 +498,18 @@
           </ul>
           <p>颜色支持 Alpha，可直接输入 <code>#RRGGBBAA</code>，也可以打开选色器后通过透明度滑条调整。</p>
           <p>键帽文字颜色、触发颜色和阴影颜色会根据当前背景色自动推导，设置中不再单独提供手选。外框颜色关闭时，普通按键不显示外框；鼠标、指示器和手柄控件会恢复各自默认外框，避免控件不可见。</p>
+          <p>背景颜色和外框颜色都关闭时，不再显示低可读性提示。</p>
           <p>外观色和主题色只影响设置界面和预览区外观，不会改变覆盖层中按键、鼠标和手柄控件的实际样式。</p>
 
           <h3>动效卡片</h3>
           <p>“动效”卡片用于设置键帽触发时的按下动画，并提供独立预览键帽：</p>
           <ul class="plain-list">
-            <li><strong>键内效果</strong>：单选，包含简化（变色）、内缩、脉冲、回弹和果冻。</li>
-            <li><strong>键外效果</strong>：单选，包含无、光晕、涟漪和火花。</li>
+            <li><strong>键内效果</strong>：单选，包含简化（变色）、内缩、脉冲、回弹、果冻、扫描、霓虹、蓄能、裂纹和波动。</li>
+            <li><strong>键外效果</strong>：单选，包含无、光晕、涟漪、火花、光环、电弧、余烬和流星。</li>
             <li>键内效果和键外效果可以各选一个并同时生效。</li>
-            <li>预览键帽会自动循环播放，也可以点击预览立即触发。</li>
+            <li>波动在按住期间会持续流动；重复触发时会平滑接续，不会闪断重置。</li>
+            <li>余烬的粒子受重力影响向下坠落，流星会沿按键轮廓飞行。</li>
+            <li>预览窗使用黑色背景。预览键帽会自动循环播放，也可以点击预览立即触发。</li>
             <li>动效作用于键盘按键、鼠标按键、手柄按键等会触发状态的键帽控件。鼠标按键会按实际按下的左键、右键、中键或侧键分别反馈。</li>
             <li>动效设置保存在用户设置中，修改后立即同步到覆盖层。</li>
             <li>默认是“简化（变色）+ 无键外效果”，与旧版本行为一致。</li>
@@ -490,7 +534,7 @@
         </section>
 
         <section class="wiki-section" id="overlay">
-          <p class="section-kicker">17</p>
+          <p class="section-kicker">19</p>
           <h2>覆盖层设置</h2>
 
           <h3>整体不透明度</h3>
@@ -536,7 +580,7 @@
         </section>
 
         <section class="wiki-section" id="obs">
-          <p class="section-kicker">18</p>
+          <p class="section-kicker">20</p>
           <h2>在 OBS 中使用</h2>
           <ol class="step-list compact">
             <li><span>1</span><div><strong>添加来源</strong><p>在 OBS 的来源面板点击“＋”，选择“窗口捕获”。</p></div></li>
@@ -552,7 +596,7 @@
         </section>
 
         <section class="wiki-section" id="updates">
-          <p class="section-kicker">19</p>
+          <p class="section-kicker">21</p>
           <h2>自动检查更新</h2>
           <p>程序默认在启动时检查公开 Release 仓库，可以在“应用”卡片中关闭“启动时检查更新”。检查期间标题栏会显示更新状态；如果没有新版本，提示会自动隐藏。</p>
           <p>发现新版本时，可以从更新提示中查看更新日志、打开发布页面、下载更新，并自动替换和重启。更新日志支持保留原文换行和显示 GitHub Release 正文中的远程图片。</p>
@@ -560,7 +604,7 @@
         </section>
 
         <section class="wiki-section" id="data-directory">
-          <p class="section-kicker">20</p>
+          <p class="section-kicker">22</p>
           <h2>数据目录</h2>
           <p>配置默认保存在：</p>
           <pre><code>%APPDATA%\PA Keystroke</code></pre>
@@ -569,13 +613,15 @@
             <div><code>keystroke_presets.json</code><span>键盘预设</span></div>
             <div><code>keystroke_gamepad.json</code><span>当前手柄布局</span></div>
             <div><code>keystroke_gamepad_presets.json</code><span>手柄预设</span></div>
+            <div><code>keystroke_hitbox.json</code><span>当前 Hitbox 布局与绑定</span></div>
+            <div><code>keystroke_hitbox_presets.json</code><span>Hitbox 预设</span></div>
             <div><code>user_settings.json</code><span>用户设置、主题、覆盖层和运行设置</span></div>
           </div>
           <p>备份或迁移数据时，请先退出 PA Keystroke，再复制整个数据目录。</p>
         </section>
 
         <section class="wiki-section" id="faq">
-          <p class="section-kicker">21</p>
+          <p class="section-kicker">23</p>
           <h2>常见问题</h2>
           <div class="faq-list">
             <details>
@@ -602,7 +648,7 @@
         </section>
 
         <section class="wiki-section" id="feedback">
-          <p class="section-kicker">22</p>
+          <p class="section-kicker">24</p>
           <h2>反馈</h2>
           <p>欢迎在 GitHub Issues 中提交问题和建议，或加入社区 QQ 群交流。</p>
           <div class="feedback-actions">
