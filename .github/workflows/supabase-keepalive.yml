@@ -5,6 +5,11 @@ on:
   schedule:
     - cron: "0 */6 * * *"
   workflow_dispatch:
+    inputs:
+      force_touch:
+        description: "Refresh the activity marker even if it is fresh"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -46,12 +51,14 @@ jobs:
       # repository activity. Touch a marker every 30 days to keep this alive.
       - name: Keep scheduled workflow enabled
         shell: bash
+        env:
+          FORCE_TOUCH: ${{ inputs.force_touch }}
         run: |
           set -euo pipefail
           marker=".github/keepalive.txt"
           now=$(date -u +%s)
           last=$(date -u -d "$(cat "$marker" 2>/dev/null || echo 1970-01-01T00:00:00Z)" +%s)
-          if [ $(( (now - last) / 86400 )) -lt 30 ]; then
+          if [ "$FORCE_TOUCH" != "true" ] && [ $(( (now - last) / 86400 )) -lt 30 ]; then
             echo "Repository activity marker is fresh."
             exit 0
           fi
