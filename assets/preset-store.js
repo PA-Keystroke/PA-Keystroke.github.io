@@ -43,16 +43,25 @@
     return client;
   }
 
+  function isNetworkErrorMessage(message) {
+    return typeof message === "string" && /failed to fetch|networkerror|network error|load failed|fetch failed|connection (?:lost|refused|reset)|econnrefused|enotfound|etimedout|timed out|temporary failure in name resolution/i.test(message);
+  }
+
   function errorMessage(error) {
     if (!error) {
       return "发生未知错误。";
     }
 
     if (typeof error === "string") {
-      return error;
+      return isNetworkErrorMessage(error) ? "服务暂时连接不上，请稍后刷新重试。" : error;
     }
 
-    return error.message || error.error_description || "发生未知错误。";
+    const message = error.message || error.error_description || "";
+    if (isNetworkErrorMessage(message)) {
+      return "服务暂时连接不上，请稍后刷新重试。";
+    }
+
+    return message || "发生未知错误。";
   }
 
   function normalizeText(value) {
